@@ -5,6 +5,7 @@
 using std::ostream;
 using std::ofstream;
 using std::ifstream;
+using std::cout;
 using std::endl;
 using std::ios;
 
@@ -198,43 +199,6 @@ rTPM::rTPM(const rTPM &rtpm_c) : BlockMatrix(rtpm_c){
  */
 rTPM::~rTPM(){ }
 
-/**
- * access the elements of the matrix in sp mode, antisymmetry is automatically accounted for:\n\n
- * @param S dp spin: == 0 means 1/2, == 1 means 3/2
- * @param S_ab intermediate spin of a and b
- * @param a first sp index that forms the tp row index i together with b
- * @param b second sp index that forms the tp row index i together with a
- * @param S_cd intermediate spin of c and d
- * @param c first sp index that forms the tp column index j together with d
- * @param d second sp index that forms the tp column index j together with c
- * @return the number on place rTPM(i,j) with the right phase.
- */
-double rTPM::operator()(int S,int S_ab,int a,int b,int S_cd,int c,int d) const{
-
-   if( (a == l) || (b == l) || (c == l) || (d == l) )
-      return 0;
-
-   if(S == 1)
-      if(S_ab == 0 || S_cd == 0)
-         return 0;
-
-   int i = s2t[l][S][S_ab][a][b];
-   int j = s2t[l][S][S_ab][c][d];
-
-   int sign_ab = 1 - 2*S_ab;
-   int sign_cd = 1 - 2*S_cd;
-
-   int phase = 1;
-
-   if(a > b)
-      phase *= sign_ab;
-   if(c > d)
-      phase *= sign_cd;
-
-   return phase * (*this)[S](i,j);
-
-}
-
 ostream &operator<<(ostream &output,const rTPM &rtpm_p){
 
    for(int S = 0;S < 2;++S){
@@ -246,9 +210,9 @@ ostream &operator<<(ostream &output,const rTPM &rtpm_p){
       for(int i = 0;i < rtpm_p.gdim(S);++i)
          for(int j = 0;j < rtpm_p.gdim(S);++j){
 
-            output << i << "\t" << j << "\t|\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][0] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][1] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][2]
+            output << i << "\t" << j << "\t|\t(" << rtpm_p.t2s[rtpm_p.gl()][S][i][0] << ")\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][1] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][2]
 
-               << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][0] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][1] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][2] << "\t" 
+               << "\t;\t(" << rtpm_p.t2s[rtpm_p.gl()][S][j][0] << ")\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][1] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][2] << "\t" 
                
                << rtpm_p[S](i,j) << endl;
 

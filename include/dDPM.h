@@ -38,6 +38,10 @@ class dDPM {
 
       const rTPM &operator[](int) const;
 
+      double operator()(int l,int S,int S_ab,int a,int b,int S_cd,int c,int d) const;
+
+      static double get_inco(int &l,int S,int S_ab,int &a,int &b);
+
       int gN() const;
 
       int gM() const;

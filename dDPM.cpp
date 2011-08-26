@@ -103,6 +103,21 @@ const rTPM &dDPM::operator[](int l) const{
 
 }
 
+/**
+ * access the numbers in sp mode
+ * @param l blockindex
+ * @param S dp spin
+ * @param S_ab intermediate spin for a and b
+ * @param a first spatial index for the row
+ * @param b second spatial index for the row
+ * @param S_cd intermediate spin for c and d
+ * @param c first spatial index for the column
+ * @param d second spatial index for the column
+ */
+double operator()(int l,int S,int S_ab,int a,int b,int S_cd,int c,int d) const {
+
+}
+
 ostream &operator<<(ostream &output,const dDPM &ddpm_p){
 
    for(int l = 0;l < ddpm_p.gM();++l){

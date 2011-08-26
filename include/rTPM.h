@@ -41,9 +41,6 @@ class rTPM : public BlockMatrix {
 
       using BlockMatrix::operator();
 
-      //easy to access the numbers, in sp mode
-      double operator()(int S,int S_ab,int a,int b,int S_cd,int c,int d) const;
-
       //geef N terug
       int gN() const;
 
