@@ -44,7 +44,13 @@ int main(void){
    dDPM ddpm;
    ddpm.fill_Random();
 
-   cout << ddpm;
+   dDPM ddpm_copy(ddpm);
+
+   ddpm.proj_W();
+
+   ddpm_copy -= ddpm;
+
+   ddpm.test_proj();
 
 /*
    TPM::init(M,N);
@@ -158,6 +164,7 @@ int main(void){
    PHM::clear();
    TPM::clear();
 */
+   dDPM::clear();
    rTPM::clear();
 
    return 0;

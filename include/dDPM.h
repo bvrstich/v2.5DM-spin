@@ -40,7 +40,7 @@ class dDPM {
 
       double operator()(int l,int S,int S_ab,int a,int b,int S_cd,int c,int d) const;
 
-      static double get_inco(int &l,int S,int S_ab,int &a,int &b);
+      static double get_inco(int &l,int S,int &S_ab,int &a,int &b);
 
       int gN() const;
 
@@ -74,7 +74,13 @@ class dDPM {
 
       void fill_Random();
 
+      void proj_W();
+
+      void test_proj() const;
+
       static void init(int,int);
+
+      static void clear();
 
    private:
 
@@ -86,6 +92,9 @@ class dDPM {
 
       //!double array of rTPM objects
       rTPM **ddpm;
+
+      //!static array holding the 6j symbols needed
+      static double **_6j;
 
 };
 
