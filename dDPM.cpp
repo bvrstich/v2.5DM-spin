@@ -193,7 +193,7 @@ double dDPM::get_inco(int &l,int S,int &S_ab,int &a,int &b){
 
             S_ab = 0;
 
-            return -3.0/std::sqrt(2.0);
+            return -std::sqrt(1.5);
 
          }
 
@@ -215,12 +215,15 @@ double dDPM::get_inco(int &l,int S,int &S_ab,int &a,int &b){
 
             S_ab = 0;
 
-            return 3.0/std::sqrt(2.0);
+            return std::sqrt(1.5);
 
          }
 
       }
       else{//a != l and b != l
+
+         if(a == b && S_ab == 1)
+            return 0.0;
 
          if(a > b)
             return 1.0 - 2.0*S_ab;
@@ -554,26 +557,40 @@ void dDPM::proj_W(){
  */
 void dDPM::test_proj() const {
 
-   for(int l = 0;l < M;++l){
+   //for(int l = 0;l < M;++l){
+      int l = 0;
 
       cout << l << endl;
       cout << endl;
 
-      for(int a = 0;a < M;++a)
-         for(int b = 0;b < M;++b){
+      //for(int a = 0;a < M;++a)
+      int a = 0;
+         //for(int b = 0;b < M;++b){
+            int b = 1;
 
-            for(int S_ab = 0;S_ab < 2;++S_ab)
-               for(int S_cd = 0;S_cd < 2;++S_cd){
+            //for(int S_ab = 0;S_ab < 2;++S_ab)
+               //for(int S_cd = 0;S_cd < 2;++S_cd){
+                  int S_ab = 0;
+                  int S_cd = 0;
 
                   cout << a << "\t" << b << "\t" << S_ab << "\t" << S_cd << "\t" << (*this)(l,0,S_ab,a,b,S_cd,a,b) << "\t";
 
                   double ward = 0.0;
 
                   for(int S_al = 0;S_al < 2;++S_al)
-                     for(int S_cl = 0;S_cl < 2;++S_cl)
+                     for(int S_cl = 0;S_cl < 2;++S_cl){
+
                         ward += std::sqrt( ( 2.0*S_ab + 1.0) * (2*S_cd + 1.0) * (2*S_al + 1.0) * (2*S_cl + 1.0) ) * (1 - 2*S_ab) * (1 - 2*S_cd) * (1 - 2*S_al) * (1 - 2*S_cl)
 
                         * _6j[S_ab][S_al] * _6j[S_cd][S_cl] * (*this)(b,0,S_al,a,l,S_cl,a,l);
+
+                     }
+
+                  if(a == b)
+                     ward /= 2.0;
+
+                  if(a == l)
+                     ward *= 2.0;
 
                   cout << ward << "\t";
 
@@ -585,12 +602,18 @@ void dDPM::test_proj() const {
 
                            * _6j[S_ab][S_lb] * _6j[S_cd][S_ld] * (*this)(a,0,S_lb,l,b,S_ld,l,b);
 
+                  if(a == b)
+                     ward /= 2.0;
+
+                  if(b == l)
+                     ward *= 2.0;
+
                   cout << ward << endl;
 
-               }
+               //}
 
-         }
+         //}
 
-   }
+   //}
 
 }
