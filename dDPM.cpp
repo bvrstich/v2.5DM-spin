@@ -447,8 +447,11 @@ void dDPM::proj_W(){
 
    int i,j;
 
+   int phase_i,phase_j;
+
    for(int l = 0;l < M;++l){
 
+      //first diagonal: ab;ab
       for(int a = 0;a < M;++a){
 
          if(a == l)
@@ -488,14 +491,27 @@ void dDPM::proj_W(){
                          
                          ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_lb + 1.0) * (2.0*S_ld + 1.0) )
 
-                            * _6j[S_lb][S_ab] * _6j[S_ld][S_cd] * (*this)(b,0,S_lb,l,b,S_ld,l,b);
+                            * _6j[S_lb][S_ab] * _6j[S_ld][S_cd] * (*this)(a,0,S_lb,l,b,S_ld,l,b);
 
                      }
 
                   i = rTPM::gs2t(l,0,S_ab,a,b);
                   j = rTPM::gs2t(l,0,S_cd,a,b);
 
-                  (*this)[l](0,i,j) = (*this)[l](0,j,i) = ward/3.0;
+                  if(a > b){
+
+                     phase_i = 1 - 2*S_ab;
+                     phase_j = 1 - 2*S_cd;
+
+                  }
+                  else{
+
+                     phase_i = 1;
+                     phase_j = 1;
+
+                  }
+
+                  (*this)[l](0,i,j) = (*this)[l](0,j,i) = phase_i*phase_j*ward/3.0;
 
                }
 
@@ -506,12 +522,25 @@ void dDPM::proj_W(){
                      i = rTPM::gs2t(b,0,S_al,a,l);
                      j = rTPM::gs2t(b,0,S_cl,a,l);
 
+                     if(a > l){
+
+                        phase_i = 1 - 2*S_al;
+                        phase_j = 1 - 2*S_cl;
+
+                     }
+                     else{
+
+                        phase_i = 1;
+                        phase_j = 1;
+
+                     }
+
                      (*this)[b](0,i,j) = 0.0;
 
                      for(int S_ab = 0;S_ab < 2;++S_ab)
                         for(int S_cd = 0;S_cd < 2;++S_cd){
 
-                           (*this)[b](0,i,j) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) ) 
+                           (*this)[b](0,i,j) += phase_i*phase_j*std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) ) 
 
                               * (1 - 2*S_ab) * (1 - 2*S_cd) * (1 - 2*S_al) * (1 - 2*S_cl) * _6j[S_al][S_ab] * _6j[S_cl][S_cd] * (*this)(l,0,S_ab,a,b,S_cd,a,b);
 
@@ -528,12 +557,25 @@ void dDPM::proj_W(){
                      i = rTPM::gs2t(a,0,S_lb,l,b);
                      j = rTPM::gs2t(a,0,S_ld,l,b);
 
+                     if(l > b){
+
+                        phase_i = 1 - 2*S_lb;
+                        phase_j = 1 - 2*S_ld;
+
+                     }
+                     else{
+
+                        phase_i = 1;
+                        phase_j = 1;
+
+                     }
+
                      (*this)[a](0,i,j) = 0.0;
 
                      for(int S_ab = 0;S_ab < 2;++S_ab)
                         for(int S_cd = 0;S_cd < 2;++S_cd){
 
-                           (*this)[a](0,i,j) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_lb + 1.0) * (2.0*S_ld + 1.0) ) 
+                           (*this)[a](0,i,j) += phase_i*phase_j*std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_lb + 1.0) * (2.0*S_ld + 1.0) ) 
 
                               * _6j[S_lb][S_ab] * _6j[S_ld][S_cd] * (*this)(l,0,S_ab,a,b,S_cd,a,b);
 
@@ -557,21 +599,17 @@ void dDPM::proj_W(){
  */
 void dDPM::test_proj() const {
 
-   //for(int l = 0;l < M;++l){
-      int l = 0;
+   for(int l = 0;l < M;++l){
 
+      cout << endl;
       cout << l << endl;
       cout << endl;
 
-      //for(int a = 0;a < M;++a)
-      int a = 0;
-         //for(int b = 0;b < M;++b){
-            int b = 1;
+      for(int a = 0;a < M;++a)
+         for(int b = 0;b < M;++b){
 
-            //for(int S_ab = 0;S_ab < 2;++S_ab)
-               //for(int S_cd = 0;S_cd < 2;++S_cd){
-                  int S_ab = 0;
-                  int S_cd = 0;
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
 
                   cout << a << "\t" << b << "\t" << S_ab << "\t" << S_cd << "\t" << (*this)(l,0,S_ab,a,b,S_cd,a,b) << "\t";
 
@@ -610,10 +648,10 @@ void dDPM::test_proj() const {
 
                   cout << ward << endl;
 
-               //}
+               }
 
-         //}
+         }
 
-   //}
+   }
 
 }
