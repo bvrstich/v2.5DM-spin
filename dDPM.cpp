@@ -590,6 +590,98 @@ void dDPM::proj_W(){
 
       }
 
+      //three terms with one diagonal index:
+      
+      //1) b == d: ab;cb
+      for(int a = 0;a < M;++a){
+
+         if(a == l)
+            a++;
+
+         if(a == M)
+            break;
+
+         for(int c = a + 1;c < M;++c){
+
+            if(c == l)
+               c++;
+
+            if(c == M)
+               break;
+
+            for(int b = c + 1;b < M;++b){
+
+               if(b == l)
+                  b++;
+
+               if(b == M)
+                  break;
+
+
+            }
+         }
+      }
+
+      //2) b == c: ab;bc
+      for(int a = 0;a < M;++a){
+
+         if(a == l)
+            a++;
+
+         if(a == M)
+            break;
+
+         for(int b = a + 1;b < M;++b){
+
+            if(b == l)
+               b++;
+
+            if(b == M)
+               break;
+
+            for(int c = b + 1;c < M;++c){
+
+               if(c == l)
+                  c++;
+
+               if(c == M)
+                  break;
+
+
+            }
+         }
+      }
+
+      //3) a == c: ab;cb
+      for(int a = 0;a < M;++a){
+
+         if(a == l)
+            a++;
+
+         if(a == M)
+            break;
+
+         for(int b = a + 1;b < M;++b){
+
+            if(b == l)
+               b++;
+
+            if(b == M)
+               break;
+
+            for(int c = b + 1;c < M;++c){
+
+               if(c == l)
+                  c++;
+
+               if(c == M)
+                  break;
+
+
+            }
+         }
+      }
+
    }
 
 }
@@ -620,7 +712,7 @@ void dDPM::test_proj() const {
 
                         ward += std::sqrt( ( 2.0*S_ab + 1.0) * (2*S_cd + 1.0) * (2*S_al + 1.0) * (2*S_cl + 1.0) ) * (1 - 2*S_ab) * (1 - 2*S_cd) * (1 - 2*S_al) * (1 - 2*S_cl)
 
-                        * _6j[S_ab][S_al] * _6j[S_cd][S_cl] * (*this)(b,0,S_al,a,l,S_cl,a,l);
+                           * _6j[S_ab][S_al] * _6j[S_cd][S_cl] * (*this)(b,0,S_al,a,l,S_cl,a,l);
 
                      }
 
