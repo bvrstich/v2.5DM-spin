@@ -8,6 +8,8 @@ using std::ostream;
 
 #include "BlockMatrix.h"
 
+class dDPM;
+
 /**
  * @author Brecht Verstichel
  * @date 19-04-2010\n\n
@@ -64,6 +66,8 @@ class TPM : public BlockMatrix {
       void sp_pairing(double );
 
       double spin() const;
+
+      void bar(double scale,const dDPM &);
 
       static void init(int,int);
 

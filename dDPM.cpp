@@ -1331,3 +1331,85 @@ void dDPM::test_proj() const {
    }
 
 }
+
+/**
+ * lift a TPM tpm object up to dDPM space (*this), so that the dotproduct of (*this) with a dDPM matrix is equal 
+ * to the dotproduct of tpm with the "barred" dDPM matrix.
+ */
+void dDPM::up(const TPM &tpm){
+
+   *this = 0.0;
+
+   int a,b,c,d;
+   int S_ab,S_cd;
+
+   for(int l = 0;l < M;++l){
+
+      for(int S = 0;S < 2;++S){
+
+         for(int i = 0;i < ddpm[l]->gdim(S);++i){
+
+            S_ab = rTPM::gt2s(l,S,i,0);
+
+            a = rTPM::gt2s(l,S,i,1);
+            b = rTPM::gt2s(l,S,i,2);
+
+            for(int j = i;j < ddpm[l]->gdim(S);++j){
+
+               S_cd = rTPM::gt2s(l,S,j,0);
+
+               c = rTPM::gt2s(l,S,j,1);
+               d = rTPM::gt2s(l,S,j,2);
+
+               if(S_ab == S_cd)
+                  (*this)[l](S,i,j) = tpm(S_ab,a,b,c,d)/(N - 2.0);
+
+            }
+         }
+
+      }
+
+   }
+
+   this->symmetrize();
+
+}
+
+/**
+ * construct the spinsymmetrical hubbard hamiltonian with on site repulsion U
+ * @param U onsite repulsion term
+ */
+void dDPM::hubbard(double U){
+
+   TPM ham;
+   ham.hubbard(U);
+
+   this->up(ham);
+
+}
+
+/**
+ * initialize (*this) on the correctly normalized unitmatrix (so that the trace is N(N-1)(N-2)/2)
+ */
+void dDPM::unit(){
+
+   double ward = N*(N - 1.0)*(N - 2.0)/(2.0*M*(2.0*M - 1)*(2.0*M - 2.0));
+
+   for(int l = 0;l < M;++l){
+
+      for(int S = 0;S < 2;++S){
+
+         for(int i = 0;i < ddpm[l]->gdim(S);++i){
+
+            (*this)[l](S,i,i) = ward;
+
+            for(int j = i + 1;j < ddpm[l]->gdim(S);++j)
+               (*this)[l](S,i,j) = (*this)[l](S,j,i) = 0.0;
+
+         }
+
+      }
+
+   }
+
+}

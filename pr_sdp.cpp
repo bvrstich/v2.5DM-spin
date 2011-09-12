@@ -42,14 +42,13 @@ int main(void){
    TPM::init(M,N);
    dDPM::init(M,N);
 
-/*
    //hamiltoniaan
    dDPM ham;
-   ham.hubbard(0,1.0);
+   ham.hubbard(1.0);
 
    dDPM W;
    W.unit();
-
+/*
    dDPM backup(W);
 
    double t = 1.0;

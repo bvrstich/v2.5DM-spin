@@ -78,6 +78,12 @@ class dDPM {
 
       void test_proj() const;
 
+      void up(const TPM &);
+
+      void hubbard(double);
+
+      void unit();
+
       static void init(int,int);
 
       static void clear();
