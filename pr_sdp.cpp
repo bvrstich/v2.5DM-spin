@@ -50,7 +50,7 @@ int main(void){
 
    ddpm_copy -= ddpm;
 
-   cout << ddpm_copy.ddot(ddpm) << endl;
+   cout << ddpm.ddot(ddpm_copy) << endl;
 
 /*
    TPM::init(M,N);
