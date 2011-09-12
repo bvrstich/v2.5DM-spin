@@ -13,6 +13,7 @@ CPPSRC	= pr_sdp.cpp\
             Matrix.cpp\
             Vector.cpp\
             rTPM.cpp\
+            TPM.cpp\
             dDPM.cpp
 
 OBJ	= $(CPPSRC:.cpp=.o)

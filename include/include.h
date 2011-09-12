@@ -5,5 +5,6 @@
 #include "BlockVector.h"
 
 #include "rTPM.h"
+#include "TPM.h"
 
 #include "dDPM.h"

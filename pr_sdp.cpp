@@ -35,39 +35,14 @@ int main(void){
 
    cout.precision(10);
 
-   const int M = 6;//nr of spatial orbitals
-   const int N = 5;//nr of particles
+   const int M = 4;//nr of spatial orbitals
+   const int N = 4;//nr of particles
 
    rTPM::init(M,N);
+   TPM::init(M,N);
    dDPM::init(M,N);
-
-   dDPM ddpm;
-   ddpm.fill_Random();
-
-   dDPM ddpm_copy(ddpm);
-
-   ddpm.proj_W();
-
-   ddpm_copy -= ddpm;
-
-   cout << ddpm.ddot(ddpm_copy) << endl;
 
 /*
-   TPM::init(M,N);
-   PHM::init(M,N);
-   rPHM::init(M,N);
-   dDPM::init(M,N);
-   dPPHM::init(M,N);
-   dPHPM::init(M,N);
-   dPHHM::init(M,N);
-   dDPV::init(M,N);
-   dPPHV::init(M,N);
-   dPHPV::init(M,N);
-   dPHHV::init(M,N);
-   SPM::init(M,N);
-   SUP::init(M,N);
-   EIG::init(M,N);
-
    //hamiltoniaan
    dDPM ham;
    ham.hubbard(0,1.0);
@@ -164,8 +139,9 @@ int main(void){
    PHM::clear();
    TPM::clear();
 */
-   dDPM::clear();
    rTPM::clear();
+   TPM::clear();
+   dDPM::clear();
 
    return 0;
 
