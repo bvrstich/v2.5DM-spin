@@ -339,3 +339,18 @@ double Vector::centerpot(double alpha) const {
    return ward;
 
 }
+
+/**
+ * Function used by the BlockVector::lsfunc function, used by the dDPV and EIG::lsfunc for the line search algorithm.
+ * @param alpha steplenght in the search direction.
+ */
+double Vector::lsfunc(double alpha) const{
+
+   double ward = 0.0;
+
+   for(int i = 0;i < n;i++)
+      ward += vector[i]/(1.0 + alpha * vector[i]);
+
+   return ward;
+
+}

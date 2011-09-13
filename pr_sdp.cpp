@@ -36,11 +36,14 @@ int main(void){
    cout.precision(10);
 
    const int M = 4;//nr of spatial orbitals
-   const int N = 4;//nr of particles
+   const int N = 3;//nr of particles
 
    rTPM::init(M,N);
    TPM::init(M,N);
    dDPM::init(M,N);
+   dDPV::init(M,N);
+   EIG::init(M,N);
+   SUP::init(M,N);
 
    //hamiltoniaan
    dDPM ham;
@@ -48,7 +51,7 @@ int main(void){
 
    dDPM W;
    W.unit();
-/*
+
    dDPM backup(W);
 
    double t = 1.0;
@@ -57,7 +60,7 @@ int main(void){
    //outer iteration: scaling of the potential barrier
    while(t > 1.0e-10){
 
-      cout << t << "\t" << W.trace() << "\t" << W.ddot(ham) << "\t";
+      cout << t << "\t" << W.ftrace() << "\t" << W.ddot(ham) << "\t";
 
       int nr_cg_iter = 0;
       int nr_newton_iter = 0;
@@ -115,9 +118,9 @@ int main(void){
       //overzetten voor volgende stap
       backup = W;
 
-      double a = extrapol.line_search(t,W,ham);
+      double b = extrapol.line_search(t,W,ham);
 
-      W.daxpy(a,extrapol);
+      W.daxpy(b,extrapol);
 
    }
 
@@ -125,19 +128,6 @@ int main(void){
 
    cout << "Final Energy:\t" << ham.ddot(W) << endl;
 
-   ofstream out("test");
-   out.precision(10);
-
-   for(int l = 0;l < M;++l)
-      for(int i = 0;i < W[l].gn();++i)
-         for(int j = i;j < W[l].gn();++j)
-            out << l << "\t" << i << "\t" << j << "\t" << W[l](i,j) << endl;
-
-
-   rPHM::clear();
-   PHM::clear();
-   TPM::clear();
-*/
    rTPM::clear();
    TPM::clear();
    dDPM::clear();

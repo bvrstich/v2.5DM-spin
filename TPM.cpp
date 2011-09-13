@@ -43,7 +43,7 @@ void TPM::init(int M_in,int N_in){
 
    }
 
-   vector<int> v(3);
+   vector<int> v(2);
 
    int i;
 
@@ -52,11 +52,10 @@ void TPM::init(int M_in,int N_in){
       i = 0;
 
       for(int a = 0;a < M;++a)
-         for(int b = a + S;a < M;++a){
+         for(int b = a + S;b < M;++b){
 
-            v[0] = S;
-            v[1] = a;
-            v[2] = b;
+            v[0] = a;
+            v[1] = b;
 
             t2s[S].push_back(v);
 
@@ -115,7 +114,7 @@ TPM::TPM() : BlockMatrix(2) {
 
    //set the dimension and degeneracy of the two blocks:
    this->setMatrixDim(0,t2s[0].size(),1);
-   this->setMatrixDim(1,t2s[0].size(),3);
+   this->setMatrixDim(1,t2s[1].size(),3);
 
 }
 
@@ -245,16 +244,16 @@ void TPM::hubbard(double U){
             (*this)(S,i,j) = 0;
 
             //eerst hopping
-            if( (a == c) && ( ( (b + 1)%(M/2) == d ) || ( b == (d + 1)%(M/2) ) ) )
+            if( (a == c) && ( ( (b + 1)%M == d ) || ( b == (d + 1)%M ) ) )
                (*this)(S,i,j) -= ward;
 
-            if( (b == c) && ( ( (a + 1)%(M/2) == d ) || ( a == (d + 1)%(M/2) ) ) )
+            if( (b == c) && ( ( (a + 1)%M == d ) || ( a == (d + 1)%M ) ) )
                (*this)(S,i,j) -= sign*ward;
 
-            if( (a == d) && ( ( (b + 1)%(M/2) == c ) || ( b == (c + 1)%(M/2) ) ) )
+            if( (a == d) && ( ( (b + 1)%M == c ) || ( b == (c + 1)%M ) ) )
                (*this)(S,i,j) -= sign*ward;
 
-            if( (b == d) && ( ( (a + 1)%(M/2) == c ) || ( a == (c + 1)%(M/2) ) ) )
+            if( (b == d) && ( ( (a + 1)%M == c ) || ( a == (c + 1)%M ) ) )
                (*this)(S,i,j) -= ward;
 
             //only on-site interaction for singlet tp states:
@@ -418,7 +417,7 @@ void TPM::bar(double scale,const dDPM &ddpm){
 
             for(int l = 0;l < M;++l)
                for(int Z = 0;Z < 2;++Z)
-                  (*this)(S,i,j) += (2.0*Z + 1.0) * ddpm(l,Z,S,a,b,S,c,d);
+                  (*this)(S,i,j) += (2.0*(Z + 0.5)+ 1.0) * ddpm(l,Z,S,a,b,S,c,d);
 
             (*this)(S,i,j) *= scale/(2.0*S + 1.0);
 
@@ -426,5 +425,17 @@ void TPM::bar(double scale,const dDPM &ddpm){
       }
 
    }
+
+}
+
+/**
+ * test if basis is correctly constructed
+ */
+void TPM::test_basis(){
+
+   for(int S = 0;S < 2;++S)
+      for(int a = 0;a < M;++a)
+         for(int b = a + S;b < M;++b)
+            cout << S << "\t" << a << "\t" << "\t" << b << "\t|\t" << s2t[S][a][b] << "\t" << s2t[S][b][a] << endl;
 
 }

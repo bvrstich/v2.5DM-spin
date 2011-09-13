@@ -69,6 +69,8 @@ class TPM : public BlockMatrix {
 
       void bar(double scale,const dDPM &);
 
+      static void test_basis();
+
       static void init(int,int);
 
       static void clear();

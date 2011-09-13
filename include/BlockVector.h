@@ -94,6 +94,8 @@ class BlockVector{
 
       double centerpot(double ) const;
 
+      double lsfunc(double) const;
+
    private:
 
       //!double pointer to Vector, the blockvector
@@ -465,6 +467,22 @@ void BlockVector<BlockMatrixType>::diagonalize(BlockMatrixType &MT){
 
    for(int i = 0;i < nr;++i)
       blockvector[i]->diagonalize(MT[i]);
+
+}
+
+/**
+ * Function used by the EIG::lsfunc function, used in the line search algorithm.
+ * @param alpha steplenght in the search direction.
+ */
+template<class BlockMatrixType>
+double BlockVector<BlockMatrixType>::lsfunc(double alpha) const{
+
+   double ward = 0.0;
+
+   for(int i = 0;i < nr;i++)
+      ward += degen[i] * blockvector[i]->lsfunc(alpha);
+
+   return ward;
 
 }
 

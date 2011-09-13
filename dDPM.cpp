@@ -1175,6 +1175,30 @@ void dDPM::proj_W(){
 }
 
 /**
+ * project onto traceless space, watch out, special trace
+ */
+void dDPM::proj_fTr(){
+
+   dDPM funit;
+   funit.set_funit();
+
+   double ward = this->ddot(funit)/(funit.ddot(funit));
+
+   this->daxpy(-ward,funit);
+
+}
+
+/**
+ * total projection, both on traceless space and good third index symmetry
+ */
+void dDPM::proj(){
+
+   this->proj_W();
+   this->proj_fTr();
+
+}
+
+/**
  * test if the projection is correct
  */
 void dDPM::test_proj() const {
@@ -1411,5 +1435,262 @@ void dDPM::unit(){
       }
 
    }
+
+}
+
+/**
+ * different trace that gets the right number "full" trace
+ */
+double dDPM::ftrace() const{
+
+   double ward = 0.0;
+
+   for(int l = 0;l < M;++l){
+
+      //S = 1/2
+
+      //1) S_ab = 0
+      for(int a = 0;a < M;++a){
+
+         if(a == l)
+            ++a;
+
+         if(a == M)
+            break;
+
+         for(int b = a;b < M;++b){
+
+            if(b == l)
+               ++b;
+
+            if(b == M)
+               break;
+
+            ward += 2 * (*this)(l,0,0,a,b,0,a,b);
+
+         }
+      }
+
+      //2) S_ab = 1;
+      for(int a = 0;a < M;++a){
+
+         if(a == l)
+            ++a;
+
+         if(a == M)
+            break;
+
+         for(int b = a + 1;b < M;++b){
+
+            if(b == l)
+               ++b;
+
+            if(b == M)
+               break;
+
+            ward += 2 * (*this)(l,0,1,a,b,1,a,b);
+
+         }
+      }
+
+      
+      //S = 3/2
+      for(int a = 0;a < M;++a)
+         for(int b = a + 1;b < M;++b)
+            ward += 4 * (*this)(l,1,1,a,b,1,a,b);
+
+      //extra! extra!
+      for(int a = 0;a < M;++a)
+         ward += 4.0 * (*this)(a,0,0,l,l,0,l,l);
+
+   }
+
+   return ward;
+
+}
+
+/**
+ * Construct the right hand side of the Newton equation for the determination of the search direction, 
+ * the negative gradient of the potential:
+ * @param t scaling factor of the potential
+ * @param ham Hamiltonian of the current problem
+ * @param P SUP matrix containing the inverse of the constraint matrices (carrier space matrices).
+ */
+void dDPM::constr_grad(double t,const dDPM &ham,const SUP &P){
+
+   *this = P.gI1();
+
+   this->dscal(t);
+
+   *this -= ham;
+
+   this->proj();
+
+}
+
+/** 
+ * set (*this) equal to the full trace operator
+ */
+void dDPM::set_funit(){
+
+   int a,b;
+
+   for(int l = 0;l < M;++l)
+      for(int S = 0;S < 2;++S)
+         for(int i = 0;i < ddpm[l]->gdim(S);++i){
+
+            a = rTPM::gt2s(l,S,i,1);
+            b = rTPM::gt2s(l,S,i,2);
+
+            if(a == b)
+               (*this)[l](S,i,i) = 3.0;
+            else
+               (*this)[l](S,i,i) = 1.0;
+
+            for(int j = i + 1;j < ddpm[l]->gdim(S);++j)
+               (*this)[l](S,i,j) = (*this)[l](S,j,i) = 0.0;
+
+         }
+
+
+}
+
+/**
+ * solve the Newton equations for the determination of the search direction,
+ * @param t scaling factor of the potential
+ * @param P SUP matrix containing the inverse of the constraint matrices (carrier space matrices).
+ * @param b right hand side (the gradient constructed int dDPM::constr_grad)
+ * @return nr of iterations needed to converge to the desired accuracy
+ */
+int dDPM::solve(double t,const SUP &P,dDPM &b){
+
+   int iter = 0;
+
+   //delta = 0
+   *this = 0;
+
+   //residu:
+   dDPM r(b);
+
+   //norm van het residu
+   double rr = r.ddot(r);
+
+   //enkele variabelen
+   double rr_old,ward;
+
+   dDPM Hb;
+
+   while(rr > 1.0e-7){ 
+
+      Hb.H(t,b,P);
+
+      ward = rr/b.ddot(Hb);
+
+      //delta += ward*b
+      this->daxpy(ward,b);
+
+      //r -= ward*Hb
+      r.daxpy(-ward,Hb);
+
+      //nieuwe variabelen berekenen en oude overdragen
+      rr_old = rr;
+      rr = r.ddot(r);
+
+      //nieuwe b nog:
+      b.dscal(rr/rr_old);
+
+      b += r;
+
+      ++iter;
+
+   }
+
+   return iter;
+
+}
+
+/**
+ * The hessian-map of the Newton system:
+ * @param t potential scaling factor
+ * @param b the dDPM on which the hamiltonian will work, the image will be put in (*this)
+ * @param P the SUP matrix containing the constraints, (can be seen as the metric).
+ */
+void dDPM::H(double t,const dDPM &b,const SUP &P){
+
+   this->L_map(P.gI1(),b);
+
+   this->dscal(t);
+
+   this->proj();
+
+}
+
+/**
+ * perform a line search to determine what step size in along the Newton direction is ideal.
+ * @param t potential scaling factor
+ * @param P SUP matrix containing the inverse of the constraints (carrier space matrices)
+ * @param ham Hamiltonian of the problem
+ * @return the steplength
+ */
+double dDPM::line_search(double t,SUP &P,const dDPM &ham){
+
+   double tolerance = 1.0e-5*t;
+
+   if(tolerance < 1.0e-12)
+      tolerance = 1.0e-12;
+
+   //neem de wortel uit P
+   P.sqrt(1);
+
+   //maak eerst een SUP van delta
+   SUP S_delta;
+
+   S_delta.fill(*this);
+
+   //hulpje om dingskes in te steken:
+   SUP hulp;
+   hulp.L_map(P,S_delta);
+
+   EIG eigen(hulp);
+
+   double a = 0;
+
+   double b = -1.0/eigen.min();
+
+   double c(0);
+
+   double ham_delta = ham.ddot(*this);
+
+   while(b - a > tolerance){
+
+      c = (b + a)/2.0;
+
+      if( (ham_delta - t*eigen.lsfunc(c)) < 0.0)
+         a = c;
+      else
+         b = c;
+
+   }
+
+   return c;
+
+}
+
+/**
+ * perform a line search what step size in along a certain direction (*this) minimizes the potential, this one is used for extrapolation.
+ * @param t potential scaling factor
+ * @param W dDPM containing the current approximation of the W object
+ * @param ham Hamiltonian of the problem
+ * @return the steplength
+ */
+double dDPM::line_search(double t,const dDPM &W,const dDPM &ham){
+
+   SUP P;
+
+   P.fill(W);
+
+   P.invert();
+
+   return this->line_search(t,P,ham);
 
 }

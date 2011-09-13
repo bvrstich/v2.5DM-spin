@@ -8,6 +8,8 @@ using std::ostream;
 
 #include "rTPM.h"
 
+class SUP;
+
 /**
  * @author Brecht Verstichel
  * @date 04-08-2011\n\n
@@ -76,6 +78,10 @@ class dDPM {
 
       void proj_W();
 
+      void proj_fTr();
+
+      void proj();
+
       void test_proj() const;
 
       void up(const TPM &);
@@ -83,6 +89,20 @@ class dDPM {
       void hubbard(double);
 
       void unit();
+
+      double ftrace() const;
+
+      void set_funit();
+
+      void constr_grad(double,const dDPM &,const SUP &);
+
+      int solve(double,const SUP &,dDPM &);
+
+      void H(double,const dDPM &,const SUP &);
+
+      double line_search(double,SUP &,const dDPM &);
+
+      double line_search(double,const dDPM &,const dDPM &);
 
       static void init(int,int);
 

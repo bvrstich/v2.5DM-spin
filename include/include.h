@@ -8,3 +8,8 @@
 #include "TPM.h"
 
 #include "dDPM.h"
+
+#include "dDPV.h"
+
+#include "SUP.h"
+#include "EIG.h"

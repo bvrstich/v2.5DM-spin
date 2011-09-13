@@ -93,6 +93,8 @@ class Vector{
 
       double centerpot(double ) const;
 
+      double lsfunc(double) const;
+
    private:
 
       //!pointer of doubles, contains the numbers, the vector
