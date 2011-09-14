@@ -104,6 +104,8 @@ class dDPM {
 
       double line_search(double,const dDPM &,const dDPM &);
 
+      double inprod(const TPM &);
+
       static void init(int,int);
 
       static void clear();

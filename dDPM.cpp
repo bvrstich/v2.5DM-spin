@@ -1694,3 +1694,39 @@ double dDPM::line_search(double t,const dDPM &W,const dDPM &ham){
    return this->line_search(t,P,ham);
 
 }
+
+/**
+ * a function that returns the inproduct of a dDPM object with a TPM object. Test for ddot function.
+ * Needed because there are problems when one of the sp indices equals l
+ * @param input TPM object
+ * @return the inproduct
+ */
+double dDPM::inprod(const TPM &tpm){
+
+   double ward = 0.0;
+
+   for(int l = 0;l < M;++l){
+
+      for(int a = 0;a < M;++a)
+         for(int b = a;b < M;++b)
+            for(int c = 0;c < M;++c)
+               for(int d = c;d < M;++d)
+                  ward += 2.0 * (*this)(l,0,0,a,b,0,c,d) * tpm(0,a,b,c,d);
+
+      for(int a = 0;a < M;++a)
+         for(int b = a + 1;b < M;++b)
+            for(int c = 0;c < M;++c)
+               for(int d = c + 1;d < M;++d)
+                  ward += 2.0 * (*this)(l,0,1,a,b,1,c,d) * tpm(1,a,b,c,d);
+
+      for(int a = 0;a < M;++a)
+         for(int b = a + 1;b < M;++b)
+            for(int c = 0;c < M;++c)
+               for(int d = c + 1;d < M;++d)
+                  ward += 4.0 * (*this)(l,1,1,a,b,1,c,d) * tpm(1,a,b,c,d);
+
+   }
+
+   return ward/(N - 2.0);
+
+}

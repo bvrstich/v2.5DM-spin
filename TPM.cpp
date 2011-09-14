@@ -426,6 +426,8 @@ void TPM::bar(double scale,const dDPM &ddpm){
 
    }
 
+   this->symmetrize();
+
 }
 
 /**
@@ -437,5 +439,32 @@ void TPM::test_basis(){
       for(int a = 0;a < M;++a)
          for(int b = a + S;b < M;++b)
             cout << S << "\t" << a << "\t" << "\t" << b << "\t|\t" << s2t[S][a][b] << "\t" << s2t[S][b][a] << endl;
+
+}
+
+/**
+ * inproduct expressen in sp coords
+ * @param O operator you take the inproduct of
+ * @return the inproduct
+ */
+double TPM::inprod(const TPM &O){
+
+   double ward = 0.0;
+
+   //S = 0
+   for(int a = 0;a < M;++a)
+      for(int b = a;b < M;++b)
+         for(int c = 0;c < M;++c)
+            for(int d = c;d < M;++d)
+               ward += (*this)(0,a,b,c,d)*O(0,a,b,c,d);
+
+   //S = 1
+   for(int a = 0;a < M;++a)
+      for(int b = a + 1;b < M;++b)
+         for(int c = 0;c < M;++c)
+            for(int d = c + 1;d < M;++d)
+               ward += 3.0*(*this)(1,a,b,c,d)*O(1,a,b,c,d);
+
+   return ward;
 
 }
