@@ -1362,6 +1362,7 @@ void dDPM::test_proj() const {
  */
 void dDPM::up(const TPM &tpm){
 
+   //TEST
    *this = 0.0;
 
    int a,b,c,d;
@@ -1369,33 +1370,140 @@ void dDPM::up(const TPM &tpm){
 
    for(int l = 0;l < M;++l){
 
-      for(int S = 0;S < 2;++S){
+      //S = 1/2
+      for(int i = 0;i < ddpm[l]->gdim(0);++i){
 
-         for(int i = 0;i < ddpm[l]->gdim(S);++i){
+         S_ab = rTPM::gt2s(l,0,i,0);
 
-            S_ab = rTPM::gt2s(l,S,i,0);
+         a = rTPM::gt2s(l,0,i,1);
+         b = rTPM::gt2s(l,0,i,2);
 
-            a = rTPM::gt2s(l,S,i,1);
-            b = rTPM::gt2s(l,S,i,2);
+         for(int j = 0;j < ddpm[l]->gdim(0);++j){
 
-            for(int j = i;j < ddpm[l]->gdim(S);++j){
+            S_cd = rTPM::gt2s(l,0,j,0);
 
-               S_cd = rTPM::gt2s(l,S,j,0);
+            c = rTPM::gt2s(l,0,j,1);
+            d = rTPM::gt2s(l,0,j,2);
 
-               c = rTPM::gt2s(l,S,j,1);
-               d = rTPM::gt2s(l,S,j,2);
+            if(S_ab == 0 && S_cd == 0){
 
-               if(S_ab == S_cd)
-                  (*this)[l](S,i,j) = tpm(S_ab,a,b,c,d)/(N - 2.0);
+               (*this)[l](0,i,j) = tpm(0,a,b,c,d);
+
+               if(a == b){
+
+                  if(c == d){//a == b && c == d
+
+                     if(a == c)
+                        (*this)[l](0,i,j) += 0.5 * ( tpm(0,a,l,a,l) + 3.0 * tpm(1,a,l,a,l) );
+
+                  }
+                  else{//a == b && c != d
+
+                     if(a == c)
+                        (*this)[l](0,i,j) += 0.5*std::sqrt(0.5) * tpm(0,l,b,l,d);
+
+                     if(a == d)
+                        (*this)[l](0,i,j) += 0.5*std::sqrt(0.5) * tpm(0,l,b,l,c);
+
+                     if(b == c)
+                        (*this)[l](0,i,j) += 1.5*std::sqrt(0.5) * tpm(1,l,a,l,d);
+
+                     if(b == d)
+                        (*this)[l](0,i,j) += 1.5*std::sqrt(0.5) * tpm(1,l,a,l,c);
+
+                  }
+
+               }
+               else{//a != b
+
+                  if(c == d){//a != b && c == d
+
+                     if(b == c)
+                        (*this)[l](0,i,j) += 0.5*std::sqrt(0.5) * tpm(0,a,l,d,l);
+
+                     if(a == c)
+                        (*this)[l](0,i,j) += 0.5*std::sqrt(0.5) * tpm(0,b,l,d,l);
+
+                     if(b == d)
+                        (*this)[l](0,i,j) += 1.5*std::sqrt(0.5) * tpm(1,l,a,l,c);
+
+                     if(a == d)
+                        (*this)[l](0,i,j) += 1.5*std::sqrt(0.5) * tpm(1,l,b,l,c);
+
+                  }
+
+               }
 
             }
-         }
+            else if(S_ab == 0 && S_cd == 1){
 
+               (*this)[l](0,i,j) = 0.0;
+
+               if(a == b){
+
+                  if(b == c)
+                     (*this)[l](0,i,j) += 0.5*std::sqrt(1.5) * tpm(1,l,a,l,d);
+
+                  if(b == d)
+                     (*this)[l](0,i,j) -= 0.5*std::sqrt(1.5) * tpm(1,l,a,l,c);
+
+                  if(a == c)
+                     (*this)[l](0,i,j) -= 0.5*std::sqrt(1.5) * tpm(0,l,b,l,d);
+
+                  if(a == d)
+                     (*this)[l](0,i,j) += 0.5*std::sqrt(1.5) * tpm(0,l,b,l,c);
+
+               }
+
+            }
+            else if(S_ab == 1 && S_cd == 0){
+
+               (*this)[l](0,i,j) = 0.0;
+
+               if(c == d){
+
+                  if(b == c)
+                     (*this)[l](0,i,j) += 0.5*std::sqrt(1.5) * tpm(0,a,l,d,l);
+
+                  if(a == c)
+                     (*this)[l](0,i,j) -= 0.5*std::sqrt(1.5) * tpm(0,b,l,d,l);
+
+                  if(b == d)
+                     (*this)[l](0,i,j) -= 0.5*std::sqrt(1.5) * tpm(1,l,a,l,c);
+
+                  if(a == d)
+                     (*this)[l](0,i,j) += 0.5*std::sqrt(1.5) * tpm(1,l,b,l,c);
+
+               }
+
+            }
+            else if(S_ab == 1 && S_cd == 1)
+               (*this)[l](0,i,j) = tpm(1,a,b,c,d);
+
+            (*this)[l](0,i,j) /= (N - 2.0);
+
+         }
+      }
+
+      //S = 3/2
+      for(int i = 0;i < ddpm[l]->gdim(1);++i){
+
+         a = rTPM::gt2s(l,1,i,1);
+         b = rTPM::gt2s(l,1,i,2);
+
+         for(int j = 0;j < ddpm[l]->gdim(1);++j){
+
+            c = rTPM::gt2s(l,1,j,1);
+            d = rTPM::gt2s(l,1,j,2);
+
+            (*this)[l](1,i,j) = tpm(1,a,b,c,d)/(N - 2.0);
+
+         }
       }
 
    }
 
-   this->symmetrize();
+   //this->symmetrize();
 
 }
 
@@ -1493,7 +1601,7 @@ double dDPM::ftrace() const{
          }
       }
 
-      
+
       //S = 3/2
       for(int a = 0;a < M;++a)
          for(int b = a + 1;b < M;++b)
