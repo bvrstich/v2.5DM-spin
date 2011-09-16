@@ -67,36 +67,42 @@ void rTPM::init(int M_in,int N_in){
       //S == 1/2
       for(int S_ab = 0;S_ab < 2;++S_ab){
 
-         for(int a = 0;a < M;++a){
-
-            if(a == k)
-               ++a;
-
-            if(a == M)
-               break;
-
+         for(int a = 0;a < M;++a)
             for(int b = a + S_ab;b < M;++b){
 
-               if(b == k)
-                  ++b;
+               if(a == b){
 
-               if(b == M)
-                  break;
+                  if(a != k){
 
-               v[0] = S_ab;//S_ab
-               v[1] = a;
-               v[2] = b;
+                     v[0] = S_ab;//S_ab
+                     v[1] = a;
+                     v[2] = b;
 
-               t2s[k][0].push_back(v);
+                     t2s[k][0].push_back(v);
 
-               s2t[k][0][S_ab][a][b] = tp;
-               s2t[k][0][S_ab][b][a] = tp;
+                     s2t[k][0][S_ab][a][b] = tp;
+                     s2t[k][0][S_ab][b][a] = tp;
 
-               ++tp;
+                     ++tp;
+
+                  }
+
+               }
+               else{
+
+                  v[0] = S_ab;//S_ab
+                  v[1] = a;
+                  v[2] = b;
+
+                  t2s[k][0].push_back(v);
+
+                  s2t[k][0][S_ab][a][b] = tp;
+                  s2t[k][0][S_ab][b][a] = tp;
+
+                  ++tp;
+               }
 
             }
-
-         }
 
       }
 
@@ -213,7 +219,7 @@ ostream &operator<<(ostream &output,const rTPM &rtpm_p){
             output << i << "\t" << j << "\t|\t(" << rtpm_p.t2s[rtpm_p.gl()][S][i][0] << ")\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][1] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][2]
 
                << "\t;\t(" << rtpm_p.t2s[rtpm_p.gl()][S][j][0] << ")\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][1] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][2] << "\t" 
-               
+
                << rtpm_p[S](i,j) << endl;
 
          }
@@ -263,7 +269,7 @@ int rTPM::gt2s(int k,int S,int i,int option){
    return t2s[k][S][i][option];
 
 }
- 
+
 /**
  * @param k which type is the rTPM
  * @param S the dp spin
@@ -275,5 +281,31 @@ int rTPM::gt2s(int k,int S,int i,int option){
 int rTPM::gs2t(int k,int S,int S_ab,int a,int b){
 
    return s2t[k][S][S_ab][a][b];
+
+}
+
+/**
+ * test if basis is correctly constructed
+ */
+void rTPM::print_basis(){
+
+   for(int k = 0;k < M;++k){
+
+      cout << endl;
+      cout << "l =\t" << k << endl;
+      cout << endl;
+
+      for(int S = 0;S < 2;++S){
+
+         cout << endl;
+         cout << "S =\t" << 2*S + 1 << "/" << 2 << endl;
+         cout << endl;
+
+         for(unsigned int i = 0;i < t2s[k][S].size();++i)
+            cout << i << "\t|\t(" << t2s[k][S][i][0] << ")\t" << t2s[k][S][i][1] << "\t" << t2s[k][S][i][2] << endl;
+
+      }
+
+   }
 
 }

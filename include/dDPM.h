@@ -42,7 +42,7 @@ class dDPM {
 
       double operator()(int l,int S,int S_ab,int a,int b,int S_cd,int c,int d) const;
 
-      static double get_inco(int &l,int S,int &S_ab,int &a,int &b);
+      static int get_inco(int l,int S,int S_ab,int a,int b);
 
       int gN() const;
 

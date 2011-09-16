@@ -58,6 +58,8 @@ class rTPM : public BlockMatrix {
 
       static int gs2t(int,int,int,int,int);
 
+      static void print_basis();
+
    private:
 
       //!static list that takes in a paramater l, a dp-spinindex S and a tp index i and returns two sp indices a and b and intermediate spin S_ab
@@ -66,7 +68,7 @@ class rTPM : public BlockMatrix {
       //!static list that takes in a parameter l, a dp-spinindex S, intermediate spin S_ab and two sp indices a,b and returns a tp index i
       static int *****s2t;
 
-      //!parameter l, sp index that is blocked out.
+      //!parameter l, sp index that is blocked out from the a = b part.
       int l;
 
       //!nr of particles

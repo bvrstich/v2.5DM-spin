@@ -36,14 +36,31 @@ int main(void){
    cout.precision(10);
 
    const int M = 4;//nr of spatial orbitals
-   const int N = 3;//nr of particles
+   const int N = 4;//nr of particles
 
    rTPM::init(M,N);
-   TPM::init(M,N);
    dDPM::init(M,N);
-   dDPV::init(M,N);
-   EIG::init(M,N);
-   SUP::init(M,N);
+
+   dDPM ddpm_1;
+   ddpm_1.fill_Random();
+
+   dDPM ddpm_1_copy(ddpm_1);
+
+   dDPM ddpm_2;
+   ddpm_2.fill_Random();
+
+   dDPM ddpm_2_copy(ddpm_2);
+
+   ddpm_1.proj_W();
+   ddpm_2.proj_W();
+
+   cout << ddpm_1.ddot(ddpm_2_copy) << "\t" << ddpm_2.ddot(ddpm_1_copy) << endl;
+
+   /*
+      TPM::init(M,N);
+      dDPV::init(M,N);
+      EIG::init(M,N);
+      SUP::init(M,N);
 
    //hamiltoniaan
    dDPM ham;
@@ -60,86 +77,87 @@ int main(void){
    //outer iteration: scaling of the potential barrier
    while(t > 1.0e-10){
 
-      cout << t << "\t" << W.ftrace() << "\t" << W.ddot(ham) << "\t";
+   cout << t << "\t" << W.ftrace() << "\t" << W.ddot(ham) << "\t";
 
-      int nr_cg_iter = 0;
-      int nr_newton_iter = 0;
+   int nr_cg_iter = 0;
+   int nr_newton_iter = 0;
 
-      double convergence = 1.0;
+   double convergence = 1.0;
 
-      //inner iteration: 
-      //Newton's method for finding the minimum of the current potential
-      while(convergence > tolerance){
+   //inner iteration: 
+   //Newton's method for finding the minimum of the current potential
+   while(convergence > tolerance){
 
-         ++nr_newton_iter;
+   ++nr_newton_iter;
 
-         SUP P;
+   SUP P;
 
-         P.fill(W);
+   P.fill(W);
 
-         P.invert();
+   P.invert();
 
-         //eerst -gradient aanmaken:
-         dDPM grad;
+   //eerst -gradient aanmaken:
+   dDPM grad;
 
-         grad.constr_grad(t,ham,P);
+   grad.constr_grad(t,ham,P);
 
-         //dit wordt de stap:
-         dDPM delta;
+   //dit wordt de stap:
+   dDPM delta;
 
-         //los het hessiaan stelsel op:
-         nr_cg_iter += delta.solve(t,P,grad);
+   //los het hessiaan stelsel op:
+   nr_cg_iter += delta.solve(t,P,grad);
 
-         //line search
-         double a = delta.line_search(t,P,ham);
+   //line search
+   double a = delta.line_search(t,P,ham);
 
-         //W += a*delta;
-         W.daxpy(a,delta);
+   //W += a*delta;
+   W.daxpy(a,delta);
 
-         convergence = a*a*delta.ddot(delta);
-
-      }
-
-      cout << nr_newton_iter << "\t" << nr_cg_iter << endl;
-
-      t /= 1.5;
-
-      //what is the tolerance for the newton method?
-      tolerance = 1.0e-5*t;
-
-      if(tolerance < 1.0e-12)
-         tolerance = 1.0e-12;
-
-      //extrapolatie:
-      dDPM extrapol(W);
-
-      extrapol -= backup;
-
-      //overzetten voor volgende stap
-      backup = W;
-
-      double b = extrapol.line_search(t,W,ham);
-
-      W.daxpy(b,extrapol);
+   convergence = a*a*delta.ddot(delta);
 
    }
 
-   cout << endl;
+   cout << nr_newton_iter << "\t" << nr_cg_iter << endl;
 
-   cout << "Final Energy:\t" << ham.ddot(W) << endl;
+   t /= 1.5;
 
-   TPM tpm;
-   tpm.bar(1.0/(N - 2.0),W);
+   //what is the tolerance for the newton method?
+   tolerance = 1.0e-5*t;
 
-   TPM hubbard;
-   hubbard.hubbard(1.0);
+   if(tolerance < 1.0e-12)
+   tolerance = 1.0e-12;
 
-   cout << tpm.ddot(hubbard) << endl;
+   //extrapolatie:
+   dDPM extrapol(W);
 
-   rTPM::clear();
-   TPM::clear();
-   dDPM::clear();
+   extrapol -= backup;
 
-   return 0;
+   //overzetten voor volgende stap
+   backup = W;
+
+   double b = extrapol.line_search(t,W,ham);
+
+   W.daxpy(b,extrapol);
+
+}
+
+cout << endl;
+
+cout << "Final Energy:\t" << ham.ddot(W) << endl;
+
+TPM tpm;
+tpm.bar(1.0/(N - 2.0),W);
+
+TPM hubbard;
+hubbard.hubbard(1.0);
+
+cout << tpm.ddot(hubbard) << endl;
+
+TPM::clear();
+*/
+dDPM::clear();
+rTPM::clear();
+
+return 0;
 
 }
