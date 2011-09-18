@@ -46,15 +46,11 @@ int main(void){
 
    dDPM ddpm_1_copy(ddpm_1);
 
-   dDPM ddpm_2;
-   ddpm_2.fill_Random();
-
-   dDPM ddpm_2_copy(ddpm_2);
-
    ddpm_1.proj_W();
-   ddpm_2.proj_W();
 
-   cout << ddpm_1.ddot(ddpm_2_copy) << "\t" << ddpm_2.ddot(ddpm_1_copy) << endl;
+   ddpm_1_copy -= ddpm_1;
+
+   cout << ddpm_1.ddot(ddpm_1_copy) << endl;
 
    /*
       TPM::init(M,N);

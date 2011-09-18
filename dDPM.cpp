@@ -413,7 +413,7 @@ void dDPM::proj_W(){
 
          for(int S_al = 0;S_al < 2;++S_al)
             for(int S_cl = 0;S_cl < 2;++S_cl)
-               ward += 0.5 * (1 - 2*S_al) * (1 - 2*S_cl) * std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) ) 
+               ward += /*0.5 */ (1 - 2*S_al) * (1 - 2*S_cl) * std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) ) 
                
                   * _6j[S_al][0] * _6j[S_cl][0] * (*this)(a,0,S_al,a,l,S_cl,a,l);
 
@@ -440,7 +440,7 @@ void dDPM::proj_W(){
 
                }
 
-               (*this)[a](0,i,j) = phase_i * phase_j * 2.0 * std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl)
+               (*this)[a](0,i,j) = phase_i * phase_j * /*2.0 */ std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl)
 
                   * _6j[S_al][0] * _6j[S_cl][0] * (*this)(l,0,0,a,a,0,a,a);
 
@@ -691,7 +691,7 @@ void dDPM::test_proj() const {
 
          for(int S_al = 0;S_al < 2;++S_al)
             for(int S_cl = 0;S_cl < 2;++S_cl)
-               ward += 0.5 * std::sqrt( (2.0*S_al + 1.0)*(2.0*S_cl + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl) * _6j[S_al][0] * _6j[S_cl][0] * (*this)(a,0,S_al,a,l,S_cl,a,l);
+               ward += std::sqrt( (2.0*S_al + 1.0)*(2.0*S_cl + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl) * _6j[S_al][0] * _6j[S_cl][0] * (*this)(a,0,S_al,a,l,S_cl,a,l);
 
          cout << ward << "\t";
 
@@ -700,7 +700,7 @@ void dDPM::test_proj() const {
 
          for(int S_al = 0;S_al < 2;++S_al)
             for(int S_ld = 0;S_ld < 2;++S_ld)
-               ward += 0.5 * std::sqrt( (2.0*S_al + 1.0)*(2.0*S_ld + 1.0) ) * (1 - 2*S_al) * _6j[S_al][0] * _6j[S_ld][0] * (*this)(a,0,S_al,a,l,S_ld,l,a);
+               ward +=  std::sqrt( (2.0*S_al + 1.0)*(2.0*S_ld + 1.0) ) * (1 - 2*S_al) * _6j[S_al][0] * _6j[S_ld][0] * (*this)(a,0,S_al,a,l,S_ld,l,a);
 
          cout << ward << "\t";
 
@@ -709,7 +709,7 @@ void dDPM::test_proj() const {
 
          for(int S_lb = 0;S_lb < 2;++S_lb)
             for(int S_cl = 0;S_cl < 2;++S_cl)
-               ward += 0.5 * std::sqrt( (2.0*S_lb + 1.0)*(2.0*S_cl + 1.0) ) * (1 - 2*S_cl) * _6j[S_lb][0] * _6j[S_cl][0] * (*this)(a,0,S_lb,l,a,S_cl,a,l);
+               ward +=  std::sqrt( (2.0*S_lb + 1.0)*(2.0*S_cl + 1.0) ) * (1 - 2*S_cl) * _6j[S_lb][0] * _6j[S_cl][0] * (*this)(a,0,S_lb,l,a,S_cl,a,l);
 
          cout << ward << "\t";
 
@@ -718,7 +718,7 @@ void dDPM::test_proj() const {
 
          for(int S_lb = 0;S_lb < 2;++S_lb)
             for(int S_ld = 0;S_ld < 2;++S_ld)
-               ward += 0.5 * std::sqrt( (2.0*S_lb + 1.0)*(2.0*S_ld + 1.0) ) * _6j[S_lb][0] * _6j[S_ld][0] * (*this)(a,0,S_lb,l,a,S_ld,l,a);
+               ward +=  std::sqrt( (2.0*S_lb + 1.0)*(2.0*S_ld + 1.0) ) * _6j[S_lb][0] * _6j[S_ld][0] * (*this)(a,0,S_lb,l,a,S_ld,l,a);
 
          cout << ward << endl;
 
@@ -730,7 +730,7 @@ void dDPM::test_proj() const {
             for(int S_cd = 0;S_cd < 2;++S_cd)
                cout << (*this)(l,0,S_ab,a,l,S_cd,a,l) << "\t" 
                
-                  << 2.0*std::sqrt( (2.0*S_ab + 1) * (2.0*S_cd + 1.0) )*_6j[S_ab][0]*_6j[S_cd][0]*(*this)(a,0,0,l,l,0,l,l) << endl;
+                  << std::sqrt( (2.0*S_ab + 1) * (2.0*S_cd + 1.0) )*_6j[S_ab][0]*_6j[S_cd][0]*(*this)(a,0,0,l,l,0,l,l) << endl;
 
       }
 /*
@@ -760,9 +760,6 @@ void dDPM::test_proj() const {
  * to the dotproduct of tpm with the "barred" dDPM matrix.
  */
 void dDPM::up(const TPM &tpm){
-
-   //TEST
-   *this = 0.0;
 
    int a,b,c,d;
    int S_ab,S_cd;
