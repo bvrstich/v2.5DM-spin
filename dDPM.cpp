@@ -472,7 +472,7 @@ void dDPM::proj_W(){
 
             //first calculate the avarage:
             for(int S_ab = 0;S_ab < 2;++S_ab)
-               for(int S_cd = 0;S_cd < 2;++S_cd){
+               for(int S_cd = S_ab;S_cd < 2;++S_cd){
 
                   double ward = (*this)(l,0,S_ab,a,b,S_cd,a,b);
 
@@ -504,7 +504,7 @@ void dDPM::proj_W(){
 
             //then make the rest symmetric
             for(int S_lb = 0;S_lb < 2;++S_lb)
-               for(int S_ld = 0;S_ld < 2;++S_ld){
+               for(int S_ld = S_lb;S_ld < 2;++S_ld){
 
                   i = rTPM::gs2t(a,0,S_lb,l,b);
                   j = rTPM::gs2t(a,0,S_ld,l,b);
@@ -538,7 +538,7 @@ void dDPM::proj_W(){
                }
 
             for(int S_al = 0;S_al < 2;++S_al)
-               for(int S_cl = 0;S_cl < 2;++S_cl){
+               for(int S_cl = S_al;S_cl < 2;++S_cl){
 
                   i = rTPM::gs2t(b,0,S_al,a,l);
                   j = rTPM::gs2t(b,0,S_cl,a,l);
