@@ -399,6 +399,8 @@ void dDPM::proj_W(){
 
    int phase_i,phase_j;
 
+   double mat[2][2];
+
    for(int l = 0;l < M;++l){
 
       //first the S = 1/2 , the difficult part
@@ -803,6 +805,99 @@ void dDPM::proj_W(){
 
       }
 
+      //another one with 2 equalities: a = c = l
+      for(int b = l + 1;b < M;++b)
+         for(int d = b + 1;d < M;++d){
+
+            //save the numbers first in the matrix mat
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd)
+                  mat[S_ab][S_cd] = (*this)(l,0,S_ab,l,b,S_cd,l,d);
+
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                  i = rTPM::gs2t(l,0,S_ab,l,b);
+                  j = rTPM::gs2t(l,0,S_cd,l,d);
+
+                  for(int S_lb = 0;S_lb < 2;++S_lb)
+                     for(int S_ld = 0;S_ld < 2;++S_ld){
+
+                        (*this)[l](0,i,j) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_lb + 1.0) * (2.0*S_ld + 1.0) )
+
+                           * _6j[S_ab][S_lb] * _6j[S_cd][S_ld] * mat[S_lb][S_ld];
+
+                     }
+
+                  (*this)[l](0,i,j) *= 0.5;
+                  (*this)[l](0,j,i) = (*this)[l](0,i,j);
+
+               }
+
+         }
+
+      //next one with 2 equalities: b = c = l
+      for(int a = 0;a < l;++a)
+         for(int d = l + 1;d < M;++d){
+
+            //save the numbers first in the matrix mat
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd)
+                  mat[S_ab][S_cd] = (*this)(l,0,S_ab,a,l,S_cd,l,d);
+
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                  i = rTPM::gs2t(l,0,S_ab,a,l);
+                  j = rTPM::gs2t(l,0,S_cd,l,d);
+
+                  for(int S_al = 0;S_al < 2;++S_al)
+                     for(int S_ld = 0;S_ld < 2;++S_ld){
+
+                        (*this)[l](0,i,j) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_al + 1.0) * (2.0*S_ld + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_ab)
+
+                           * _6j[S_ab][S_al] * _6j[S_cd][S_ld] * mat[S_al][S_ld];
+
+                     }
+
+                  (*this)[l](0,i,j) *= 0.5;
+                  (*this)[l](0,j,i) = (*this)[l](0,i,j);
+
+               }
+
+         }
+
+      //next one with 2 equalities: b = d = l
+      for(int a = 0;a < l;++a)
+         for(int c = a + 1;c < l;++c){
+
+            //save the numbers first in the matrix mat
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd)
+                  mat[S_ab][S_cd] = (*this)(l,0,S_ab,a,l,S_cd,c,l);
+
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                  i = rTPM::gs2t(l,0,S_ab,a,l);
+                  j = rTPM::gs2t(l,0,S_cd,c,l);
+
+                  for(int S_al = 0;S_al < 2;++S_al)
+                     for(int S_cl = 0;S_cl < 2;++S_cl){
+
+                        (*this)[l](0,i,j) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_ab)
+
+                           * (1 - 2*S_cd) * (1 - 2*S_cl) * _6j[S_ab][S_al] * _6j[S_cd][S_cl] * mat[S_al][S_cl];
+
+                     }
+
+                  (*this)[l](0,i,j) *= 0.5;
+                  (*this)[l](0,j,i) = (*this)[l](0,i,j);
+
+               }
+
+         }
+
       //one equality: start with a == c
       for(int a = 0;a < M;++a){
 
@@ -1006,9 +1101,9 @@ void dDPM::proj_W(){
                      for(int S_al = 0;S_al < 2;++S_al)
                         for(int S_cl = 0;S_cl < 2;++S_cl){
 
-                           ward += std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - S_ab) * (1 - S_cd) 
+                           ward += std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_ab) * (1 - 2*S_cd) 
                            
-                              * (1 - S_al ) * (1 - S_cl) * _6j[S_al][S_ab] * _6j[S_cl][S_cd] * (*this)(b,0,S_al,a,l,S_cl,c,l);
+                              * (1 - 2*S_al) * (1 - 2*S_cl) * _6j[S_al][S_ab] * _6j[S_cl][S_cd] * (*this)(b,0,S_al,a,l,S_cl,c,l);
 
                         }
 
@@ -1044,7 +1139,7 @@ void dDPM::proj_W(){
 
                            (*this)[b](0,i,j) += phase_i*phase_j * std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) 
                            
-                              * (1 - S_ab) * (1 - S_cd) * (1 - S_al ) * (1 - S_cl) * _6j[S_al][S_ab] * _6j[S_cl][S_cd] * (*this)(b,0,S_al,a,l,S_cl,c,l);
+                              * (1 - 2*S_ab) * (1 - 2*S_cd) * (1 - 2*S_al ) * (1 - 2*S_cl) * _6j[S_al][S_ab] * _6j[S_cl][S_cd] * (*this)(l,0,S_ab,a,b,S_cd,c,b);
 
                         }
 
