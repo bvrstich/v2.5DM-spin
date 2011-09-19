@@ -41,18 +41,17 @@ int main(void){
    rTPM::init(M,N);
    dDPM::init(M,N);
 
-   dDPM ddpm_1;
-   ddpm_1.fill_Random();
+   dDPM ddpm;
+   ddpm.fill_Random();
 
-   dDPM ddpm_1_copy(ddpm_1);
+   dDPM ddpm_copy(ddpm);
 
-   ddpm_1.proj_W();
+   ddpm.proj_W();
 
-   ddpm_1_copy -= ddpm_1;
+   ddpm_copy -= ddpm;
 
-   cout << ddpm_1.ddot(ddpm_1_copy) << endl;
-
-   /*
+   cout << ddpm_copy.ddot(ddpm) << endl;
+/*
       TPM::init(M,N);
       dDPV::init(M,N);
       EIG::init(M,N);
