@@ -48,9 +48,8 @@ int main(void){
 
    ddpm.proj_W();
 
-   ddpm_copy -= ddpm;
+   ddpm.test_proj();
 
-   cout << ddpm_copy.ddot(ddpm) << endl;
 /*
       TPM::init(M,N);
       dDPV::init(M,N);
