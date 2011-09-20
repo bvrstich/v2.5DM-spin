@@ -35,8 +35,8 @@ int main(void){
 
    cout.precision(10);
 
-   const int M = 4;//nr of spatial orbitals
-   const int N = 4;//nr of particles
+   const int M = 6;//nr of spatial orbitals
+   const int N = 6;//nr of particles
 
    rTPM::init(M,N);
    dDPM::init(M,N);
