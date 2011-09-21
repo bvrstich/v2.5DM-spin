@@ -51,8 +51,8 @@ int main(void){
    ddpm_copy -= ddpm;
 
    cout << ddpm.ddot(ddpm_copy) << endl;
-
 /*
+
       TPM::init(M,N);
       dDPV::init(M,N);
       EIG::init(M,N);

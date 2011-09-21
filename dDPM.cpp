@@ -544,97 +544,6 @@ void dDPM::proj_W(){
 
       }
 
-/*
-      for(int a = 0;a < l;++a){
-
-         //average
-         for(int S_cd = 0;S_cd < 2;++S_cd){
-
-            double ward = (*this)(l,0,0,a,a,S_cd,a,l);
-
-            for(int S_lb = 0;S_lb < 2;++S_lb)
-               ward += std::sqrt( (2.0*S_cd + 1.0) * (2.0*S_lb + 1.0) ) * _6j[S_lb][0] * _6j[0][S_cd] * (*this)(a,0,S_lb,l,a,0,l,l);
-
-            i = rTPM::gs2t(l,0,0,a,a);
-            j = rTPM::gs2t(l,0,S_cd,a,l);
-
-            (*this)[l](0,i,j) = 0.5 * ward;
-            (*this)[l](0,j,i) = (*this)[l](0,i,j);
-
-         }
-
-         //symmetrize
-         for(int S_lb = 0;S_lb < 2;++S_lb){
-
-            i = rTPM::gs2t(a,0,S_lb,l,a);
-            j = rTPM::gs2t(a,0,0,l,l);
-
-            phase_i = 1 - 2*S_lb;
-
-            (*this)[a](0,i,j) = 0.0;
-
-            for(int S_cd = 0;S_cd < 2;++S_cd){
-
-               (*this)[a](0,i,j) += phase_i * std::sqrt( (2.0*S_cd + 1.0) * (2.0*S_lb + 1.0) ) * _6j[S_lb][0] * _6j[0][S_cd]
-
-                  * (*this)(l,0,0,a,a,S_cd,a,l);
-
-            }
-
-            (*this)[a](0,j,i) = (*this)[a](0,i,j);
-
-         }
-
-      }
-
-      //a = b , b = d and l = c
-      for(int a = l + 1;a < M;++a){
-
-         //average
-         for(int S_cd = 0;S_cd < 2;++S_cd){
-
-            double ward = (*this)(l,0,0,a,a,S_cd,l,a);
-
-            for(int S_al = 0;S_al < 2;++S_al){
-
-               ward += std::sqrt( (2.0*S_cd + 1.0) * (2.0*S_al + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cd) * _6j[S_al][0] * _6j[0][S_cd]
-
-                  * (*this)(a,0,S_al,a,l,0,l,l);
-
-            }
-
-            i = rTPM::gs2t(l,0,0,a,a);
-            j = rTPM::gs2t(l,0,S_cd,l,a);
-
-            (*this)[l](0,i,j) = 0.5 * ward;
-            (*this)[l](0,j,i) = (*this)[l](0,i,j);
-
-         }
-
-         //symmetrize
-         for(int S_al = 0;S_al < 2;++S_al){
-
-            i = rTPM::gs2t(a,0,S_al,a,l);
-            j = rTPM::gs2t(a,0,0,l,l);
-
-            (*this)[a](0,i,j) = 0.0;
-
-            phase_i = 1 - 2*S_al;
-
-            for(int S_cd = 0;S_cd < 2;++S_cd){
-
-               (*this)[a](0,i,j) += phase_i*std::sqrt( (2.0*S_cd + 1.0) * (2.0*S_al + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cd) * _6j[S_al][0] * _6j[0][S_cd]
-
-                  * (*this)(l,0,0,a,a,S_cd,l,a);
-
-            }
-
-            (*this)[a](0,j,i) = (*this)[a](0,i,j);
-
-         }
-
-      }
-
       //then 2 equalities, first ( a = c ; b = d ) W^l_{ab;ab} <--> W^a_{lb;lb} <--> W^b_{al;al}
       for(int a = 0;a < M;++a){
 
@@ -756,6 +665,160 @@ void dDPM::proj_W(){
          }
       }
 
+      //next with two equalities:
+      for(int a = 0;a < M;++a){
+
+         if(a == l)
+            ++a;
+
+         if(a == M)
+            break;
+
+         //a = d and  b = l: W^l_{al;ca}
+         for(int c = 0;c < a;++c){
+
+            if(c == l)
+               c++;
+
+            if(c == a)
+               break;
+
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd)
+                  mat[S_ab][S_cd] = (*this)(l,0,S_ab,a,l,S_cd,c,a);
+
+            //first set the "l" block right
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                  double ward = mat[S_ab][S_cd];
+
+                  for(int S_al = 0;S_al < 2;++S_al)
+                     ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_al + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_ab) * _6j[S_al][S_ab] * mat[S_al][S_cd];
+
+                  for(int S_cl = 0;S_cl < 2;++S_cl){
+
+                     ward += std::sqrt( 2.0 * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_cl + 1.0) ) * (1 - 2*S_cd) * (1 - 2*S_cl) 
+                     
+                        * _6j[S_ab][0] * _6j[S_cd][S_cl] * (*this)(a,0,0,l,l,S_cl,c,l);
+
+                  }
+
+                  i = rTPM::gs2t(l,0,S_ab,a,l);
+                  j = rTPM::gs2t(l,0,S_cd,c,a);
+
+                  if(a > l)
+                     phase_i = 1 - 2*S_ab;
+                  else
+                     phase_i = 1;
+
+                  (*this)[l](0,i,j) = phase_i * ward / 3.0;
+                  (*this)[l](0,j,i) = (*this)[l](0,i,j);
+
+               }
+
+            //then the "a" block
+            for(int S_cl = 0;S_cl < 2;++S_cl){
+
+               i = rTPM::gs2t(a,0,0,l,l);
+               j = rTPM::gs2t(a,0,S_cl,c,l);
+
+               if(c > l)
+                  phase_j = 1 - 2*S_cl;
+               else
+                  phase_j = 1;
+
+               (*this)[a](0,i,j) = 0.0;
+
+               for(int S_ab = 0;S_ab < 2;++S_ab)
+                  for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                     (*this)[a](0,i,j) += phase_j * std::sqrt( 0.5 * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_cl + 1.0) ) * (1 - 2*S_cl) * (1 - 2*S_cd)
+
+                        * _6j[S_ab][0] * _6j[S_cl][S_cd] * (*this)(l,0,S_ab,a,l,S_cd,c,a);
+
+                  }
+
+               (*this)[a](0,j,i) = (*this)[a](0,i,j);
+
+            }
+
+         }
+
+         //a = c and  b = l: W^l_{al;ad}
+         for(int d = a + 1;d < M;++d){
+
+            if(d == l)
+               d++;
+
+            if(d == M)
+               break;
+
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd)
+                  mat[S_ab][S_cd] = (*this)(l,0,S_ab,a,l,S_cd,a,d);
+
+            //first set the "l" block right
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                  double ward = mat[S_ab][S_cd];
+
+                  for(int S_al = 0;S_al < 2;++S_al)
+                     ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_al + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_ab) * _6j[S_al][S_ab] * mat[S_al][S_cd];
+
+                  for(int S_ld = 0;S_ld < 2;++S_ld){
+
+                     ward += std::sqrt( 2.0 * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_ld + 1.0) )
+                     
+                        * _6j[S_ab][0] * _6j[S_cd][S_ld] * (*this)(a,0,0,l,l,S_ld,l,d);
+
+                  }
+
+                  i = rTPM::gs2t(l,0,S_ab,a,l);
+                  j = rTPM::gs2t(l,0,S_cd,a,d);
+
+                  if(a > l)
+                     phase_i = 1 - 2*S_ab;
+                  else
+                     phase_i = 1;
+
+                  (*this)[l](0,i,j) = phase_i * ward / 3.0;
+                  (*this)[l](0,j,i) = (*this)[l](0,i,j);
+
+               }
+
+            //then the "a" block
+            for(int S_ld = 0;S_ld < 2;++S_ld){
+
+               i = rTPM::gs2t(a,0,0,l,l);
+               j = rTPM::gs2t(a,0,S_ld,l,d);
+
+               if(l > d)
+                  phase_j = 1 - 2*S_ld;
+               else
+                  phase_j = 1;
+
+               (*this)[a](0,i,j) = 0.0;
+
+               for(int S_ab = 0;S_ab < 2;++S_ab)
+                  for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                     (*this)[a](0,i,j) += phase_j * std::sqrt( 0.5 * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_ld + 1.0) ) 
+
+                        * _6j[S_ab][0] * _6j[S_ld][S_cd] * (*this)(l,0,S_ab,a,l,S_cd,a,d);
+
+                  }
+
+               (*this)[a](0,j,i) = (*this)[a](0,i,j);
+
+            }
+
+         }
+
+      }
+
+/*
       //next with two equalities: a = b = c: W^l_{aa;ad} <--> W^a_{la;ld}
       for(int a = 0;a < M;++a){
 
@@ -1643,110 +1706,45 @@ void dDPM::test_proj_1() const {
       cout << "S = 1/2" << endl;
       cout << endl;
 
-      for(int a = 0;a < M;++a){
+      for(int a = 0;a < M;++a)
+         for(int b = 0;b < M;++b){
+            
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
 
-         cout << endl;
+                     //1)
+                     cout << a << "\t" << b << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,l,S_cd,a,b) << "\t";
 
-         for(int S_ab = 0;S_ab < 2;++S_ab)
-            for(int S_cd = 0;S_cd < 2;++S_cd){
+                     double ward = 0;
 
-               //1) l = d
-               cout << "l = d \t" << a << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,a,S_cd,a,l) << "\t";
+                     for(int S_al = 0;S_al < 2;++S_al)
+                        ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_al + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_ab) *_6j[S_ab][S_al] * (*this)(l,0,S_al,a,l,S_cd,a,b);
 
-               double ward = 0.0;
+                     cout << ward << "\t";
 
-               for(int S_cl = 0;S_cl < 2;++S_cl)
-                  ward += std::sqrt( (2.0*S_cl + 1.0)*(2.0*S_cd + 1.0) ) * (1 - 2*S_cl) * (1 - 2*S_cd) * _6j[S_cd][S_cl] * (*this)(l,0,S_ab,a,a,S_cl,a,l);
+                     ward = 0.0;
 
-               cout << ward << "\t";
-               
-               ward = 0.0;
+                     for(int S_ld = 0;S_ld < 2;++S_ld){
 
-               for(int S_lb = 0;S_lb < 2;++S_lb)
-                  for(int S_ld = 0;S_ld < 2;++S_ld){
+                        double hard = std::sqrt(2.0)*std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_ld + 1.0) ) * _6j[S_ab][0]
 
-                     ward += std::sqrt( (2.0*S_ab + 1.0)*(2.0*S_cd + 1.0)*(2.0*S_lb + 1.0)*(2.0*S_ld + 1.0) ) * _6j[S_cd][S_ld] * _6j[S_ab][S_lb] 
-                     
-                        * (*this)(a,0,S_lb,l,a,S_ld,l,l);
+                           *_6j[S_cd][S_ld] * (*this)(a,0,0,l,l,S_ld,l,b);
 
-                  }
+                        if(a == b)
+                           hard /= std::sqrt(2.0);
 
-               cout << ward << endl;
+                        if(l == b)
+                           hard *= std::sqrt(2.0);
 
-               //2) l = c
-               cout << "l = c \t" << a << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,a,S_cd,l,a) << "\t";
+                        ward += hard;
 
-               ward = 0.0;
+                     }
 
-               for(int S_ld = 0;S_ld < 2;++S_ld)
-                  ward += std::sqrt( (2.0*S_ld + 1.0)*(2.0*S_cd + 1.0) ) * _6j[S_cd][S_ld] * (*this)(l,0,S_ab,a,a,S_ld,l,a);
+                     cout << ward << endl;
 
-               cout << ward << "\t";
-               
-               ward = 0.0;
+               }
 
-               for(int S_al = 0;S_al < 2;++S_al)
-                  for(int S_cl = 0;S_cl < 2;++S_cl){
-
-                     ward += std::sqrt( (2.0*S_ab + 1.0)*(2.0*S_cd + 1.0)*(2.0*S_al + 1.0)*(2.0*S_cl + 1.0) ) * (1 -2*S_ab) * (1 - 2*S_cd)
-                     
-                      * (1 - 2*S_al) *  (1 - 2*S_cl) * _6j[S_cd][S_cl] * _6j[S_ab][S_al] * (*this)(a,0,S_al,a,l,S_cl,l,l);
-
-                  }
-
-               cout << ward << endl;
-
-               //3) l = b
-               cout << "l = b \t" << a << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,l,S_cd,a,a) << "\t";
-
-               ward = 0.0;
-
-               for(int S_al = 0;S_al < 2;++S_al)
-                  ward += std::sqrt( (2.0*S_al + 1.0)*(2.0*S_ab + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_ab) * _6j[S_ab][S_al] * (*this)(l,0,S_al,a,l,S_cd,a,a);
-
-               cout << ward << "\t";
-               
-               ward = 0.0;
-
-               for(int S_lb = 0;S_lb < 2;++S_lb)
-                  for(int S_ld = 0;S_ld < 2;++S_ld){
-
-                     ward += std::sqrt( (2.0*S_ab + 1.0)*(2.0*S_cd + 1.0)*(2.0*S_lb + 1.0)*(2.0*S_ld + 1.0) ) * _6j[S_cd][S_ld] * _6j[S_ab][S_lb] 
-                     
-                        * (*this)(a,0,S_lb,l,l,S_ld,l,a);
-
-                  }
-
-               cout << ward << endl;
-
-               //4) l = a
-               cout << "l = a \t" << a << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,l,a,S_cd,a,a) << "\t";
-
-               ward = 0.0;
-
-               for(int S_lb = 0;S_lb < 2;++S_lb)
-                  ward += std::sqrt( (2.0*S_lb + 1.0)*(2.0*S_ab + 1.0) ) * _6j[S_ab][S_lb] * (*this)(l,0,S_lb,l,a,S_cd,a,a);
-
-               cout << ward << "\t";
-               
-               ward = 0.0;
-
-               for(int S_al = 0;S_al < 2;++S_al)
-                  for(int S_cl = 0;S_cl < 2;++S_cl){
-
-                     ward += std::sqrt( (2.0*S_ab + 1.0)*(2.0*S_cd + 1.0)*(2.0*S_al + 1.0)*(2.0*S_cl + 1.0) ) * (1 -2*S_ab) * (1 - 2*S_cd)
-                     
-                      * (1 - 2*S_al) *  (1 - 2*S_cl) * _6j[S_cd][S_cl] * _6j[S_ab][S_al] * (*this)(a,0,S_al,l,l,S_cl,a,l);
-
-                  }
-               
-               cout << ward << endl;
-
-            }
-
-         cout << endl;
-
-      }
+         }
 /*
       for(int a = 0;a < M;++a)
          for(int b = 0;b < M;++b)
