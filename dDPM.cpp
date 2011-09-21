@@ -934,7 +934,7 @@ void dDPM::proj_W(){
                }
 
          }
-/*
+
       //one equality: start with a == c
       for(int a = 0;a < M;++a){
 
@@ -1187,7 +1187,7 @@ void dDPM::proj_W(){
             }
          }
       }
-
+/*
       //a = l: W^l_{lb;cd}
       for(int b = l + 1;b < M;++b)
          for(int c = l + 1;c < M;++c){
@@ -1352,7 +1352,7 @@ void dDPM::proj_W(){
 
             }
          }
-
+*/
       //easy part: S = 3/2
 
       //first diagonal part: ab;ab
@@ -1542,7 +1542,7 @@ void dDPM::proj_W(){
             }
          }
       }
-*/
+
    }
 
 }
@@ -1585,45 +1585,6 @@ void dDPM::test_proj_1() const {
       cout << "S = 1/2" << endl;
       cout << endl;
 
-      for(int b = 0;b < M;++b)
-         for(int d = 0;d < M;++d){
-
-            for(int S_ab = 0;S_ab < 2;++S_ab)
-               for(int S_cd = 0;S_cd < 2;++S_cd){
-
-                  cout << b << "\t" << d << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,l,b,S_cd,l,d) << "\t";
-
-                  double ward = 0.0;
-
-                  for(int S_lb = 0;S_lb < 2;++S_lb)
-                     ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_lb + 1.0) ) * _6j[S_ab][S_lb] * (*this)(l,0,S_lb,l,b,S_cd,l,d);
-
-                  cout << ward << "\t";
-
-                  ward = 0.0;
-
-                  for(int S_ld = 0;S_ld < 2;++S_ld)
-                     ward += std::sqrt( (2.0*S_cd + 1.0) * (2.0*S_ld + 1.0) ) * _6j[S_cd][S_ld] * (*this)(l,0,S_ab,l,b,S_ld,l,d);
-
-                  cout << ward << "\t";
-
-                  ward = 0.0;
-
-                  for(int S_lb = 0;S_lb < 2;++S_lb)
-                     for(int S_ld = 0;S_ld < 2;++S_ld){
-                        
-                        ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_lb + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_ld + 1.0) ) 
-                        
-                           * _6j[S_ab][S_lb] * _6j[S_cd][S_ld] * (*this)(l,0,S_lb,l,b,S_ld,l,d);
-
-                     }
-
-                  cout << ward << endl;
-
-               }
-            
-         }
-/*
       for(int a = 0;a < M;++a)
          for(int b = 0;b < M;++b)
             for(int c = 0;c < M;++c){
@@ -1639,10 +1600,27 @@ void dDPM::test_proj_1() const {
                      double ward = 0.0;
 
                      for(int S_al = 0;S_al < 2;++S_al)
-                        for(int S_cl = 0;S_cl < 2;++S_cl)
-                           ward += std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl)
+                        for(int S_cl = 0;S_cl < 2;++S_cl){
+
+                           double hard = std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl)
 
                               * (1 - 2*S_ab) * (1 - 2*S_cd) * _6j[S_ab][S_al] * _6j[S_cd][S_cl] * (*this)(b,0,S_al,a,l,S_cl,c,l);
+
+                           if(a == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(c == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(a == l)
+                              hard *= std::sqrt(2.0);
+
+                           if(c == l)
+                              hard *= std::sqrt(2.0);
+
+                           ward += hard;
+
+                        }
 
                      cout << ward << endl;
 
@@ -1657,10 +1635,27 @@ void dDPM::test_proj_1() const {
                      double ward = 0.0;
 
                      for(int S_al = 0;S_al < 2;++S_al)
-                        for(int S_ld = 0;S_ld < 2;++S_ld)
-                           ward += std::sqrt( (2.0*S_al + 1.0) * (2.0*S_ld + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * 
+                        for(int S_ld = 0;S_ld < 2;++S_ld){
+
+                           double hard = std::sqrt( (2.0*S_al + 1.0) * (2.0*S_ld + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * 
 
                               (1 - 2*S_ab) * _6j[S_ab][S_al] * _6j[S_cd][S_ld] * (*this)(b,0,S_al,a,l,S_ld,l,c);
+
+                           if(a == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(c == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(a == l)
+                              hard *= std::sqrt(2.0);
+
+                           if(c == l)
+                              hard *= std::sqrt(2.0);
+
+                           ward += hard;
+
+                        }
 
                      cout << ward << endl;
 
@@ -1675,10 +1670,27 @@ void dDPM::test_proj_1() const {
                      double ward = 0.0;
 
                      for(int S_lb = 0;S_lb < 2;++S_lb)
-                        for(int S_cl = 0;S_cl < 2;++S_cl)
-                           ward += std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_cl)
+                        for(int S_cl = 0;S_cl < 2;++S_cl){
+
+                           double hard = std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_cl)
 
                               * (1 - 2*S_cd) * _6j[S_ab][S_lb] * _6j[S_cd][S_cl] * (*this)(a,0,S_lb,l,b,S_cl,c,l);
+
+                           if(a == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(c == a)
+                              hard /= std::sqrt(2.0);
+
+                           if(l == b)
+                              hard *= std::sqrt(2.0);
+
+                           if(c == l)
+                              hard *= std::sqrt(2.0);
+
+                           ward += hard;
+
+                        }
 
                      cout << ward << endl;
 
@@ -1693,17 +1705,34 @@ void dDPM::test_proj_1() const {
                      double ward = 0.0;
 
                      for(int S_lb = 0;S_lb < 2;++S_lb)
-                        for(int S_ld = 0;S_ld < 2;++S_ld)
-                           ward += std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_ld + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) 
+                        for(int S_ld = 0;S_ld < 2;++S_ld){
+
+                           double hard = std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_ld + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) 
 
                               * _6j[S_ab][S_lb] * _6j[S_cd][S_ld] * (*this)(a,0,S_lb,l,b,S_ld,l,c);
+
+                           if(a == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(c == a)
+                              hard /= std::sqrt(2.0);
+
+                           if(l == b)
+                              hard *= std::sqrt(2.0);
+
+                           if(c == l)
+                              hard *= std::sqrt(2.0);
+
+                           ward += hard;
+
+                        }
 
                      cout << ward << endl;
 
                   }
 
                cout << endl;
-
+/*
                //)5 a = l
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
@@ -1763,12 +1792,12 @@ void dDPM::test_proj_1() const {
                      cout << ward << endl;
 
                   }
-
-            }
 */
+            }
+/*
       cout << endl;
 
-      /*
+      
          cout << endl;
          cout << "S = 3/2" << endl;
          cout << endl;
@@ -1785,7 +1814,7 @@ void dDPM::test_proj_1() const {
          cout << endl;
 
          }
-       */
+*/
    }
 
 }
@@ -1815,12 +1844,29 @@ void dDPM::test_proj_2() const {
                      double ward = 0.0;
 
                      for(int S_al = 0;S_al < 2;++S_al)
-                        for(int S_cl = 0;S_cl < 2;++S_cl)
-                           ward += std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl)
+                        for(int S_cl = 0;S_cl < 2;++S_cl){
+
+                           double hard = std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl)
 
                               * (1 - 2*S_ab) * (1 - 2*S_cd) * _6j[S_ab][S_al] * _6j[S_cd][S_cl] * (*this)(b,0,S_al,a,l,S_cl,c,l);
 
-                     if( fabs(ward -  (*this)(l,0,S_ab,a,b,S_cd,c,b)) > 1.0e-12)
+                           if(a == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(c == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(a == l)
+                              hard *= std::sqrt(2.0);
+
+                           if(c == l)
+                              hard *= std::sqrt(2.0);
+
+                           ward += hard;
+
+                        }
+
+                     if(fabs(ward - (*this)(l,0,S_ab,a,b,S_cd,c,b)) > 1.0e-12)
                         cout << "ab;cb\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,b,S_cd,c,b) << "\t" << ward << endl;
 
                   }
@@ -1832,10 +1878,27 @@ void dDPM::test_proj_2() const {
                      double ward = 0.0;
 
                      for(int S_al = 0;S_al < 2;++S_al)
-                        for(int S_ld = 0;S_ld < 2;++S_ld)
-                           ward += std::sqrt( (2.0*S_al + 1.0) * (2.0*S_ld + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * 
+                        for(int S_ld = 0;S_ld < 2;++S_ld){
+
+                           double hard = std::sqrt( (2.0*S_al + 1.0) * (2.0*S_ld + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * 
 
                               (1 - 2*S_ab) * _6j[S_ab][S_al] * _6j[S_cd][S_ld] * (*this)(b,0,S_al,a,l,S_ld,l,c);
+
+                           if(a == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(c == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(a == l)
+                              hard *= std::sqrt(2.0);
+
+                           if(c == l)
+                              hard *= std::sqrt(2.0);
+
+                           ward += hard;
+
+                        }
 
                      if(fabs(ward - (*this)(l,0,S_ab,a,b,S_cd,b,c)) > 1.0e-12)
                         cout << "ab;bc\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,b,S_cd,b,c) << "\t" << ward << endl;
@@ -1849,10 +1912,27 @@ void dDPM::test_proj_2() const {
                      double ward = 0.0;
 
                      for(int S_lb = 0;S_lb < 2;++S_lb)
-                        for(int S_cl = 0;S_cl < 2;++S_cl)
-                           ward += std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_cl)
+                        for(int S_cl = 0;S_cl < 2;++S_cl){
+
+                           double hard = std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_cl)
 
                               * (1 - 2*S_cd) * _6j[S_ab][S_lb] * _6j[S_cd][S_cl] * (*this)(a,0,S_lb,l,b,S_cl,c,l);
+
+                           if(a == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(c == a)
+                              hard /= std::sqrt(2.0);
+
+                           if(l == b)
+                              hard *= std::sqrt(2.0);
+
+                           if(c == l)
+                              hard *= std::sqrt(2.0);
+
+                           ward += hard;
+
+                        }
 
                      if(fabs(ward - (*this)(l,0,S_ab,a,b,S_cd,c,a)) > 1.0e-12)
                         cout << "ab;ca\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,b,S_cd,c,a) << "\t" << ward << endl;
@@ -1866,27 +1946,45 @@ void dDPM::test_proj_2() const {
                      double ward = 0.0;
 
                      for(int S_lb = 0;S_lb < 2;++S_lb)
-                        for(int S_ld = 0;S_ld < 2;++S_ld)
-                           ward += std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_ld + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) 
+                        for(int S_ld = 0;S_ld < 2;++S_ld){
+
+                           double hard = std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_ld + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) 
 
                               * _6j[S_ab][S_lb] * _6j[S_cd][S_ld] * (*this)(a,0,S_lb,l,b,S_ld,l,c);
 
-                     if(fabs(ward - (*this)(l,0,S_ab,a,b,S_cd,a,c) ) > 1.0e-12)
+                           if(a == b)
+                              hard /= std::sqrt(2.0);
+
+                           if(c == a)
+                              hard /= std::sqrt(2.0);
+
+                           if(l == b)
+                              hard *= std::sqrt(2.0);
+
+                           if(c == l)
+                              hard *= std::sqrt(2.0);
+
+                           ward += hard;
+
+                        }
+
+                     if(fabs(ward - (*this)(l,0,S_ab,a,b,S_cd,a,c))>1.0e-12)
                         cout << "ab;ac\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,b,S_cd,a,c) << "\t" << ward << endl;
 
                   }
-
+/*
                //)5 a = l
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                     cout << "lb;cd\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,l,a,S_cd,b,c) << "\t";
 
                      double ward = 0.0;
 
                      for(int S_lb = 0;S_lb < 2;++S_lb)
                         ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_lb + 1.0) ) * _6j[S_lb][S_ab] * (*this)(l,0,S_lb,l,a,S_cd,b,c);
 
-                     if(fabs(ward - (*this)(l,0,S_ab,l,a,S_cd,b,c)) > 1.0e-12)
-                        cout << "lb;cd\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,l,a,S_cd,b,c) << "\t" << ward << endl;
+                     cout << ward << endl;
 
                   }
 
@@ -1894,13 +1992,14 @@ void dDPM::test_proj_2() const {
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
 
+                     cout << "al;cd\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,l,S_cd,b,c) << "\t";
+
                      double ward = 0.0;
 
                      for(int S_al = 0;S_al < 2;++S_al)
                         ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_al + 1.0) ) * (1 - 2*S_ab) * (1 - 2*S_al) * _6j[S_al][S_ab] * (*this)(l,0,S_al,a,l,S_cd,b,c);
 
-                     if(fabs(ward -  (*this)(l,0,S_ab,a,l,S_cd,b,c)))
-                        cout << "al;cd\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,l,S_cd,b,c) << "\t" << ward << endl;
+                     cout << ward << endl;
 
                   }
 
@@ -1908,14 +2007,14 @@ void dDPM::test_proj_2() const {
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
 
+                     cout << "ab;ld\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,b,S_cd,l,c) << "\t";
+
                      double ward = 0.0;
 
                      for(int S_ld = 0;S_ld < 2;++S_ld)
                         ward += std::sqrt( (2.0*S_cd + 1.0) * (2.0*S_ld + 1.0) ) * _6j[S_cd][S_ld] * (*this)(l,0,S_ab,a,b,S_ld,l,c);
 
-                     if(fabs(ward - (*this)(l,0,S_ab,a,b,S_cd,l,c)) > 1.0e-12)
-                        cout << "ab;ld\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,b,S_cd,l,c) << "\t" << ward << endl;
-
+                     cout << ward << endl;
 
                   }
 
@@ -1923,18 +2022,22 @@ void dDPM::test_proj_2() const {
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
 
+                     cout << "ab;cl\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,b,S_cd,c,l) << "\t";
+
                      double ward = 0.0;
 
                      for(int S_cl = 0;S_cl < 2;++S_cl)
                         ward += std::sqrt( (2.0*S_cd + 1.0) * (2.0*S_cl + 1.0) ) * (1 - 2*S_cd) * (1 - 2*S_cl) * _6j[S_cd][S_cl] * (*this)(l,0,S_ab,a,b,S_cl,c,l);
 
-                     if(fabs(ward - (*this)(l,0,S_ab,a,b,S_cd,c,l)) > 1.0e-12)
-                        cout << "ab;cl\t" << a << "\t" << b << "\t" << c << "\t(" << S_ab << ")\t(" << S_cd << ")\t" << (*this)(l,0,S_ab,a,b,S_cd,c,l) << "\t" << ward << endl;
+                     cout << ward << endl;
 
                   }
-
+*/
             }
-      /*
+/*
+      cout << endl;
+
+      
          cout << endl;
          cout << "S = 3/2" << endl;
          cout << endl;
@@ -1951,7 +2054,7 @@ void dDPM::test_proj_2() const {
          cout << endl;
 
          }
-       */
+*/
    }
 
 }
