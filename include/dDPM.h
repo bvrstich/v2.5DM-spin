@@ -78,7 +78,7 @@ class dDPM {
 
       void proj_W();
 
-      void proj_fTr();
+      void proj_Tr();
 
       void proj();
 
@@ -91,8 +91,6 @@ class dDPM {
       void hubbard(double);
 
       void unit();
-
-      double ftrace() const;
 
       void set_funit();
 

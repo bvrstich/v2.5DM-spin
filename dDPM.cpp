@@ -1469,18 +1469,16 @@ void dDPM::proj_W(){
 }
 
 /**
- * project onto traceless space, watch out, special trace
+ * project *this on the traceless space but staying in the right symmetry area.
  */
-void dDPM::proj_fTr(){
+void dDPM::proj_Tr(){
 
-   dDPM funit;
-   funit.set_funit();
+   double ward = this->ddot(Tools::gunit())/Tools::gunit().ddot(Tools::gunit());
 
-   double ward = this->ddot(funit)/(funit.ddot(funit));
-
-   this->daxpy(-ward,funit);
+   this->daxpy(-ward,Tools::gunit());
 
 }
+
 
 /**
  * total projection, both on traceless space and good third index symmetry
@@ -1488,7 +1486,7 @@ void dDPM::proj_fTr(){
 void dDPM::proj(){
 
    this->proj_W();
-   this->proj_fTr();
+   this->proj_Tr();
 
 }
 
@@ -2150,7 +2148,10 @@ void dDPM::hubbard(double U){
  */
 void dDPM::unit(){
 
-   double ward = N*(N - 1.0)*(N - 2.0)/(2.0*M*(2.0*M - 1)*(2.0*M - 2.0));
+   int S_ab,S_cd;
+   int a,b,c,d;
+
+   double norm;
 
    for(int l = 0;l < M;++l){
 
@@ -2158,87 +2159,67 @@ void dDPM::unit(){
 
          for(int i = 0;i < ddpm[l]->gdim(S);++i){
 
-            (*this)[l](S,i,i) = ward;
+            S_ab = rTPM::gt2s(l,S,i,0);
 
-            for(int j = i + 1;j < ddpm[l]->gdim(S);++j)
-               (*this)[l](S,i,j) = (*this)[l](S,j,i) = 0.0;
+            a = rTPM::gt2s(l,S,i,1);
+            b = rTPM::gt2s(l,S,i,2);
+
+            for(int j = i;j < ddpm[l]->gdim(S);++j){
+
+               S_cd = rTPM::gt2s(l,S,j,0);
+
+               c = rTPM::gt2s(l,S,j,1);
+               d = rTPM::gt2s(l,S,j,2);
+
+               //set the norm
+               norm = 1.0;
+
+               if(a == b)
+                  norm /= std::sqrt(2.0);
+
+               if(c == d)
+                  norm /= std::sqrt(2.0);
+
+               (*this)[l](S,i,j) = 0.0;
+
+               //set the unitmatrix
+               if(a == c && b == d){
+
+                  if(S_ab == S_cd)
+                     (*this)[l](S,i,j) += 1.0;
+
+                  if(a == l)
+                     (*this)[l](S,i,j) += std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * _6j[S_ab][S_cd];
+
+                  if(b == l)
+                     (*this)[l](S,i,j) += std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * _6j[S_ab][S_cd] * (1 - 2*S_ab) * (1 - 2*S_cd);
+
+               }
+
+               if(a == d && b == c){
+
+                  if(S_ab == S_cd)
+                     (*this)[l](S,i,j) += (1 - 2*S_ab);
+
+                  if(a == l)
+                     (*this)[l](S,i,j) += std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * _6j[S_ab][S_cd] * (1 - 2*S_cd);
+
+                  if(b == l)
+                     (*this)[l](S,i,j) += std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * _6j[S_ab][S_cd] * (1 - 2*S_ab);
+
+               }
+
+               (*this)[l](S,i,j) *= norm * (N*(N - 1.0)*(N - 2.0)/(2*M*(2*M - 1.0)*(2*M - 2.0)));
+
+               (*this)[l](S,j,i) = (*this)[l](S,i,j);
+
+            }
 
          }
 
       }
 
    }
-
-}
-
-/**
- * different trace that gets the right number "full" trace
- */
-double dDPM::ftrace() const{
-
-   double ward = 0.0;
-
-   for(int l = 0;l < M;++l){
-
-      //S = 1/2
-
-      //1) S_ab = 0
-      for(int a = 0;a < M;++a){
-
-         if(a == l)
-            ++a;
-
-         if(a == M)
-            break;
-
-         for(int b = a;b < M;++b){
-
-            if(b == l)
-               ++b;
-
-            if(b == M)
-               break;
-
-            ward += 2 * (*this)(l,0,0,a,b,0,a,b);
-
-         }
-      }
-
-      //2) S_ab = 1;
-      for(int a = 0;a < M;++a){
-
-         if(a == l)
-            ++a;
-
-         if(a == M)
-            break;
-
-         for(int b = a + 1;b < M;++b){
-
-            if(b == l)
-               ++b;
-
-            if(b == M)
-               break;
-
-            ward += 2 * (*this)(l,0,1,a,b,1,a,b);
-
-         }
-      }
-
-
-      //S = 3/2
-      for(int a = 0;a < M;++a)
-         for(int b = a + 1;b < M;++b)
-            ward += 4 * (*this)(l,1,1,a,b,1,a,b);
-
-      //extra! extra!
-      for(int a = 0;a < M;++a)
-         ward += 4.0 * (*this)(a,0,0,l,l,0,l,l);
-
-   }
-
-   return ward;
 
 }
 
