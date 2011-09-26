@@ -70,6 +70,8 @@ class dDPM {
 
       void invert();
 
+      void pseudo_invert(int);
+
       dDPM &mprod(const dDPM &,const dDPM &);
 
       void symmetrize();

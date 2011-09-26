@@ -265,6 +265,31 @@ void Matrix::invert(){
 }
 
 /**
+ * take the pseudo inverse of the matrix, with nr 0 eigenvalues
+ * @param nr the number of zero eigenvalues
+ */
+void Matrix::pseudo_invert(int nr){
+
+   Matrix mat(*this);
+
+   Vector v(mat);
+
+   for(int i = 0;i < n;++i)
+      for(int j = i;j < n;++j){
+
+         (*this)(i,j) = 0.0;
+
+         for(int k = nr;k < n;++k)
+            (*this)(i,j) += mat(i,k) * mat(j,k) / v[k];
+
+      }
+
+   this->symmetrize();
+
+}
+
+
+/**
  * Scale the matrix (*this) with parameter alpha
  * @param alpha scalefactor
  */

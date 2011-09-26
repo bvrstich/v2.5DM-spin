@@ -54,15 +54,15 @@ int main(void){
    dDPM W;
    W.unit();
 
-   dDPM backup(W)
+   dDPM backup(W);
 
    double t = 1.0;
    double tolerance = 1.0e-5;
 
    //outer iteration: scaling of the potential barrier
-   while(t > 1.0e-10){
+   //while(t > 1.0e-10){
 
-   cout << t << "\t" << W.ftrace() << "\t" << W.ddot(ham) << "\t";
+   cout << t << "\t" << W.trace() << "\t" << W.ddot(ham) << "\t";
 
    int nr_cg_iter = 0;
    int nr_newton_iter = 0;
@@ -71,7 +71,7 @@ int main(void){
 
    //inner iteration: 
    //Newton's method for finding the minimum of the current potential
-   while(convergence > tolerance){
+   //   while(convergence > tolerance){
 
    ++nr_newton_iter;
 
@@ -100,7 +100,7 @@ int main(void){
 
    convergence = a*a*delta.ddot(delta);
 
-   }
+   //  }
 
    cout << nr_newton_iter << "\t" << nr_cg_iter << endl;
 
@@ -110,7 +110,7 @@ int main(void){
    tolerance = 1.0e-5*t;
 
    if(tolerance < 1.0e-12)
-   tolerance = 1.0e-12;
+      tolerance = 1.0e-12;
 
    //extrapolatie:
    dDPM extrapol(W);
@@ -124,25 +124,25 @@ int main(void){
 
    W.daxpy(b,extrapol);
 
-}
+   //}
 
-cout << endl;
+   cout << endl;
 
-cout << "Final Energy:\t" << ham.ddot(W) << endl;
+   cout << "Final Energy:\t" << ham.ddot(W) << endl;
 
-TPM tpm;
-tpm.bar(1.0/(N - 2.0),W);
+   TPM tpm;
+   tpm.bar(1.0/(N - 2.0),W);
 
-TPM hubbard;
-hubbard.hubbard(1.0);
+   TPM hubbard;
+   hubbard.hubbard(1.0);
 
-cout << tpm.ddot(hubbard) << endl;
+   cout << tpm.ddot(hubbard) << endl;
 */
-Tools::clear();
-TPM::clear();
-dDPM::clear();
-rTPM::clear();
+   Tools::clear();
+   TPM::clear();
+   dDPM::clear();
+   rTPM::clear();
 
-return 0;
+   return 0;
 
 }

@@ -81,6 +81,8 @@ class BlockMatrix{
 
       void invert();
 
+      void pseudo_invert(int);
+
       void dscal(double alpha);
 
       void fill_Random();

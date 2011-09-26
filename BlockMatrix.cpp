@@ -284,6 +284,17 @@ void BlockMatrix::invert(){
 }
 
 /**
+ * Pseudo - Invert positive semidefinite symmetric blockmatrix which is stored in (*this), original matrix (*this) is destroyed
+ * @param number the nr of zero eigenvalues
+ */
+void BlockMatrix::pseudo_invert(int number){
+
+   for(int i = 0;i < nr;++i)
+      blockmatrix[i]->pseudo_invert(number);
+
+}
+
+/**
  * Scale the blockmatrix (*this) with parameter alpha
  * @param alpha scalefactor
  */

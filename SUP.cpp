@@ -186,7 +186,7 @@ double SUP::ddot(const SUP &X_i) const{
  */
 void SUP::invert(){
 
-   I1->invert();
+   I1->pseudo_invert(M - 1);
 
 }
 
