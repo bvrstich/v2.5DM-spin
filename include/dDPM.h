@@ -70,7 +70,9 @@ class dDPM {
 
       void invert();
 
-      void pseudo_invert(int);
+      void pseudo_invert();
+
+      void pseudo_sqrt(int);
 
       dDPM &mprod(const dDPM &,const dDPM &);
 

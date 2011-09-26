@@ -372,12 +372,22 @@ void dDPM::invert(){
 
 /**
  * Pseudo - Invert positive semidefinite symmetric ddpm is stored in (*this), original ddpm (*this) is destroyed
- * @param nr the number of zero eigenvalues
  */
-void dDPM::pseudo_invert(int nr){
+void dDPM::pseudo_invert(){
 
    for(int l = 0;l < M;++l)
-      ddpm[l]->pseudo_invert(nr);
+      ddpm[l]->pseudo_invert();
+
+}
+
+/**
+ * Pseudo - sqrt of the ddpm object, calls the rTPM::pseudo_sqrt() function
+ * @param option == 1 positive sqrt , if == -1 negative sqrt
+ */
+void dDPM::pseudo_sqrt(int option){
+
+   for(int l = 0;l < M;++l)
+      ddpm[l]->pseudo_sqrt(option);
 
 }
 
@@ -2144,33 +2154,6 @@ void dDPM::constr_grad(double t,const dDPM &ham,const SUP &P){
    *this -= ham;
 
    this->proj();
-
-}
-
-/** 
- * set (*this) equal to the full trace operator
- */
-void dDPM::set_funit(){
-
-   int a,b;
-
-   for(int l = 0;l < M;++l)
-      for(int S = 0;S < 2;++S)
-         for(int i = 0;i < ddpm[l]->gdim(S);++i){
-
-            a = rTPM::gt2s(l,S,i,1);
-            b = rTPM::gt2s(l,S,i,2);
-
-            if(a == b)
-               (*this)[l](S,i,i) = 3.0;
-            else
-               (*this)[l](S,i,i) = 1.0;
-
-            for(int j = i + 1;j < ddpm[l]->gdim(S);++j)
-               (*this)[l](S,i,j) = (*this)[l](S,j,i) = 0.0;
-
-         }
-
 
 }
 

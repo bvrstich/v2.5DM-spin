@@ -370,6 +370,35 @@ void Matrix::mdiag(const Vector &diag){
 }
 
 /**
+ * Take the pseudo-square root out of the positive semidefinite matrix, destroys original matrix, square root will be put in (*this)
+ * @param option = 1, positive square root, = -1, negative square root.
+ * @param nr the nr of zero eigenvalues
+ */
+void Matrix::pseudo_sqrt(int option,int nr){
+
+   Matrix mat(*this);
+
+   Vector v(mat);
+
+   for(int i = 0;i < n;++i)
+      for(int j = i;j < n;++j){
+
+         (*this)(i,j) = 0.0;
+
+         if(option == 1)
+            for(int k = nr;k < n;++k)
+               (*this)(i,j) += std::sqrt(v[k]) * mat(i,k) * mat(j,k);
+         else
+            for(int k = nr;k < n;++k)
+               (*this)(i,j) +=  mat(i,k) * mat(j,k) / std::sqrt(v[k]);
+
+      }
+
+   this->symmetrize();
+
+}
+
+/**
  * Multiply symmetric matrix object left en right with symmetric matrix map to 
  * form another symmetric matrix and put it in (*this): this = map*object*map
  * @param map matrix that will be multiplied to the left en to the right of matrix object

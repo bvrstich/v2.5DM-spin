@@ -50,6 +50,10 @@ class rTPM : public BlockMatrix {
       //geef l terug
       int gl() const;
 
+      void pseudo_invert();
+
+      void pseudo_sqrt(int);
+
       static void init(int,int);
 
       static void clear();

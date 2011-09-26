@@ -309,3 +309,24 @@ void rTPM::print_basis(){
    }
 
 }
+
+/**
+ * pseudo invert the S = 1/2 block using M-1 zero eigenvalues and invert the S = 3/2 block
+ */
+void rTPM::pseudo_invert(){
+
+   (*this)[0].pseudo_invert(M - 1);
+   (*this)[1].invert();
+
+}
+
+/**
+ * take the positive or negative pseudo square root of the S = 1/2 block using M-1 zero eigenvalues 
+ * and the regular pos or min square root of S = 3/2 block
+ */
+void rTPM::pseudo_sqrt(int option){
+
+   (*this)[0].pseudo_sqrt(option,M - 1);
+   (*this)[1].sqrt(option);
+
+}

@@ -83,7 +83,9 @@ class Matrix{
       void fill_Random();
 
       //positieve of negatieve vierkantswortel uit de matrix
-      void sqrt(int option);
+      void sqrt(int);
+
+      void pseudo_sqrt(int,int);
 
       void mdiag(const Vector &diag);
 

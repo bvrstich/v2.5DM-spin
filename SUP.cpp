@@ -186,7 +186,7 @@ double SUP::ddot(const SUP &X_i) const{
  */
 void SUP::invert(){
 
-   I1->pseudo_invert(M - 1);
+   I1->pseudo_invert();
 
 }
 
@@ -206,7 +206,7 @@ void SUP::dscal(double alpha){
  */
 void SUP::sqrt(int option){
 
-   I1->sqrt(option);
+   I1->pseudo_sqrt(option);
 
 }
 
