@@ -2298,37 +2298,306 @@ double dDPM::line_search(double t,const dDPM &W,const dDPM &ham){
 }
 
 /**
- * a function that returns the inproduct of a dDPM object with a TPM object. Test for ddot function.
- * Needed because there are problems when one of the sp indices equals l
- * @param input TPM object
- * @return the inproduct
+ * The spincoupled Q2 map: maps a dDPM object onto itself
+ * @param ddpm_i input TPM
  */
-double dDPM::inprod(const TPM &tpm){
+void dDPM::Q(const dDPM &ddpm_i){
 
-   double ward = 0.0;
+   TPM tpm;
+   tpm.bar(1.0/(N - 2.0),ddpm_i);
+
+   SPM spm(1.0/(N - 1.0),tpm);
+
+   double ward = 2.0 * ddpm_i.trace()/( N*(N - 1.0)*(N - 2.0) );
+
+   int a,b,c,d;
+   int S_ab,S_cd;
+
+   int sign_ab,sign_cd;
+
+   double norm_ab,norm_cd;
+
+   double hard;
 
    for(int l = 0;l < M;++l){
 
-      for(int a = 0;a < M;++a)
-         for(int b = a;b < M;++b)
-            for(int c = 0;c < M;++c)
-               for(int d = c;d < M;++d)
-                  ward += 2.0 * (*this)(l,0,0,a,b,0,c,d) * tpm(0,a,b,c,d);
+      //start with the S = 1/2 block, this is the most difficult one:
+      for(int i = 0;i < ddpm[l]->gdim(0);++i){
 
-      for(int a = 0;a < M;++a)
-         for(int b = a + 1;b < M;++b)
-            for(int c = 0;c < M;++c)
-               for(int d = c + 1;d < M;++d)
-                  ward += 2.0 * (*this)(l,0,1,a,b,1,c,d) * tpm(1,a,b,c,d);
+         S_ab = rTPM::gt2s(l,0,i,0);
 
-      for(int a = 0;a < M;++a)
-         for(int b = a + 1;b < M;++b)
-            for(int c = 0;c < M;++c)
-               for(int d = c + 1;d < M;++d)
-                  ward += 4.0 * (*this)(l,1,1,a,b,1,c,d) * tpm(1,a,b,c,d);
+         a = rTPM::gt2s(l,0,i,1);
+         b = rTPM::gt2s(l,0,i,2);
+
+         sign_ab = 1 - 2*S_ab;
+
+         norm_ab = 1.0;
+
+         if(a == b)
+            norm_ab /= std::sqrt(2.0);
+
+         for(int j = i;j < ddpm[l]->gdim(0);++j){
+
+            S_cd = rTPM::gt2s(l,0,j,0);
+
+            c = rTPM::gt2s(l,0,j,1);
+            d = rTPM::gt2s(l,0,j,2);
+
+            sign_cd = 1 - 2*S_cd;
+
+            norm_cd = 1.0;
+
+            if(c == d)
+               norm_cd /= std::sqrt(2.0);
+
+            hard = std::sqrt( (2*S_ab + 1.0) * (2*S_cd + 1.0) ) * _6j[S_ab][S_cd];
+
+            //dp part
+            (*this)[l](0,i,j) = ddpm_i[l](0,i,j);
+
+            //the np part
+            if(i == j)
+               (*this)[l](0,i,j) += ward - spm(l,l);
+
+            //terms that contribute when the spin is diagonal:
+            if(S_ab == S_cd){
+
+               //tp(1)
+               (*this)[l](0,i,j) += tpm(S_ab,a,b,c,d);
+
+               //sp(1) first term
+               if(b == d)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * spm(a,c);
+
+               //sp(2) first term
+               if(a == d)
+                  (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * spm(b,c);
+
+               //sp(4) first term
+               if(b == c)
+                  (*this)[l](0,i,j) -= sign_cd * norm_ab * norm_cd * spm(a,d);
+
+               //sp(5) first term
+               if(a == c)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * spm(b,d);
+
+            }
+
+            if(b == l){
+
+               //tp(2)
+               if(a == l)
+                  (*this)[l](0,i,j) += std::sqrt(2.0) * norm_ab * sign_ab * sign_cd * hard * tpm(S_cd,a,l,c,d);
+               else
+                  (*this)[l](0,i,j) += norm_ab * sign_ab * sign_cd * hard * tpm(S_cd,a,l,c,d);
+
+               //sp(1) second term
+               if(d == l)
+                  (*this)[l](0,i,j) -= sign_ab * sign_cd * norm_ab * norm_cd * hard * spm(a,c);
+
+               //sp(3)
+               if(a == d)
+                  (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * hard * spm(c,l);
+
+               //sp(4) second term
+               if(l == c)
+                  (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * hard * spm(a,d);
+
+               //sp(6)
+               if(a == c)
+                  (*this)[l](0,i,j) -= sign_ab * sign_cd * norm_ab * norm_cd * hard * spm(l,d);
+
+               //np(4)
+               if(c == l && a == d)
+                  (*this)[l](0,i,j) += sign_ab * norm_ab * norm_cd * hard * ward;
+
+               //np(6)
+               if(d == l && a == c)
+                  (*this)[l](0,i,j) += sign_ab * sign_cd * norm_ab * norm_cd * hard * ward;
+
+            }
+
+            if(a == l){
+
+               //tp(3)
+               if(b == l)
+                  (*this)[l](0,i,j) += std::sqrt(2.0) * norm_ab * hard * tpm(S_cd,l,b,c,d);
+               else
+                  (*this)[l](0,i,j) += norm_ab * hard * tpm(S_cd,l,b,c,d);
+
+               //sp(2) second term
+               if(d == l)
+                  (*this)[l](0,i,j) -= sign_cd * norm_ab * norm_cd * hard * spm(b,c);
+
+               //sp(5) second term
+               if(c == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * hard * spm(b,d);
+               
+               //sp(3) second part
+               if(b == d)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * hard * spm(c,l);
+
+               //sp(6) second part
+               if(b == c)
+                  (*this)[l](0,i,j) -= sign_cd * norm_ab * norm_cd * hard * spm(d,l);
+
+               //np(3)
+               if(c == l && b == d)
+                  (*this)[l](0,i,j) += norm_ab * norm_cd * hard * ward;
+               
+               //np(5)
+               if(d == l && b == c)
+                  (*this)[l](0,i,j) += sign_cd * norm_ab * norm_cd * hard * ward;
+
+            }
+
+            if(l == d){
+
+               //tp(4)
+               if(c == l)
+                  (*this)[l](0,i,j) += std::sqrt(2.0) * norm_cd * sign_ab * sign_cd * hard * tpm(S_ab,a,b,c,l);
+               else
+                  (*this)[l](0,i,j) += norm_cd * sign_ab * sign_cd * hard * tpm(S_ab,a,b,c,l);
+
+               //sp(7) first term
+               if(b == c)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * hard * spm(a,l);
+
+               //sp(8) first term
+               if(a == c)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * sign_cd * hard * spm(b,l);
+
+            }
+
+            if(b == d){
+
+               //tp(5)
+               double hulp = 0.0;
+
+               //sum over intermediate spin
+               for(int Z = 0;Z < 2;++Z)
+                  hulp += (2*Z + 1.0) * _6j[Z][S_ab] * _6j[Z][S_cd] * tpm(Z,a,l,c,l);
+
+               //correct for norms of the tpm
+               if(a == l)
+                  hulp *= std::sqrt(2.0);
+
+               if(c == l)
+                  hulp *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) += norm_ab * norm_cd * sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2*S_cd + 1.0) ) * hulp;
+
+               //sp(7) second term
+               if(c == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * hard * spm(a,l);
+
+            }
+
+            if(a == d){
+
+               //tp(6)
+               double hulp = 0.0;
+
+               //sum over intermediate spin
+               for(int Z = 0;Z < 2;++Z)
+                  hulp += (2*Z + 1.0) * _6j[Z][S_ab] * _6j[Z][S_cd] * tpm(Z,b,l,d,l);
+
+               if(b == l)
+                  hulp *= std::sqrt(2.0);
+
+               if(d == l)
+                  hulp *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) += sign_cd * std::sqrt( (2*S_ab + 1) * (2*S_cd + 1.0) ) * norm_ab * norm_cd * hulp;
+
+               //sp(8) second term
+               if(c == l)
+                  (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * hard * spm(b,l);
+
+            }
+
+            if(c == l){
+
+               //tp(7)
+               if(d == l)
+                  (*this)[l](0,i,j) += std::sqrt(2.0) * norm_cd * hard * tpm(S_ab,a,b,l,d);
+               else
+                  (*this)[l](0,i,j) += norm_cd * hard * tpm(S_ab,a,b,l,d);
+
+            }
+
+            if(b == c){
+
+               //tp(8)
+               double hulp = 0.0;
+
+               //sum over intermediate spin
+               for(int Z = 0;Z < 2;++Z)
+                  hulp += (2*Z + 1.0) * _6j[Z][S_ab] * _6j[Z][S_cd] * tpm(Z,a,l,d,l);
+
+               if(a == l)
+                  hulp *= std::sqrt(2.0);
+
+               if(d == l)
+                  hulp *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) += sign_ab * std::sqrt( (2*S_ab + 1) * (2*S_cd + 1.0) ) * norm_ab * norm_cd * hulp;
+
+            }
+
+            if(a == c){
+
+               //tp(8)
+               double hulp = 0.0;
+
+               //sum over intermediate spin
+               for(int Z = 0;Z < 2;++Z)
+                  hulp += (2*Z + 1.0) * _6j[Z][S_ab] * _6j[Z][S_cd] * tpm(Z,b,l,d,l);
+
+               if(b == l)
+                  hulp *= std::sqrt(2.0);
+
+               if(d == l)
+                  hulp *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) += std::sqrt( (2*S_ab + 1) * (2*S_cd + 1.0) ) * norm_ab * norm_cd * hulp;
+
+            }
+
+         }
+      }
+
+
+      //then the S = 3/2 block, this should be easy, totally antisymmetrical 
+      for(int i = 0;i < ddpm[l]->gdim(1);++i){
+
+         a = rTPM::gt2s(l,1,i,1);
+         b = rTPM::gt2s(l,1,i,2);
+
+         for(int j = i;j < ddpm[l]->gdim(1);++j){
+
+            c = rTPM::gt2s(l,1,j,1);
+            d = rTPM::gt2s(l,1,j,2);
+
+            (*this)[l](1,i,j) = ddpm_i[l](1,i,j) + tpm(1,a,b,c,d);
+
+            if(i == j)
+               (*this)[l](1,i,j) += ward - spm(l,l);
+
+            if(b == d)
+               (*this)[l](1,i,j) += tpm(1,a,l,c,l) - spm(a,c);
+
+            if(b == c)
+               (*this)[l](1,i,j) -= tpm(1,a,l,d,l) - spm(a,d);
+
+            if(a == c)
+               (*this)[l](1,i,j) += tpm(1,b,l,d,l) - spm(b,d);
+
+         }
+      }
 
    }
 
-   return ward/(N - 2.0);
+   this->symmetrize();
 
 }

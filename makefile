@@ -14,6 +14,7 @@ CPPSRC	= pr_sdp.cpp\
             Vector.cpp\
             rTPM.cpp\
             TPM.cpp\
+            SPM.cpp\
             dDPM.cpp\
             dDPV.cpp\
             SUP.cpp\

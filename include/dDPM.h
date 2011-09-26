@@ -96,8 +96,6 @@ class dDPM {
 
       void unit();
 
-      void set_funit();
-
       void constr_grad(double,const dDPM &,const SUP &);
 
       int solve(double,const SUP &,dDPM &);
@@ -108,7 +106,7 @@ class dDPM {
 
       double line_search(double,const dDPM &,const dDPM &);
 
-      double inprod(const TPM &);
+      void Q(const dDPM &);
 
       static void init(int,int);
 
