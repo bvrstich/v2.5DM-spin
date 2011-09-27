@@ -51,6 +51,8 @@ class SPM : public Matrix {
 
       void bar(double, const TPM &);
 
+      void breve(double, const dDPM &);
+
       static void init(int,int);
 
    private:
