@@ -2500,12 +2500,12 @@ void dDPM::Q(const dDPM &ddpm_i){
 
                //sum over intermediate spin
                for(int Z = 0;Z < 2;++Z)
-                  hulp += (2*Z + 1.0) * _6j[Z][S_ab] * _6j[Z][S_cd] * tpm(Z,b,l,d,l);
+                  hulp += (2*Z + 1.0) * _6j[Z][S_ab] * _6j[Z][S_cd] * tpm(Z,b,l,c,l);
 
                if(b == l)
                   hulp *= std::sqrt(2.0);
 
-               if(d == l)
+               if(c == l)
                   hulp *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) += sign_cd * std::sqrt( (2*S_ab + 1) * (2*S_cd + 1.0) ) * norm_ab * norm_cd * hulp;
