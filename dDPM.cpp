@@ -2360,13 +2360,13 @@ void dDPM::Q(const dDPM &ddpm_i){
             //np(1)
             if(i == j)
                (*this)[l](0,i,j) += ward - spm(l,l);
-/*
+
             //terms that contribute when the spin is diagonal:
             if(S_ab == S_cd){
-
+/*
                //tp(1)
                (*this)[l](0,i,j) += tpm(S_ab,a,b,c,d);
-
+*/
                //sp(1) first term
                if(b == d)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * spm(a,c);
@@ -2384,7 +2384,7 @@ void dDPM::Q(const dDPM &ddpm_i){
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * spm(b,d);
 
             }
-*/
+
             if(b == l){
 /*
                //tp(2)
@@ -2584,16 +2584,16 @@ void dDPM::Q(const dDPM &ddpm_i){
 
             if(i == j)
                (*this)[l](1,i,j) += ward - spm(l,l);
-/*
+
             if(b == d)
-               (*this)[l](1,i,j) += tpm(1,a,l,c,l) - spm(a,c);
+               (*this)[l](1,i,j) += /*tpm(1,a,l,c,l)*/ - spm(a,c);
 
             if(b == c)
-               (*this)[l](1,i,j) -= tpm(1,a,l,d,l) - spm(a,d);
+               (*this)[l](1,i,j) -= /*tpm(1,a,l,d,l)*/ - spm(a,d);
 
             if(a == c)
-               (*this)[l](1,i,j) += tpm(1,b,l,d,l) - spm(b,d);
-*/
+               (*this)[l](1,i,j) += /*tpm(1,b,l,d,l)*/ - spm(b,d);
+
          }
       }
 
@@ -2669,6 +2669,22 @@ void dDPM::Q_down(const dDPM &ddpm_i){
             if(i == j)
                (*this)[l](0,i,j) += ward - 0.5 * (dspm[a] + dspm[b]);
 
+            if(S_ab == S_cd){
+
+               if(b == d)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * spm(a,c);
+
+               if(a == d)
+                  (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * spm(b,c);
+
+               if(b == c)
+                  (*this)[l](0,i,j) -= sign_cd * norm_ab * norm_cd * spm(a,d);
+
+               if(a == c)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * spm(b,d);
+
+            }
+
          }
       }
 
@@ -2687,6 +2703,15 @@ void dDPM::Q_down(const dDPM &ddpm_i){
 
             if(i == j)
                (*this)[l](1,i,j) += ward - 0.5 * (dspm[a] + dspm[b]);
+
+            if(b == d)
+               (*this)[l](1,i,j) -= spm(a,c);
+
+            if(b == c)
+               (*this)[l](1,i,j) += spm(a,d);
+
+            if(a == c)
+               (*this)[l](1,i,j) -= spm(b,d);
 
          }
       }
