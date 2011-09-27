@@ -130,6 +130,12 @@ int main(void){
 
    cout << "Final Energy:\t" << ham.ddot(W) << endl;
 
+   dDPM Q;
+   Q.Q(W);
+
+   dDPV v(Q);
+   cout << v;
+
    Tools::clear();
    TPM::clear();
    dDPM::clear();

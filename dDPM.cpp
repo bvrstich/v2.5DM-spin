@@ -2303,6 +2303,8 @@ double dDPM::line_search(double t,const dDPM &W,const dDPM &ham){
  */
 void dDPM::Q(const dDPM &ddpm_i){
 
+   *this = 0.0;
+
    TPM tpm;
    tpm.bar(1.0/(N - 2.0),ddpm_i);
 
@@ -2353,7 +2355,7 @@ void dDPM::Q(const dDPM &ddpm_i){
             hard = std::sqrt( (2*S_ab + 1.0) * (2*S_cd + 1.0) ) * _6j[S_ab][S_cd];
 
             //dp part
-            (*this)[l](0,i,j) = ddpm_i[l](0,i,j);
+            (*this)[l](0,i,j) = -ddpm_i[l](0,i,j);
 
             //the np part
             if(i == j)
@@ -2567,7 +2569,6 @@ void dDPM::Q(const dDPM &ddpm_i){
          }
       }
 
-
       //then the S = 3/2 block, this should be easy, totally antisymmetrical 
       for(int i = 0;i < ddpm[l]->gdim(1);++i){
 
@@ -2579,7 +2580,7 @@ void dDPM::Q(const dDPM &ddpm_i){
             c = rTPM::gt2s(l,1,j,1);
             d = rTPM::gt2s(l,1,j,2);
 
-            (*this)[l](1,i,j) = ddpm_i[l](1,i,j) + tpm(1,a,b,c,d);
+            (*this)[l](1,i,j) = tpm(1,a,b,c,d) - ddpm_i[l](1,i,j);
 
             if(i == j)
                (*this)[l](1,i,j) += ward - spm(l,l);
