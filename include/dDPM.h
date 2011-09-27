@@ -108,6 +108,10 @@ class dDPM {
 
       void Q(const dDPM &);
 
+      void Q_down(const dDPM &);
+
+      double dotunit() const;
+
       static void init(int,int);
 
       static void clear();

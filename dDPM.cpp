@@ -2357,10 +2357,10 @@ void dDPM::Q(const dDPM &ddpm_i){
             //dp part
             (*this)[l](0,i,j) = -ddpm_i[l](0,i,j);
 
-            //the np part
+            //np(1)
             if(i == j)
                (*this)[l](0,i,j) += ward - spm(l,l);
-
+/*
             //terms that contribute when the spin is diagonal:
             if(S_ab == S_cd){
 
@@ -2384,9 +2384,9 @@ void dDPM::Q(const dDPM &ddpm_i){
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * spm(b,d);
 
             }
-
+*/
             if(b == l){
-
+/*
                //tp(2)
                if(a == l)
                   (*this)[l](0,i,j) += std::sqrt(2.0) * norm_ab * sign_ab * sign_cd * hard * tpm(S_cd,a,l,c,d);
@@ -2408,7 +2408,7 @@ void dDPM::Q(const dDPM &ddpm_i){
                //sp(6)
                if(a == c)
                   (*this)[l](0,i,j) -= sign_ab * sign_cd * norm_ab * norm_cd * hard * spm(l,d);
-
+*/
                //np(4)
                if(c == l && a == d)
                   (*this)[l](0,i,j) += sign_ab * norm_ab * norm_cd * hard * ward;
@@ -2420,7 +2420,7 @@ void dDPM::Q(const dDPM &ddpm_i){
             }
 
             if(a == l){
-
+/*
                //tp(3)
                if(b == l)
                   (*this)[l](0,i,j) += std::sqrt(2.0) * norm_ab * hard * tpm(S_cd,l,b,c,d);
@@ -2442,7 +2442,7 @@ void dDPM::Q(const dDPM &ddpm_i){
                //sp(6) second part
                if(b == c)
                   (*this)[l](0,i,j) -= sign_cd * norm_ab * norm_cd * hard * spm(d,l);
-
+*/
                //np(3)
                if(c == l && b == d)
                   (*this)[l](0,i,j) += norm_ab * norm_cd * hard * ward;
@@ -2452,7 +2452,7 @@ void dDPM::Q(const dDPM &ddpm_i){
                   (*this)[l](0,i,j) += sign_cd * norm_ab * norm_cd * hard * ward;
 
             }
-
+/*
             if(l == d){
 
                //tp(4)
@@ -2565,6 +2565,109 @@ void dDPM::Q(const dDPM &ddpm_i){
                (*this)[l](0,i,j) += std::sqrt( (2*S_ab + 1) * (2*S_cd + 1.0) ) * norm_ab * norm_cd * hulp;
 
             }
+*/
+         }
+      }
+
+      //then the S = 3/2 block, this should be easy, totally antisymmetrical 
+      for(int i = 0;i < ddpm[l]->gdim(1);++i){
+
+         a = rTPM::gt2s(l,1,i,1);
+         b = rTPM::gt2s(l,1,i,2);
+
+         for(int j = i;j < ddpm[l]->gdim(1);++j){
+
+            c = rTPM::gt2s(l,1,j,1);
+            d = rTPM::gt2s(l,1,j,2);
+
+            (*this)[l](1,i,j) = /*tpm(1,a,b,c,d)*/ - ddpm_i[l](1,i,j);
+
+            if(i == j)
+               (*this)[l](1,i,j) += ward - spm(l,l);
+/*
+            if(b == d)
+               (*this)[l](1,i,j) += tpm(1,a,l,c,l) - spm(a,c);
+
+            if(b == c)
+               (*this)[l](1,i,j) -= tpm(1,a,l,d,l) - spm(a,d);
+
+            if(a == c)
+               (*this)[l](1,i,j) += tpm(1,b,l,d,l) - spm(b,d);
+*/
+         }
+      }
+
+   }
+
+   this->symmetrize();
+
+}
+
+/**
+ * The spincoupled Q2-down map: maps a dDPM object onto itself
+ * @param ddpm_i input TPM
+ */
+void dDPM::Q_down(const dDPM &ddpm_i){
+
+   *this = 0.0;
+
+   TPM tpm;
+   tpm.bar(1.0/(N - 2.0),ddpm_i);
+
+   SPM spm(1.0/(N - 1.0),tpm);
+
+   dSPM dspm;
+   dspm.trace(1/((N - 1.0)*(N - 2.0)),ddpm_i);
+
+   double ward = 2.0 * ddpm_i.dotunit()/( N*(N - 1.0)*(N - 2.0) );
+
+   int a,b,c,d;
+   int S_ab,S_cd;
+
+   int sign_ab,sign_cd;
+
+   double norm_ab,norm_cd;
+
+   double hard;
+
+   for(int l = 0;l < M;++l){
+
+      //start with the S = 1/2 block, this is the most difficult one:
+      for(int i = 0;i < ddpm[l]->gdim(0);++i){
+
+         S_ab = rTPM::gt2s(l,0,i,0);
+
+         a = rTPM::gt2s(l,0,i,1);
+         b = rTPM::gt2s(l,0,i,2);
+
+         sign_ab = 1 - 2*S_ab;
+
+         norm_ab = 1.0;
+
+         if(a == b)
+            norm_ab /= std::sqrt(2.0);
+
+         for(int j = i;j < ddpm[l]->gdim(0);++j){
+
+            S_cd = rTPM::gt2s(l,0,j,0);
+
+            c = rTPM::gt2s(l,0,j,1);
+            d = rTPM::gt2s(l,0,j,2);
+
+            sign_cd = 1 - 2*S_cd;
+
+            norm_cd = 1.0;
+
+            if(c == d)
+               norm_cd /= std::sqrt(2.0);
+
+            hard = std::sqrt( (2*S_ab + 1.0) * (2*S_cd + 1.0) ) * _6j[S_ab][S_cd];
+
+            //dp part
+            (*this)[l](0,i,j) = -ddpm_i[l](0,i,j);
+
+            if(i == j)
+               (*this)[l](0,i,j) += ward - 0.5 * (dspm[a] + dspm[b]);
 
          }
       }
@@ -2580,19 +2683,10 @@ void dDPM::Q(const dDPM &ddpm_i){
             c = rTPM::gt2s(l,1,j,1);
             d = rTPM::gt2s(l,1,j,2);
 
-            (*this)[l](1,i,j) = tpm(1,a,b,c,d) - ddpm_i[l](1,i,j);
+            (*this)[l](1,i,j) = - ddpm_i[l](1,i,j);
 
             if(i == j)
-               (*this)[l](1,i,j) += ward - spm(l,l);
-
-            if(b == d)
-               (*this)[l](1,i,j) += tpm(1,a,l,c,l) - spm(a,c);
-
-            if(b == c)
-               (*this)[l](1,i,j) -= tpm(1,a,l,d,l) - spm(a,d);
-
-            if(a == c)
-               (*this)[l](1,i,j) += tpm(1,b,l,d,l) - spm(b,d);
+               (*this)[l](1,i,j) += ward - 0.5 * (dspm[a] + dspm[b]);
 
          }
       }
@@ -2600,5 +2694,35 @@ void dDPM::Q(const dDPM &ddpm_i){
    }
 
    this->symmetrize();
+
+}
+
+/**
+ * @return the trace of *this with the unitmatrix in dDP space.
+ */
+double dDPM::dotunit() const{
+
+   double ward = this->trace();
+
+   for(int S_ab = 0;S_ab < 2;++S_ab)
+      for(int S_cd = 0;S_cd < 2;++S_cd){
+
+         double hard = 0.0;
+
+         for(int l = 0;l < M;++l)
+            for(int b = 0;b < M;++b){
+
+               if(l == b)
+                  hard += 2.0 * (*this)(l,0,S_ab,l,b,S_cd,l,b);
+               else
+                  hard += (*this)(l,0,S_ab,l,b,S_cd,l,b);
+
+            }
+
+         ward += 2.0 * hard * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * _6j[S_ab][S_cd];
+
+      }
+
+   return ward;
 
 }

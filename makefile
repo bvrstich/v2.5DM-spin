@@ -16,6 +16,7 @@ CPPSRC	= pr_sdp.cpp\
             TPM.cpp\
             SPM.cpp\
             dDPM.cpp\
+            dSPM.cpp\
             dDPV.cpp\
             SUP.cpp\
             EIG.cpp\

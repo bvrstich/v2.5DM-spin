@@ -35,11 +35,12 @@ int main(void){
 
    cout.precision(10);
 
-   const int M = 4;//nr of spatial orbitals
-   const int N = 4;//nr of particles
+   const int M = 6;//nr of spatial orbitals
+   const int N = 5;//nr of particles
 
    rTPM::init(M,N);
    dDPM::init(M,N);
+   dSPM::init(M,N);
    TPM::init(M,N);
    SPM::init(M,N);
    dDPV::init(M,N);
@@ -47,6 +48,23 @@ int main(void){
    SUP::init(M,N);
    Tools::init(M,N);
 
+   dDPM ddpm;
+   ddpm.fill_Random();
+
+   ddpm.proj_W();
+
+   dDPM Q;
+   Q.Q(ddpm);
+
+   dDPM ddpm_2;
+   ddpm_2.fill_Random();
+
+   dDPM Q2;
+   Q2.Q_down(ddpm_2);
+
+   cout << ddpm.ddot(Q2) << "\t" << Q.ddot(ddpm_2) << endl;
+
+/*
    //hamiltoniaan
    dDPM ham;
    ham.hubbard(1.0);
@@ -130,12 +148,7 @@ int main(void){
 
    cout << "Final Energy:\t" << ham.ddot(W) << endl;
 
-   dDPM Q;
-   Q.Q(W);
-
-   dDPV v(Q);
-   cout << v;
-
+*/
    Tools::clear();
    TPM::clear();
    dDPM::clear();

@@ -311,70 +311,6 @@ void TPM::set_S_2(){
 
 }
 
-/** 
- * Construct the pairing hamiltonian with a single particle spectrum
- * @param pair_coupling The strenght of the pairing interaction
- */
-void TPM::sp_pairing(double pair_coupling){
-
-   double *E = new double [M/2];
-
-   //single particle spectrum
-   for(int a = -M/2;a < 0;++a)
-      E[M/2 + a] = (double) a;
-
-   double *x = new double [M/2];
-
-   //pairing interaction term
-   for(int a = 0;a < M/2;++a)
-      x[a] = 1.0;
-
-   //normeren op 1/2
-   double ward = 0.0;
-
-   for(int i = 0;i < M/2;++i)
-      ward += x[i]*x[i];
-
-   ward *= 2.0;
-
-   for(int a = 0;a < M/2;++a)
-      x[a] /= std::sqrt(ward);
-
-   int a,b,c,d;
-
-   for(int S = 0;S < 2;++S){
-
-      for(int i = 0;i < this->gdim(S);++i){
-
-         a = t2s[S][i][0];
-         b = t2s[S][i][1];
-
-         //sp stuk
-         (*this)(S,i,i) = (E[a] + E[b])/(N - 1.0);
-
-         if(a == b)
-            (*this)(S,i,i) -= 2.0*pair_coupling*x[a]*x[a];
-
-         for(int j = i + 1;j < this->gdim(S);++j){
-
-            c = t2s[S][j][0];
-            d = t2s[S][j][1];
-
-            if(a == b && c == d)
-               (*this)(S,i,j) = -2.0*pair_coupling*x[a]*x[c];
-
-         }
-
-      }
-
-   }
-
-   this->symmetrize();
-
-   delete [] E;
-
-}
-
 /**
  * @return The expectation value of the total spin for the TPM.
  */
@@ -439,32 +375,5 @@ void TPM::test_basis(){
       for(int a = 0;a < M;++a)
          for(int b = a + S;b < M;++b)
             cout << S << "\t" << a << "\t" << "\t" << b << "\t|\t" << s2t[S][a][b] << "\t" << s2t[S][b][a] << endl;
-
-}
-
-/**
- * inproduct expressen in sp coords
- * @param O operator you take the inproduct of
- * @return the inproduct
- */
-double TPM::inprod(const TPM &O){
-
-   double ward = 0.0;
-
-   //S = 0
-   for(int a = 0;a < M;++a)
-      for(int b = a;b < M;++b)
-         for(int c = 0;c < M;++c)
-            for(int d = c;d < M;++d)
-               ward += (*this)(0,a,b,c,d)*O(0,a,b,c,d);
-
-   //S = 1
-   for(int a = 0;a < M;++a)
-      for(int b = a + 1;b < M;++b)
-         for(int c = 0;c < M;++c)
-            for(int d = c + 1;d < M;++d)
-               ward += 3.0*(*this)(1,a,b,c,d)*O(1,a,b,c,d);
-
-   return ward;
 
 }

@@ -63,13 +63,9 @@ class TPM : public BlockMatrix {
 
       void set_S_2();
 
-      void sp_pairing(double );
-
       double spin() const;
 
       void bar(double scale,const dDPM &);
-
-      double inprod(const TPM &);
 
       static void test_basis();
 
