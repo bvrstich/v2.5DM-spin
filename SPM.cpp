@@ -136,7 +136,7 @@ void SPM::breve(double scale,const dDPM &ddpm){
 
          (*this)(b,d) = 0.0;
 
-         //first S = 1/2
+         //only S = 1/2 contribution
          for(int S_ab = 0;S_ab < 2;++S_ab)
             for(int S_cd = 0;S_cd < 2;++S_cd){
 
@@ -159,10 +159,6 @@ void SPM::breve(double scale,const dDPM &ddpm){
                (*this)(b,d) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(S_ab,S_cd) * ward;
 
             }
-
-         //then S = 3/2
-         for(int l = 0;l < M;++l)
-            (*this)(b,d) -= 2.0 * ddpm(l,1,1,l,b,1,l,d);
 
          (*this)(b,d) *= scale;
 
