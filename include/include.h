@@ -7,6 +7,7 @@
 #include "rTPM.h"
 #include "TPM.h"
 #include "SPM.h"
+#include "PHM.h"
 
 #include "dDPM.h"
 #include "dSPM.h"
