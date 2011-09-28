@@ -2396,19 +2396,19 @@ void dDPM::Q(const dDPM &ddpm_i){
                //sp(1) second term
                if(d == l)
                   (*this)[l](0,i,j) -= sign_ab * sign_cd * norm_ab * norm_cd * hard * spm(a,c);
-/*
+
                //sp(3)
                if(a == d)
                   (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * hard * spm(c,l);
-*/
+
                //sp(4) second term
                if(l == c)
                   (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * hard * spm(a,d);
-/*
+
                //sp(6)
                if(a == c)
                   (*this)[l](0,i,j) -= sign_ab * sign_cd * norm_ab * norm_cd * hard * spm(l,d);
-*/
+
                //np(4)
                if(c == l && a == d)
                   (*this)[l](0,i,j) += sign_ab * norm_ab * norm_cd * hard * ward;
@@ -2434,7 +2434,7 @@ void dDPM::Q(const dDPM &ddpm_i){
                //sp(5) second term
                if(c == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * hard * spm(b,d);
- /*              
+             
                //sp(3) second part
                if(b == d)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * hard * spm(c,l);
@@ -2442,7 +2442,7 @@ void dDPM::Q(const dDPM &ddpm_i){
                //sp(6) second part
                if(b == c)
                   (*this)[l](0,i,j) -= sign_cd * norm_ab * norm_cd * hard * spm(d,l);
-*/
+
                //np(3)
                if(c == l && b == d)
                   (*this)[l](0,i,j) += norm_ab * norm_cd * hard * ward;
@@ -2452,15 +2452,15 @@ void dDPM::Q(const dDPM &ddpm_i){
                   (*this)[l](0,i,j) += sign_cd * norm_ab * norm_cd * hard * ward;
 
             }
-/*
-            if(l == d){
 
+            if(l == d){
+/*
                //tp(4)
                if(c == l)
                   (*this)[l](0,i,j) += std::sqrt(2.0) * norm_cd * sign_ab * sign_cd * hard * tpm(S_ab,a,b,c,l);
                else
                   (*this)[l](0,i,j) += norm_cd * sign_ab * sign_cd * hard * tpm(S_ab,a,b,c,l);
-
+*/
                //sp(7) first term
                if(b == c)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * hard * spm(a,l);
@@ -2472,7 +2472,7 @@ void dDPM::Q(const dDPM &ddpm_i){
             }
 
             if(b == d){
-
+/*
                //tp(5)
                double hulp = 0.0;
 
@@ -2488,7 +2488,7 @@ void dDPM::Q(const dDPM &ddpm_i){
                   hulp *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) += norm_ab * norm_cd * sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2*S_cd + 1.0) ) * hulp;
-
+*/
                //sp(7) second term
                if(c == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * hard * spm(a,l);
@@ -2496,7 +2496,7 @@ void dDPM::Q(const dDPM &ddpm_i){
             }
 
             if(a == d){
-
+/*
                //tp(6)
                double hulp = 0.0;
 
@@ -2511,13 +2511,13 @@ void dDPM::Q(const dDPM &ddpm_i){
                   hulp *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) += sign_cd * std::sqrt( (2*S_ab + 1) * (2*S_cd + 1.0) ) * norm_ab * norm_cd * hulp;
-
+*/
                //sp(8) second term
                if(c == l)
                   (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * hard * spm(b,l);
 
             }
-
+/*
             if(c == l){
 
                //tp(7)
@@ -2622,6 +2622,9 @@ void dDPM::Q_down(const dDPM &ddpm_i){
    SPM breve;
    breve.breve(1.0/((N - 1.0)*(N - 2.0)),ddpm_i);
 
+   dTPM dtpm;
+   dtpm.freebar(1.0/((N - 1.0)*(N - 2.0)),ddpm_i);
+
    double ward = 2.0 * ddpm_i.dotunit()/( N*(N - 1.0)*(N - 2.0) );
 
    int a,b,c,d;
@@ -2675,16 +2678,16 @@ void dDPM::Q_down(const dDPM &ddpm_i){
             if(S_ab == S_cd){
 
                if(b == d)
-                  (*this)[l](0,i,j) -= norm_ab * norm_cd * ( spm(a,c) + breve(a,c) );
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * ( spm(a,c) + breve(a,c) + dtpm[a](a,c) + dtpm[c](a,c) );
 
                if(a == d)
-                  (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * ( spm(b,c) + breve(b,c) );
+                  (*this)[l](0,i,j) -= sign_ab * norm_ab * norm_cd * ( spm(b,c) + breve(b,c) + dtpm[b](b,c) + dtpm[c](b,c) );
 
                if(b == c)
-                  (*this)[l](0,i,j) -= sign_cd * norm_ab * norm_cd * ( spm(a,d) + breve(a,d) );
+                  (*this)[l](0,i,j) -= sign_cd * norm_ab * norm_cd * ( spm(a,d) + breve(a,d) + dtpm[a](a,d) + dtpm[d](a,d) );
 
                if(a == c)
-                  (*this)[l](0,i,j) -= norm_ab * norm_cd * ( spm(b,d) + breve(b,d) );
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * ( spm(b,d) + breve(b,d) + dtpm[b](b,d) + dtpm[d](b,d) );
 
             }
 
@@ -2708,13 +2711,13 @@ void dDPM::Q_down(const dDPM &ddpm_i){
                (*this)[l](1,i,j) += ward - 0.5 * (dspm[a] + dspm[b]);
 
             if(b == d)
-               (*this)[l](1,i,j) -= spm(a,c) + breve(a,c);
+               (*this)[l](1,i,j) -= spm(a,c) + breve(a,c) + dtpm[a](a,c) + dtpm[c](a,c);
 
             if(b == c)
-               (*this)[l](1,i,j) += spm(a,d) + breve(a,d);
+               (*this)[l](1,i,j) += spm(a,d) + breve(a,d) + dtpm[a](a,d) + dtpm[d](a,d);
 
             if(a == c)
-               (*this)[l](1,i,j) -= spm(b,d) + breve(b,d);
+               (*this)[l](1,i,j) -= spm(b,d) + breve(b,d) + dtpm[b](b,d) + dtpm[d](b,d);
 
          }
       }

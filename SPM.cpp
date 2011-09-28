@@ -123,9 +123,9 @@ void SPM::bar(double scale,const TPM &tpm){
 }
 
 /**
- * map a dPPHM matrix on a SPM by tracing the second indices together with the diagonal third (see symmetry.pdf)
+ * map a dDPM matrix on a SPM by tracing the second indices together with the diagonal third (see symmetry.pdf)
  * @param scale the SPM with this number
- * @param dpphm input dPPHM object
+ * @param ddpm input dDPM object
  */
 void SPM::breve(double scale,const dDPM &ddpm){
 

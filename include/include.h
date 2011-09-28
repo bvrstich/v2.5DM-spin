@@ -10,6 +10,7 @@
 
 #include "dDPM.h"
 #include "dSPM.h"
+#include "dTPM.h"
 
 #include "dDPV.h"
 
