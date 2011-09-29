@@ -12,18 +12,21 @@
 #include "BlockMatrix.h"
 #include "BlockVector.h"
 
-#include "rTPM.h"
+#include "rxTPM.h"
 #include "TPM.h"
 #include "SPM.h"
-#include "rSPM.h"
+#include "xSPM.h"
 #include "PHM.h"
+#include "xTPM.h"
 
 #include "dDPM.h"
 #include "dSPM.h"
 #include "dTPM.h"
 #include "ssdTPM.h"
+#include "dPPHM.h"
 
 #include "dDPV.h"
+#include "dPPHV.h"
 
 #include "SUP.h"
 #include "EIG.h"

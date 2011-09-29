@@ -1,5 +1,5 @@
-#ifndef rSPM_H
-#define rSPM_H
+#ifndef xSPM_H
+#define xSPM_H
 
 #include <iostream>
 #include <fstream>
@@ -11,20 +11,20 @@ using std::ostream;
 /**
  * @author Brecht Verstichel
  * @date 19-04-2010\n\n
- * This class rSPM is a class written for the blocks of the dTPM object, which is a TPM object with the second index diagonal
+ * This class xSPM is a class written for the blocks of the dTPM object, which is a TPM object with the second index diagonal
  * It consists of two blocks with equal dimensions and inherits from BlockMatrix.
  */
-class rSPM : public BlockMatrix {
+class xSPM : public BlockMatrix {
 
    public:
       
-      rSPM();
+      xSPM();
 
       //copy constructor
-      rSPM(const rSPM &);
+      xSPM(const xSPM &);
 
       //destructor
-      virtual ~rSPM();
+      virtual ~xSPM();
 
       void constr_lists();
 

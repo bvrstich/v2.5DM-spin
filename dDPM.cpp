@@ -53,14 +53,14 @@ void dDPM::clear(){
 }
 
 /**
- * standard constructor: constructs M rTPM object with parameter l = 0 -> M-1
+ * standard constructor: constructs M rxTPM object with parameter l = 0 -> M-1
  */
 dDPM::dDPM() {
 
-   ddpm = new rTPM * [M];
+   ddpm = new rxTPM * [M];
 
    for(int l = 0;l < M;++l)
-      ddpm[l] = new rTPM(l);
+      ddpm[l] = new rxTPM(l);
 
 }
 
@@ -70,10 +70,10 @@ dDPM::dDPM() {
  */
 dDPM::dDPM(const dDPM &W) { 
 
-   ddpm = new rTPM * [M];
+   ddpm = new rxTPM * [M];
 
    for(int l = 0;l < M;++l)
-      ddpm[l] = new rTPM(W[l]);
+      ddpm[l] = new rxTPM(W[l]);
 
 }
 
@@ -108,22 +108,22 @@ int dDPM::gM() const {
 }
 
 /**
- * acces to the individual rTPM objects
- * @param l the specific rTPM object you want
- * @return the rTPM object with parameter l
+ * acces to the individual rxTPM objects
+ * @param l the specific rxTPM object you want
+ * @return the rxTPM object with parameter l
  */
-rTPM &dDPM::operator[](int l){
+rxTPM &dDPM::operator[](int l){
 
    return *ddpm[l];
 
 }
 
 /**
- * acces to the individual rTPM objects: the const version
- * @param l the specific rTPM object you want
- * @return the rTPM object with parameter l
+ * acces to the individual rxTPM objects: the const version
+ * @param l the specific rxTPM object you want
+ * @return the rxTPM object with parameter l
  */
-const rTPM &dDPM::operator[](int l) const{
+const rxTPM &dDPM::operator[](int l) const{
 
    return *ddpm[l];
 
@@ -152,7 +152,7 @@ double dDPM::operator()(int l,int S,int S_ab,int a,int b,int S_cd,int c,int d) c
    if(phase_j == 0)
       return 0.0;
 
-   return phase_i * phase_j * (*this)[l](S,rTPM::gs2t(l,S,S_ab,a,b),rTPM::gs2t(l,S,S_cd,c,d));
+   return phase_i * phase_j * (*this)[l](S,rxTPM::gs2t(l,S,S_ab,a,b),rxTPM::gs2t(l,S,S_cd,c,d));
 
 }
 
@@ -381,7 +381,7 @@ void dDPM::pseudo_invert(){
 }
 
 /**
- * Pseudo - sqrt of the ddpm object, calls the rTPM::pseudo_sqrt() function
+ * Pseudo - sqrt of the ddpm object, calls the rxTPM::pseudo_sqrt() function
  * @param option == 1 positive sqrt , if == -1 negative sqrt
  */
 void dDPM::pseudo_sqrt(int option){
@@ -468,8 +468,8 @@ void dDPM::proj_W(){
                //5
                ward += 2.0*std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * _6j[S_ab][0] * _6j[S_cd][0] * (1 - 2*S_ab) * (1 - 2*S_cd) * (*this)(a,0,0,l,l,0,l,l);
 
-               i = rTPM::gs2t(l,0,S_ab,l,a);
-               j = rTPM::gs2t(l,0,S_cd,l,a);
+               i = rxTPM::gs2t(l,0,S_ab,l,a);
+               j = rxTPM::gs2t(l,0,S_cd,l,a);
 
                if(l > a){
 
@@ -489,7 +489,7 @@ void dDPM::proj_W(){
 
             }
 
-         i = rTPM::gs2t(a,0,0,l,l);
+         i = rxTPM::gs2t(a,0,0,l,l);
 
          (*this)[a](0,i,i) = 0.0;
 
@@ -530,8 +530,8 @@ void dDPM::proj_W(){
             for(int S_lb = 0;S_lb < 2;++S_lb)
                ward += 2.0*std::sqrt( (2.0*S_cd + 1.0) * (2.0*S_lb + 1.0) ) * _6j[0][S_lb] * _6j[S_cd][0] * (*this)(a,0,S_lb,l,a,0,l,l);
 
-            i = rTPM::gs2t(l,0,0,a,a);
-            j = rTPM::gs2t(l,0,S_cd,a,l);
+            i = rxTPM::gs2t(l,0,0,a,a);
+            j = rxTPM::gs2t(l,0,S_cd,a,l);
 
             if(a > l)
                phase_j = 1 - 2*S_cd;
@@ -546,8 +546,8 @@ void dDPM::proj_W(){
          //then the "a" block
          for(int S_lb = 0;S_lb < 2;++S_lb){
 
-            i = rTPM::gs2t(a,0,S_lb,l,a);
-            j = rTPM::gs2t(a,0,0,l,l);
+            i = rxTPM::gs2t(a,0,S_lb,l,a);
+            j = rxTPM::gs2t(a,0,0,l,l);
 
             if(l > a)
                phase_i = 1 - 2*S_lb;
@@ -606,8 +606,8 @@ void dDPM::proj_W(){
 
                      }
 
-                  i = rTPM::gs2t(l,0,S_ab,a,b);
-                  j = rTPM::gs2t(l,0,S_cd,a,b);
+                  i = rxTPM::gs2t(l,0,S_ab,a,b);
+                  j = rxTPM::gs2t(l,0,S_cd,a,b);
 
                   (*this)[l](0,i,j) = ward/3.0;
                   (*this)[l](0,j,i) = (*this)[l](0,i,j);
@@ -618,8 +618,8 @@ void dDPM::proj_W(){
             for(int S_lb = 0;S_lb < 2;++S_lb)
                for(int S_ld = S_lb;S_ld < 2;++S_ld){
 
-                  i = rTPM::gs2t(a,0,S_lb,l,b);
-                  j = rTPM::gs2t(a,0,S_ld,l,b);
+                  i = rxTPM::gs2t(a,0,S_lb,l,b);
+                  j = rxTPM::gs2t(a,0,S_ld,l,b);
 
                   if(l > b){
 
@@ -652,8 +652,8 @@ void dDPM::proj_W(){
             for(int S_al = 0;S_al < 2;++S_al)
                for(int S_cl = S_al;S_cl < 2;++S_cl){
 
-                  i = rTPM::gs2t(b,0,S_al,a,l);
-                  j = rTPM::gs2t(b,0,S_cl,a,l);
+                  i = rxTPM::gs2t(b,0,S_al,a,l);
+                  j = rxTPM::gs2t(b,0,S_cl,a,l);
 
                   if(a > l){
 
@@ -725,8 +725,8 @@ void dDPM::proj_W(){
 
                   }
 
-                  i = rTPM::gs2t(l,0,S_ab,a,l);
-                  j = rTPM::gs2t(l,0,S_cd,c,a);
+                  i = rxTPM::gs2t(l,0,S_ab,a,l);
+                  j = rxTPM::gs2t(l,0,S_cd,c,a);
 
                   if(a > l)
                      phase_i = 1 - 2*S_ab;
@@ -741,8 +741,8 @@ void dDPM::proj_W(){
             //then the "a" block
             for(int S_cl = 0;S_cl < 2;++S_cl){
 
-               i = rTPM::gs2t(a,0,0,l,l);
-               j = rTPM::gs2t(a,0,S_cl,c,l);
+               i = rxTPM::gs2t(a,0,0,l,l);
+               j = rxTPM::gs2t(a,0,S_cl,c,l);
 
                if(c > l)
                   phase_j = 1 - 2*S_cl;
@@ -796,8 +796,8 @@ void dDPM::proj_W(){
 
                   }
 
-                  i = rTPM::gs2t(l,0,S_ab,a,l);
-                  j = rTPM::gs2t(l,0,S_cd,a,d);
+                  i = rxTPM::gs2t(l,0,S_ab,a,l);
+                  j = rxTPM::gs2t(l,0,S_cd,a,d);
 
                   if(a > l)
                      phase_i = 1 - 2*S_ab;
@@ -812,8 +812,8 @@ void dDPM::proj_W(){
             //then the "a" block
             for(int S_ld = 0;S_ld < 2;++S_ld){
 
-               i = rTPM::gs2t(a,0,0,l,l);
-               j = rTPM::gs2t(a,0,S_ld,l,d);
+               i = rxTPM::gs2t(a,0,0,l,l);
+               j = rxTPM::gs2t(a,0,S_ld,l,d);
 
                if(l > d)
                   phase_j = 1 - 2*S_ld;
@@ -851,8 +851,8 @@ void dDPM::proj_W(){
             for(int S_ab = 0;S_ab < 2;++S_ab)
                for(int S_cd = 0;S_cd < 2;++S_cd){
 
-                  i = rTPM::gs2t(l,0,S_ab,l,b);
-                  j = rTPM::gs2t(l,0,S_cd,l,d);
+                  i = rxTPM::gs2t(l,0,S_ab,l,b);
+                  j = rxTPM::gs2t(l,0,S_cd,l,d);
 
                   double ward = mat[S_ab][S_cd];
 
@@ -890,8 +890,8 @@ void dDPM::proj_W(){
             for(int S_ab = 0;S_ab < 2;++S_ab)
                for(int S_cd = 0;S_cd < 2;++S_cd){
 
-                  i = rTPM::gs2t(l,0,S_ab,a,l);
-                  j = rTPM::gs2t(l,0,S_cd,l,d);
+                  i = rxTPM::gs2t(l,0,S_ab,a,l);
+                  j = rxTPM::gs2t(l,0,S_cd,l,d);
 
                   double ward = mat[S_ab][S_cd];
 
@@ -929,8 +929,8 @@ void dDPM::proj_W(){
             for(int S_ab = 0;S_ab < 2;++S_ab)
                for(int S_cd = 0;S_cd < 2;++S_cd){
 
-                  i = rTPM::gs2t(l,0,S_ab,a,l);
-                  j = rTPM::gs2t(l,0,S_cd,c,l);
+                  i = rxTPM::gs2t(l,0,S_ab,a,l);
+                  j = rxTPM::gs2t(l,0,S_cd,c,l);
 
                   double ward = mat[S_ab][S_cd];
 
@@ -996,8 +996,8 @@ void dDPM::proj_W(){
 
                         }
 
-                     i = rTPM::gs2t(l,0,S_ab,a,b);
-                     j = rTPM::gs2t(l,0,S_cd,a,d);
+                     i = rxTPM::gs2t(l,0,S_ab,a,b);
+                     j = rxTPM::gs2t(l,0,S_cd,a,d);
 
                      (*this)[l](0,i,j) = 0.5*ward;
                      (*this)[l](0,j,i) = (*this)[l](0,i,j);
@@ -1008,8 +1008,8 @@ void dDPM::proj_W(){
                for(int S_lb = 0;S_lb < 2;++S_lb)
                   for(int S_ld = 0;S_ld < 2;++S_ld){
 
-                     i = rTPM::gs2t(a,0,S_lb,l,b);
-                     j = rTPM::gs2t(a,0,S_ld,l,d);
+                     i = rxTPM::gs2t(a,0,S_lb,l,b);
+                     j = rxTPM::gs2t(a,0,S_ld,l,d);
 
                      if(l > b)
                         phase_i = 1 - 2*S_lb;
@@ -1081,8 +1081,8 @@ void dDPM::proj_W(){
 
                         }
 
-                     i = rTPM::gs2t(l,0,S_ab,a,b);
-                     j = rTPM::gs2t(l,0,S_cd,b,d);
+                     i = rxTPM::gs2t(l,0,S_ab,a,b);
+                     j = rxTPM::gs2t(l,0,S_cd,b,d);
 
                      (*this)[l](0,i,j) = 0.5 * ward;
                      (*this)[l](0,j,i) = (*this)[l](0,i,j);
@@ -1093,8 +1093,8 @@ void dDPM::proj_W(){
                for(int S_al = 0;S_al < 2;++S_al)
                   for(int S_ld = 0;S_ld < 2;++S_ld){
 
-                     i = rTPM::gs2t(b,0,S_al,a,l);
-                     j = rTPM::gs2t(b,0,S_ld,l,d);
+                     i = rxTPM::gs2t(b,0,S_al,a,l);
+                     j = rxTPM::gs2t(b,0,S_ld,l,d);
 
                      if(a > l)
                         phase_i = 1 - 2*S_al;
@@ -1165,8 +1165,8 @@ void dDPM::proj_W(){
 
                         }
 
-                     i = rTPM::gs2t(l,0,S_ab,a,b);
-                     j = rTPM::gs2t(l,0,S_cd,c,b);
+                     i = rxTPM::gs2t(l,0,S_ab,a,b);
+                     j = rxTPM::gs2t(l,0,S_cd,c,b);
 
                      (*this)[l](0,i,j) = 0.5*ward;
                      (*this)[l](0,j,i) = (*this)[l](0,i,j);
@@ -1177,8 +1177,8 @@ void dDPM::proj_W(){
                for(int S_al = 0;S_al < 2;++S_al)
                   for(int S_cl = 0;S_cl < 2;++S_cl){
 
-                     i = rTPM::gs2t(b,0,S_al,a,l);
-                     j = rTPM::gs2t(b,0,S_cl,c,l);
+                     i = rxTPM::gs2t(b,0,S_al,a,l);
+                     j = rxTPM::gs2t(b,0,S_cl,c,l);
 
                      if(a > l)
                         phase_i = 1 - 2*S_al;
@@ -1232,8 +1232,8 @@ void dDPM::proj_W(){
                            for(int S_al = 0;S_al < 2;++S_al)
                               ward += std::sqrt( (2.0*S_al + 1.0) * (2.0*S_ab + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_ab) * _6j[S_al][S_ab] * vec[S_al];
 
-                           i = rTPM::gs2t(l,0,S_ab,a,l);
-                           j = rTPM::gs2t(l,0,S_cd,c,d);
+                           i = rxTPM::gs2t(l,0,S_ab,a,l);
+                           j = rxTPM::gs2t(l,0,S_cd,c,d);
 
                            (*this)[l](0,i,j) = 0.5 * ward;
                            (*this)[l](0,j,i) = (*this)[l](0,i,j);
@@ -1275,8 +1275,8 @@ void dDPM::proj_W(){
                            for(int S_lb = 0;S_lb < 2;++S_lb)
                               ward += std::sqrt( (2.0*S_lb + 1.0) * (2.0*S_ab + 1.0) ) * _6j[S_lb][S_ab] * vec[S_lb];
 
-                           i = rTPM::gs2t(l,0,S_ab,l,b);
-                           j = rTPM::gs2t(l,0,S_cd,c,d);
+                           i = rxTPM::gs2t(l,0,S_ab,l,b);
+                           j = rxTPM::gs2t(l,0,S_cd,c,d);
 
                            (*this)[l](0,i,j) = 0.5 * ward;
                            (*this)[l](0,j,i) = (*this)[l](0,i,j);
@@ -1314,16 +1314,16 @@ void dDPM::proj_W(){
             if(b == M)
                break;
 
-            i = rTPM::gs2t(l,1,1,a,b);
+            i = rxTPM::gs2t(l,1,1,a,b);
 
             (*this)[l](1,i,i) = 1.0/3.0 * ( (*this)[l](1,i,i) + (*this)(a,1,1,l,b,1,l,b) + (*this)(b,1,1,a,l,1,a,l) );
 
             //rest is symmetric
-            i = rTPM::gs2t(a,1,1,l,b);
+            i = rxTPM::gs2t(a,1,1,l,b);
 
             (*this)[a](1,i,i) = (*this)(l,1,1,a,b,1,a,b);
 
-            i = rTPM::gs2t(b,1,1,a,l);
+            i = rxTPM::gs2t(b,1,1,a,l);
 
             (*this)[b](1,i,i) = (*this)(l,1,1,a,b,1,a,b);
 
@@ -1357,14 +1357,14 @@ void dDPM::proj_W(){
                if(b == M)
                   break;
 
-               i = rTPM::gs2t(l,1,1,a,b);
-               j = rTPM::gs2t(l,1,1,c,b);
+               i = rxTPM::gs2t(l,1,1,a,b);
+               j = rxTPM::gs2t(l,1,1,c,b);
 
                (*this)[l](1,i,j) = 0.5 * ( (*this)[l](1,i,j) + (*this)(b,1,1,a,l,1,c,l) );
                (*this)[l](1,j,i) = (*this)[l](1,i,j);
 
-               i = rTPM::gs2t(b,1,1,a,l);
-               j = rTPM::gs2t(b,1,1,c,l);
+               i = rxTPM::gs2t(b,1,1,a,l);
+               j = rxTPM::gs2t(b,1,1,c,l);
 
                if(a > l)
                   phase_i = -1;
@@ -1408,14 +1408,14 @@ void dDPM::proj_W(){
                if(c == M)
                   break;
 
-               i = rTPM::gs2t(l,1,1,a,b);
-               j = rTPM::gs2t(l,1,1,b,c);
+               i = rxTPM::gs2t(l,1,1,a,b);
+               j = rxTPM::gs2t(l,1,1,b,c);
 
                (*this)[l](1,i,j) = 0.5 * ( (*this)[l](1,i,j) + (*this)(b,1,1,a,l,1,l,c) );
                (*this)[l](1,j,i) = (*this)[l](1,i,j);
 
-               i = rTPM::gs2t(b,1,1,a,l);
-               j = rTPM::gs2t(b,1,1,l,c);
+               i = rxTPM::gs2t(b,1,1,a,l);
+               j = rxTPM::gs2t(b,1,1,l,c);
 
                if(a > l)
                   phase_i = -1;
@@ -1459,14 +1459,14 @@ void dDPM::proj_W(){
                if(c == M)
                   break;
 
-               i = rTPM::gs2t(l,1,1,a,b);
-               j = rTPM::gs2t(l,1,1,a,c);
+               i = rxTPM::gs2t(l,1,1,a,b);
+               j = rxTPM::gs2t(l,1,1,a,c);
 
                (*this)[l](1,i,j) = 0.5 * ( (*this)[l](1,i,j) + (*this)(a,1,1,l,b,1,l,c) );
                (*this)[l](1,j,i) = (*this)[l](1,i,j);
 
-               i = rTPM::gs2t(a,1,1,l,b);
-               j = rTPM::gs2t(a,1,1,l,c);
+               i = rxTPM::gs2t(a,1,1,l,b);
+               j = rxTPM::gs2t(a,1,1,l,c);
 
                if(l > b)
                   phase_i = -1;
@@ -2018,17 +2018,17 @@ void dDPM::up(const TPM &tpm){
 
          for(int i = 0;i < ddpm[l]->gdim(S);++i){
 
-            S_ab = rTPM::gt2s(l,S,i,0);
+            S_ab = rxTPM::gt2s(l,S,i,0);
 
-            a = rTPM::gt2s(l,S,i,1);
-            b = rTPM::gt2s(l,S,i,2);
+            a = rxTPM::gt2s(l,S,i,1);
+            b = rxTPM::gt2s(l,S,i,2);
 
             for(int j = i;j < ddpm[l]->gdim(S);++j){
 
-               S_cd = rTPM::gt2s(l,S,j,0);
+               S_cd = rxTPM::gt2s(l,S,j,0);
 
-               c = rTPM::gt2s(l,S,j,1);
-               d = rTPM::gt2s(l,S,j,2);
+               c = rxTPM::gt2s(l,S,j,1);
+               d = rxTPM::gt2s(l,S,j,2);
 
                if(S_ab == S_cd)
                   (*this)[l](S,i,j) = tpm(S_ab,a,b,c,d)/(N - 2.0);
@@ -2074,17 +2074,17 @@ void dDPM::unit(){
 
          for(int i = 0;i < ddpm[l]->gdim(S);++i){
 
-            S_ab = rTPM::gt2s(l,S,i,0);
+            S_ab = rxTPM::gt2s(l,S,i,0);
 
-            a = rTPM::gt2s(l,S,i,1);
-            b = rTPM::gt2s(l,S,i,2);
+            a = rxTPM::gt2s(l,S,i,1);
+            b = rxTPM::gt2s(l,S,i,2);
 
             for(int j = i;j < ddpm[l]->gdim(S);++j){
 
-               S_cd = rTPM::gt2s(l,S,j,0);
+               S_cd = rxTPM::gt2s(l,S,j,0);
 
-               c = rTPM::gt2s(l,S,j,1);
-               d = rTPM::gt2s(l,S,j,2);
+               c = rxTPM::gt2s(l,S,j,1);
+               d = rxTPM::gt2s(l,S,j,2);
 
                //set the norm
                norm = 1.0;
@@ -2353,10 +2353,10 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
          //start with the S = 1/2 block, this is the most difficult one:
          for(int i = 0;i < ddpm[l]->gdim(0);++i){
 
-            S_ab = rTPM::gt2s(l,0,i,0);
+            S_ab = rxTPM::gt2s(l,0,i,0);
 
-            a = rTPM::gt2s(l,0,i,1);
-            b = rTPM::gt2s(l,0,i,2);
+            a = rxTPM::gt2s(l,0,i,1);
+            b = rxTPM::gt2s(l,0,i,2);
 
             sign_ab = 1 - 2*S_ab;
 
@@ -2367,10 +2367,10 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
 
             for(int j = i;j < ddpm[l]->gdim(0);++j){
 
-               S_cd = rTPM::gt2s(l,0,j,0);
+               S_cd = rxTPM::gt2s(l,0,j,0);
 
-               c = rTPM::gt2s(l,0,j,1);
-               d = rTPM::gt2s(l,0,j,2);
+               c = rxTPM::gt2s(l,0,j,1);
+               d = rxTPM::gt2s(l,0,j,2);
 
                sign_cd = 1 - 2*S_cd;
 
@@ -2599,13 +2599,13 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
          //then the S = 3/2 block, this should be easy, totally antisymmetrical 
          for(int i = 0;i < ddpm[l]->gdim(1);++i){
 
-            a = rTPM::gt2s(l,1,i,1);
-            b = rTPM::gt2s(l,1,i,2);
+            a = rxTPM::gt2s(l,1,i,1);
+            b = rxTPM::gt2s(l,1,i,2);
 
             for(int j = i;j < ddpm[l]->gdim(1);++j){
 
-               c = rTPM::gt2s(l,1,j,1);
-               d = rTPM::gt2s(l,1,j,2);
+               c = rxTPM::gt2s(l,1,j,1);
+               d = rxTPM::gt2s(l,1,j,2);
 
 
                (*this)[l](1,i,j) = tpm(1,a,b,c,d) - ddpm_i[l](1,i,j);
@@ -2667,10 +2667,10 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
          //start with the S = 1/2 block, this is the most difficult one:
          for(int i = 0;i < ddpm[l]->gdim(0);++i){
 
-            S_ab = rTPM::gt2s(l,0,i,0);
+            S_ab = rxTPM::gt2s(l,0,i,0);
 
-            a = rTPM::gt2s(l,0,i,1);
-            b = rTPM::gt2s(l,0,i,2);
+            a = rxTPM::gt2s(l,0,i,1);
+            b = rxTPM::gt2s(l,0,i,2);
 
             sign_ab = 1 - 2*S_ab;
 
@@ -2681,10 +2681,10 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
 
             for(int j = i;j < ddpm[l]->gdim(0);++j){
 
-               S_cd = rTPM::gt2s(l,0,j,0);
+               S_cd = rxTPM::gt2s(l,0,j,0);
 
-               c = rTPM::gt2s(l,0,j,1);
-               d = rTPM::gt2s(l,0,j,2);
+               c = rxTPM::gt2s(l,0,j,1);
+               d = rxTPM::gt2s(l,0,j,2);
 
                sign_cd = 1 - 2*S_cd;
 
@@ -2725,13 +2725,13 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
          //then the S = 3/2 block, this should be easy, totally antisymmetrical 
          for(int i = 0;i < ddpm[l]->gdim(1);++i){
 
-            a = rTPM::gt2s(l,1,i,1);
-            b = rTPM::gt2s(l,1,i,2);
+            a = rxTPM::gt2s(l,1,i,1);
+            b = rxTPM::gt2s(l,1,i,2);
 
             for(int j = i;j < ddpm[l]->gdim(1);++j){
 
-               c = rTPM::gt2s(l,1,j,1);
-               d = rTPM::gt2s(l,1,j,2);
+               c = rxTPM::gt2s(l,1,j,1);
+               d = rxTPM::gt2s(l,1,j,2);
 
                (*this)[l](1,i,j) = tpm(1,a,b,c,d) - ddpm_i[l](1,i,j) + phm(1,a,b,c,d) - phm(1,b,a,c,d) - phm(1,d,c,a,b) + phm(1,c,d,a,b);
 

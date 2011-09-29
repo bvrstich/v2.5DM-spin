@@ -11,18 +11,18 @@ using std::ios;
 
 #include "include.h"
 
-int rTPM::M;
-int rTPM::N;
+int rxTPM::M;
+int rxTPM::N;
 
-vector< vector<int> > **rTPM::t2s;
-int *****rTPM::s2t;
+vector< vector<int> > **rxTPM::t2s;
+int *****rxTPM::s2t;
 
 /**
  * initialize the static variables and allocate and initialize the static lists
  * @param M_in nr of sp orbs
  * @param N_in nr of particles
  */
-void rTPM::init(int M_in,int N_in){
+void rxTPM::init(int M_in,int N_in){
 
    M = M_in;
    N = N_in;
@@ -146,7 +146,7 @@ void rTPM::init(int M_in,int N_in){
 /**
  * deallocate the static lists
  */
-void rTPM::clear(){
+void rxTPM::clear(){
 
    for(int k = 0;k < M;++k)
       delete [] t2s[k];
@@ -182,7 +182,7 @@ void rTPM::clear(){
  * standard constructor, constructs two blocks, the S = 1/2 and S = 3/2
  * @param l the parameter l that determines which spatial sp indices are blocked out
  */
-rTPM::rTPM(int l) : BlockMatrix(2) {
+rxTPM::rxTPM(int l) : BlockMatrix(2) {
 
    this->l = l;
 
@@ -192,20 +192,20 @@ rTPM::rTPM(int l) : BlockMatrix(2) {
 }
 
 /**
- * copy constructor: constructs Matrix object and fills it with the content of blockmatrix rtpm_c
- * @param rtpm_c object that will be copied into this.
+ * copy constructor: constructs Matrix object and fills it with the content of blockmatrix rxtpm_c
+ * @param rxtpm_c object that will be copied into this.
  */
-rTPM::rTPM(const rTPM &rtpm_c) : BlockMatrix(rtpm_c){ 
+rxTPM::rxTPM(const rxTPM &rxtpm_c) : BlockMatrix(rxtpm_c){ 
 
-   this->l = rtpm_c.gl();
+   this->l = rxtpm_c.gl();
 
 }
 /**
  * destructor
  */
-rTPM::~rTPM(){ }
+rxTPM::~rxTPM(){ }
 
-ostream &operator<<(ostream &output,const rTPM &rtpm_p){
+ostream &operator<<(ostream &output,const rxTPM &rxtpm_p){
 
    for(int S = 0;S < 2;++S){
 
@@ -213,14 +213,14 @@ ostream &operator<<(ostream &output,const rTPM &rtpm_p){
       output << "S = " << 2*S + 1 << "/" << 2 << endl;
       output << endl;
 
-      for(int i = 0;i < rtpm_p.gdim(S);++i)
-         for(int j = 0;j < rtpm_p.gdim(S);++j){
+      for(int i = 0;i < rxtpm_p.gdim(S);++i)
+         for(int j = 0;j < rxtpm_p.gdim(S);++j){
 
-            output << i << "\t" << j << "\t|\t(" << rtpm_p.t2s[rtpm_p.gl()][S][i][0] << ")\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][1] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][i][2]
+            output << i << "\t" << j << "\t|\t(" << rxtpm_p.t2s[rxtpm_p.gl()][S][i][0] << ")\t" << rxtpm_p.t2s[rxtpm_p.gl()][S][i][1] << "\t" << rxtpm_p.t2s[rxtpm_p.gl()][S][i][2]
 
-               << "\t;\t(" << rtpm_p.t2s[rtpm_p.gl()][S][j][0] << ")\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][1] << "\t" << rtpm_p.t2s[rtpm_p.gl()][S][j][2] << "\t" 
+               << "\t;\t(" << rxtpm_p.t2s[rxtpm_p.gl()][S][j][0] << ")\t" << rxtpm_p.t2s[rxtpm_p.gl()][S][j][1] << "\t" << rxtpm_p.t2s[rxtpm_p.gl()][S][j][2] << "\t" 
 
-               << rtpm_p[S](i,j) << endl;
+               << rxtpm_p[S](i,j) << endl;
 
          }
 
@@ -233,7 +233,7 @@ ostream &operator<<(ostream &output,const rTPM &rtpm_p){
 /**
  * @return number of particles
  */
-int rTPM::gN() const{
+int rxTPM::gN() const{
 
    return N;
 
@@ -242,7 +242,7 @@ int rTPM::gN() const{
 /**
  * @return number of sp orbitals
  */
-int rTPM::gM() const{
+int rxTPM::gM() const{
 
    return M;
 
@@ -251,34 +251,34 @@ int rTPM::gM() const{
 /**
  * @return the parameter l
  */
-int rTPM::gl() const{
+int rxTPM::gl() const{
 
    return l;
 
 }
 
 /**
- * @param k which type is the rTPM
+ * @param k which type is the rxTPM
  * @pararm S the dp spin
  * @param i the tp index
  * @param option == 0 return a, == 1 return b
  * @return the sp indices corresponding to the tp index i with parameter l
  */
-int rTPM::gt2s(int k,int S,int i,int option){
+int rxTPM::gt2s(int k,int S,int i,int option){
 
    return t2s[k][S][i][option];
 
 }
 
 /**
- * @param k which type is the rTPM
+ * @param k which type is the rxTPM
  * @param S the dp spin
  * @pararm S_ab intermediate spin
  * @param a the first sp index
  * @param b the second sp index
  * @return the tp index corresponding to the sp indices a and b with parameter l
  */
-int rTPM::gs2t(int k,int S,int S_ab,int a,int b){
+int rxTPM::gs2t(int k,int S,int S_ab,int a,int b){
 
    return s2t[k][S][S_ab][a][b];
 
@@ -287,7 +287,7 @@ int rTPM::gs2t(int k,int S,int S_ab,int a,int b){
 /**
  * test if basis is correctly constructed
  */
-void rTPM::print_basis(){
+void rxTPM::print_basis(){
 
    for(int k = 0;k < M;++k){
 
@@ -313,7 +313,7 @@ void rTPM::print_basis(){
 /**
  * pseudo invert the S = 1/2 block using M-1 zero eigenvalues and invert the S = 3/2 block
  */
-void rTPM::pseudo_invert(){
+void rxTPM::pseudo_invert(){
 
    (*this)[0].pseudo_invert(M - 1);
    (*this)[1].invert();
@@ -324,7 +324,7 @@ void rTPM::pseudo_invert(){
  * take the positive or negative pseudo square root of the S = 1/2 block using M-1 zero eigenvalues 
  * and the regular pos or min square root of S = 3/2 block
  */
-void rTPM::pseudo_sqrt(int option){
+void rxTPM::pseudo_sqrt(int option){
 
    (*this)[0].pseudo_sqrt(option,M - 1);
    (*this)[1].sqrt(option);

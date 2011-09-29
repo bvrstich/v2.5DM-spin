@@ -6,12 +6,12 @@
 
 using std::ostream;
 
-#include "rSPM.h"
+#include "xSPM.h"
 
 /**
  * @author Brecht Verstichel
  * @date 23-06-2011\n\n
- * This class dTPM is an array of rrSPM matrices, it will contain a special "bar" function (see notes) of the different blocks of the dDPM and consorts.
+ * This class dTPM is an array of rxSPM matrices, it will contain a special "bar" function (see notes) of the different blocks of the dDPM and consorts.
  */
 class dTPM {
 
@@ -33,9 +33,9 @@ class dTPM {
       //destructor
       virtual ~dTPM();
 
-      rSPM &operator[](int);
+      xSPM &operator[](int);
 
-      const rSPM &operator[](int) const;
+      const xSPM &operator[](int) const;
 
       int gN() const;
 
@@ -81,8 +81,8 @@ class dTPM {
       //!dimension of sp hilbert space
       static int M;
 
-      //!double array of rrSPM objects
-      rSPM **dtpm;
+      //!double array of rxSPM objects
+      xSPM **dtpm;
 
 };
 

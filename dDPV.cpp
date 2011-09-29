@@ -30,10 +30,10 @@ void dDPV::init(int M_in,int N_in){
  */
 dDPV::dDPV(dDPM &ddpm) {
 
-   ddpv = new BlockVector<rTPM> * [M];
+   ddpv = new BlockVector<rxTPM> * [M];
 
    for(int l = 0;l < M;++l)
-      ddpv[l] = new BlockVector<rTPM> (ddpm[l]);
+      ddpv[l] = new BlockVector<rxTPM> (ddpm[l]);
    
 }
 
@@ -43,10 +43,10 @@ dDPV::dDPV(dDPM &ddpm) {
  */
 dDPV::dDPV(const dDPV &ddpv_c) { 
    
-   ddpv = new BlockVector<rTPM> * [M];
+   ddpv = new BlockVector<rxTPM> * [M];
 
    for(int l = 0;l < M;++l)
-      ddpv[l] = new BlockVector<rTPM> (ddpv_c[l]);
+      ddpv[l] = new BlockVector<rxTPM> (ddpv_c[l]);
 }
 
 /**
@@ -97,20 +97,20 @@ int dDPV::gM() const{
 }
 
 /**
- * access to the individual Vector<rTPM> objects
+ * access to the individual Vector<rxTPM> objects
  * @param l the index of the object you want
  */
-BlockVector<rTPM> &dDPV::operator[](int l){
+BlockVector<rxTPM> &dDPV::operator[](int l){
 
    return *ddpv[l];
 
 }
 
 /**
- * access to the individual Vector<rTPM> objects: the const version
+ * access to the individual Vector<rxTPM> objects: the const version
  * @param l the index of the object you want
  */
-const BlockVector<rTPM> &dDPV::operator[](int l) const{
+const BlockVector<rxTPM> &dDPV::operator[](int l) const{
 
    return *ddpv[l];
 

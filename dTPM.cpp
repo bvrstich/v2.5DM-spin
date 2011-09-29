@@ -27,14 +27,14 @@ void dTPM::init(int M_in,int N_in){
 }
 
 /**
- * standard constructor: constructs M rSPM object with parameter l = 0 -> M-1
+ * standard constructor: constructs M xSPM object with parameter l = 0 -> M-1
  */
 dTPM::dTPM() {
 
-   dtpm = new rSPM * [M];
+   dtpm = new xSPM * [M];
 
    for(int l = 0;l < M;++l)
-      dtpm[l] = new rSPM();
+      dtpm[l] = new xSPM();
 
 }
 
@@ -44,10 +44,10 @@ dTPM::dTPM() {
  */
 dTPM::dTPM(const dTPM &dtpm_c) { 
 
-   dtpm = new rSPM * [M];
+   dtpm = new xSPM * [M];
 
    for(int l = 0;l < M;++l)
-      dtpm[l] = new rSPM(dtpm_c[l]);
+      dtpm[l] = new xSPM(dtpm_c[l]);
    
 }
 
@@ -82,22 +82,22 @@ int dTPM::gM() const {
 }
 
 /**
- * acces to the individual rSPM objects
- * @param l the specific rSPM object you want
- * @return the rSPM object with parameter l
+ * acces to the individual xSPM objects
+ * @param l the specific xSPM object you want
+ * @return the xSPM object with parameter l
  */
-rSPM &dTPM::operator[](int l){
+xSPM &dTPM::operator[](int l){
 
    return *dtpm[l];
 
 }
 
 /**
- * acces to the individual rSPM objects: the const version
- * @param l the specific rSPM object you want
- * @return the rSPM object with parameter l
+ * acces to the individual xSPM objects: the const version
+ * @param l the specific xSPM object you want
+ * @return the xSPM object with parameter l
  */
-const rSPM &dTPM::operator[](int l) const{
+const xSPM &dTPM::operator[](int l) const{
 
    return *dtpm[l];
 

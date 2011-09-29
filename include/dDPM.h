@@ -6,7 +6,7 @@
 
 using std::ostream;
 
-#include "rTPM.h"
+#include "rxTPM.h"
 
 class SUP;
 
@@ -36,9 +36,9 @@ class dDPM {
       //destructor
       virtual ~dDPM();
 
-      rTPM &operator[](int);
+      rxTPM &operator[](int);
 
-      const rTPM &operator[](int) const;
+      const rxTPM &operator[](int) const;
 
       double operator()(int l,int S,int S_ab,int a,int b,int S_cd,int c,int d) const;
 
@@ -122,8 +122,8 @@ class dDPM {
       //!dimension of sp hilbert space
       static int M;
 
-      //!double array of rTPM objects
-      rTPM **ddpm;
+      //!double array of rxTPM objects
+      rxTPM **ddpm;
 
       //!static array holding the 6j symbols needed
       static double **_6j;

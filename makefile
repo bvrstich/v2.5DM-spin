@@ -12,16 +12,19 @@ CPPSRC	= pr_sdp.cpp\
             BlockMatrix.cpp\
             Matrix.cpp\
             Vector.cpp\
-            rTPM.cpp\
+            rxTPM.cpp\
             TPM.cpp\
             SPM.cpp\
-            rSPM.cpp\
+            xSPM.cpp\
             PHM.cpp\
+            xTPM.cpp\
             dDPM.cpp\
             dSPM.cpp\
             dTPM.cpp\
             ssdTPM.cpp\
+            dPPHM.cpp\
             dDPV.cpp\
+            dPPHV.cpp\
             SUP.cpp\
             EIG.cpp\
             Tools.cpp

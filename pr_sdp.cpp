@@ -35,19 +35,22 @@ int main(void){
 
    cout.precision(10);
 
-   const int M = 6;//nr of spatial orbitals
-   const int N = 6;//nr of particles
+   const int M = 4;//nr of spatial orbitals
+   const int N = 4;//nr of particles
 
-   rTPM::init(M,N);
+   rxTPM::init(M,N);
    TPM::init(M,N);
    SPM::init(M,N);
-   rSPM::init(M,N);
+   xSPM::init(M,N);
    PHM::init(M,N);
+   xTPM::init(M,N);
    dDPM::init(M,N);
    dSPM::init(M,N);
    dTPM::init(M,N);
    ssdTPM::init(M,N);
+   dPPHM::init(M,N);
    dDPV::init(M,N);
+   dPPHV::init(M,N);
    EIG::init(M,N);
    SUP::init(M,N);
    Tools::init(M,N);
@@ -137,9 +140,10 @@ int main(void){
 
    Tools::clear();
    dDPM::clear();
+   xTPM::clear();
    PHM::clear();
    TPM::clear();
-   rTPM::clear();
+   rxTPM::clear();
 
    return 0;
 

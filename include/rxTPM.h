@@ -1,5 +1,5 @@
-#ifndef rTPM_H
-#define rTPM_H
+#ifndef rxTPM_H
+#define rxTPM_H
 
 #include <iostream>
 #include <fstream>
@@ -14,28 +14,29 @@ class dDPM;
 
 /**
  * @author Brecht Verstichel
- * @date 04-08-2011\n\n
- * This class rTPM is a class written for spinsymmetrical two particle matrices with extra parameter l, which the spatial sp indices cannot be equal to.
+ * @date 29-09-2011\n\n
+ * This class rxTPM is a class written for the blocks of the dDPM matrices, it is called rxTPM because it is a reduced expansion of a TPM matrix.
+ * expanded for the same reason as xTPM and reduced because there is an extra parameter l which the sp indices cannot be equal to in the S = 3/2 block.
  */
-class rTPM : public BlockMatrix {
+class rxTPM : public BlockMatrix {
 
    /**
     * Output stream operator overloaded
     * @param output The stream to which you are writing (e.g. cout)
-    * @param rtpm_p the rTPM you want to print
+    * @param rxtpm_p the rxTPM you want to print
     */
-   friend ostream &operator<<(ostream &output,const rTPM &rtpm_p);
+   friend ostream &operator<<(ostream &output,const rxTPM &rxtpm_p);
 
    public:
       
       //constructor
-      rTPM(int);
+      rxTPM(int);
 
       //copy constructor
-      rTPM(const rTPM &);
+      rxTPM(const rxTPM &);
 
       //destructor
-      virtual ~rTPM();
+      virtual ~rxTPM();
 
       using BlockMatrix::operator=;
 
