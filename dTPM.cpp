@@ -27,14 +27,14 @@ void dTPM::init(int M_in,int N_in){
 }
 
 /**
- * standard constructor: constructs M SPM object with parameter l = 0 -> M-1
+ * standard constructor: constructs M rSPM object with parameter l = 0 -> M-1
  */
 dTPM::dTPM() {
 
-   dtpm = new SPM * [M];
+   dtpm = new rSPM * [M];
 
    for(int l = 0;l < M;++l)
-      dtpm[l] = new SPM();
+      dtpm[l] = new rSPM();
 
 }
 
@@ -44,10 +44,10 @@ dTPM::dTPM() {
  */
 dTPM::dTPM(const dTPM &dtpm_c) { 
 
-   dtpm = new SPM * [M];
+   dtpm = new rSPM * [M];
 
    for(int l = 0;l < M;++l)
-      dtpm[l] = new SPM(dtpm_c[l]);
+      dtpm[l] = new rSPM(dtpm_c[l]);
    
 }
 
@@ -82,22 +82,22 @@ int dTPM::gM() const {
 }
 
 /**
- * acces to the individual SPM objects
- * @param l the specific SPM object you want
- * @return the SPM object with parameter l
+ * acces to the individual rSPM objects
+ * @param l the specific rSPM object you want
+ * @return the rSPM object with parameter l
  */
-SPM &dTPM::operator[](int l){
+rSPM &dTPM::operator[](int l){
 
    return *dtpm[l];
 
 }
 
 /**
- * acces to the individual SPM objects: the const version
- * @param l the specific SPM object you want
- * @return the SPM object with parameter l
+ * acces to the individual rSPM objects: the const version
+ * @param l the specific rSPM object you want
+ * @return the rSPM object with parameter l
  */
-const SPM &dTPM::operator[](int l) const{
+const rSPM &dTPM::operator[](int l) const{
 
    return *dtpm[l];
 
@@ -294,53 +294,80 @@ void dTPM::fill_Random(){
 }
 
 /**
- * map a dDPM matrix on a dTPM by free-"barring" the different blocks of a dDPM matrix, it is called freebar
- * because the intermediate spin is not required to be diagonal, instead the usual [][]{...} is used.
- * @param scale the dTPM with this number
+ * special "bar" function that maps a dDPM on a dTPM object, see notes for info.
+ * @param scale the factor you scale the dTPM with
  * @param ddpm input dDPM object
  */
-void dTPM::freebar(double scale,const dDPM &ddpm){
+void dTPM::bar(double scale,const dDPM &ddpm){
 
    double ward,hard;
 
    for(int l = 0;l < M;++l){
 
-      for(int a = 0;a < M;++a)
-         for(int c = a;c < M;++c){
+      for(int b = 0;b < M;++b)
+         for(int d = b;d < M;++d){
 
-            (*this)[l](a,c) = 0.0;
+            //first Z = 0
+            (*this)[l](0,b,d) = 0.0;
 
-            //first S = 1/2
+            //only S = 1/2 contribution
             for(int S_ab = 0;S_ab < 2;++S_ab)
                for(int S_cd = 0;S_cd < 2;++S_cd){
 
                   ward = 0.0;
 
-                  for(int b = 0;b < M;++b){
+                  for(int a = 0;a < M;++a){
 
-                     hard = ddpm(l,0,S_ab,a,b,S_cd,c,b);
+                     hard = ddpm(l,0,S_ab,a,b,S_cd,a,d);
 
                      if(a == b)
                         hard *= std::sqrt(2.0);
 
-                     if(c == b)
+                     if(a == d)
                         hard *= std::sqrt(2.0);
 
                      ward += hard;
 
                   }
 
-                  (*this)[l](a,c) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(S_ab,S_cd) * ward;
+                  (*this)[l](0,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(S_ab,0) * Tools::g6j(S_cd,0) * ward;
 
                }
 
-            //then S = 3/2
-            for(int b = 0;b < M;++b)
-               (*this)[l](a,c) -= 2.0 * ddpm(l,1,1,a,b,1,c,b);
+            (*this)[l](0,b,d) *= scale;
 
+            //then Z = 1
+            (*this)[l](1,b,d) = 0.0;
 
-            //finally scale
-            (*this)[l](a,c) *= scale;
+            //first S = 1/2 contribution
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                  ward = 0.0;
+
+                  for(int a = 0;a < M;++a){
+
+                     hard = ddpm(l,0,S_ab,a,b,S_cd,a,d);
+
+                     if(a == b)
+                        hard *= std::sqrt(2.0);
+
+                     if(a == d)
+                        hard *= std::sqrt(2.0);
+
+                     ward += hard;
+
+                  }
+
+                  (*this)[l](1,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(S_ab,1) * Tools::g6j(S_cd,1) * ward;
+
+               }
+
+            //finally S = 3/2 contribution
+            for(int a = 0;a < M;++a)
+               (*this)[l](1,b,d) += 4.0/3.0 * ddpm(l,1,1,a,b,1,a,d);
+
+            (*this)[l](1,b,d) *= scale;
 
          }
 

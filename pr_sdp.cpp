@@ -41,10 +41,12 @@ int main(void){
    rTPM::init(M,N);
    TPM::init(M,N);
    SPM::init(M,N);
+   rSPM::init(M,N);
    PHM::init(M,N);
    dDPM::init(M,N);
    dSPM::init(M,N);
    dTPM::init(M,N);
+   ssdTPM::init(M,N);
    dDPV::init(M,N);
    EIG::init(M,N);
    SUP::init(M,N);
@@ -65,6 +67,7 @@ int main(void){
    Q2.Q_down(ddpm_2);
 
    cout << ddpm.ddot(Q2) << "\t" << Q.ddot(ddpm_2) << endl;
+
    /*
    //hamiltoniaan
    dDPM ham;

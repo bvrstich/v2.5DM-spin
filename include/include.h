@@ -7,11 +7,13 @@
 #include "rTPM.h"
 #include "TPM.h"
 #include "SPM.h"
+#include "rSPM.h"
 #include "PHM.h"
 
 #include "dDPM.h"
 #include "dSPM.h"
 #include "dTPM.h"
+#include "ssdTPM.h"
 
 #include "dDPV.h"
 
