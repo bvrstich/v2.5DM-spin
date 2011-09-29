@@ -23,6 +23,10 @@ void EIG::init(int M_in,int N_in){
 
    dim = M*(2*M - 2)*(2*M - 1);
 
+#ifdef __Q2_CON
+   dim += M*(2*M - 2)*(2*M - 1);
+#endif
+
 }
 
 /**
@@ -33,6 +37,10 @@ void EIG::init(int M_in,int N_in){
 EIG::EIG(SUP &X){
 
    v_I1 = new dDPV(X.gI1());
+
+#ifdef __Q2_CON
+   v_Q2 = new dDPV(X.gQ2());
+#endif 
 
 }
 
@@ -45,6 +53,10 @@ EIG::EIG(const EIG &eig_c){
 
    v_I1 = new dDPV(eig_c.gv_I1());
 
+#ifdef __Q2_CON
+   v_Q2 = new dDPV(eig_c.gv_Q2());
+#endif 
+
 }
 
 /**
@@ -54,6 +66,10 @@ EIG::EIG(const EIG &eig_c){
 EIG &EIG::operator=(const EIG &eig_c){
 
    *v_I1 = eig_c.gv_I1();
+
+#ifdef __Q2_CON
+   *v_Q2 = eig_c.gv_Q2();
+#endif 
 
    return *this;
 
@@ -66,11 +82,19 @@ EIG::~EIG(){
 
    delete v_I1;
 
+#ifdef __Q2_CON
+   delete v_Q2;
+#endif 
+
 }
 
 ostream &operator<<(ostream &output,const EIG &eig_p){
 
    std::cout << eig_p.gv_I1() << std::endl;
+
+#ifdef __Q2_CON
+   std::cout << eig_p.gv_Q2() << std::endl;
+#endif 
 
    return output;
 
@@ -86,7 +110,7 @@ int EIG::gN() const{
 }
 
 /**
- * @return nr of spatial states
+ * @return dimension of sp space
  */
 int EIG::gM() const{
 
@@ -115,6 +139,31 @@ const dDPV &EIG::gv_I1() const{
 
 }
 
+#ifdef __Q2_CON
+
+/** 
+ * get the dDPV object containing the eigenvalues of the dDPM block Q2
+ * @return a dDPV object containing the desired eigenvalues
+ */
+dDPV &EIG::gv_Q2(){
+
+   return *v_Q2;
+
+}
+
+/** 
+ * the const version
+ * get the dDPV object containing the eigenvalues of the dDPM block Q2
+ * @return a dDPV object containing the desired eigenvalues
+ */
+const dDPV &EIG::gv_Q2() const{
+
+   return *v_Q2;
+
+}
+
+#endif
+
 /**
  * @return total dimension of the EIG object
  */
@@ -133,6 +182,11 @@ double EIG::min() const{
    //lowest eigenvalue of P block
    double ward = v_I1->min();
 
+#ifdef __Q2_CON
+   if(v_Q2->min() < ward)
+      ward = v_Q2->min();
+#endif
+
    return ward;
 
 }
@@ -146,6 +200,11 @@ double EIG::max() const{
    //highest eigenvalue of P block
    double ward = v_I1->max();
 
+#ifdef __Q2_CON
+   if(v_Q2->max() > ward)
+      ward = v_Q2->max();
+#endif
+
    return ward;
 
 }
@@ -157,6 +216,10 @@ double EIG::max() const{
 double EIG::lsfunc(double alpha) const{
 
    double ward = v_I1->lsfunc(alpha);
+
+#ifdef __Q2_CON
+   ward += v_Q2->lsfunc(alpha);
+#endif
 
    return ward;
 

@@ -1,3 +1,11 @@
+//definities
+//I1 Q2
+#ifdef __I1Q2
+
+#define __Q2_CON
+
+#endif
+
 #include "lapack.h"
 #include "Matrix.h"
 #include "Vector.h"

@@ -6,6 +6,8 @@
 
 using std::ostream;
 
+class dDPM;
+
 /**
  * @author Brecht Verstichel
  * @date 09-06-2011\n\n
@@ -49,6 +51,12 @@ class SUP{
 
       const dDPM &gI1() const;
 
+#ifdef __Q2_CON
+      dDPM &gQ2();
+
+      const dDPM &gQ2() const;
+#endif
+
       int gN() const;
 
       int gM() const;
@@ -83,7 +91,12 @@ class SUP{
       //!pointer to a dDPM object, containts the W matrix that has to be positive semidefinite: I1 condition
       dDPM *I1;
 
-      //!number of spatial orbs
+#ifdef __Q2_CON
+      //!pointer to a dDPM object, containts the Q2(W) matrix that has to be positive semidefinite: Q2 condition
+      dDPM *Q2;
+#endif
+
+      //!number of sp orbitals
       static int M;
 
       //!nr of particles
