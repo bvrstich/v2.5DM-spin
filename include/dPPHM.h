@@ -75,6 +75,8 @@ class dPPHM {
 
       void fill_Random();
 
+      void I(const dDPM &);
+
       static void init(int,int);
 
    private:

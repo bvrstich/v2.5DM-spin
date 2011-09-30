@@ -330,7 +330,7 @@ void dTPM::bar(double scale,const dDPM &ddpm){
 
                   }
 
-                  (*this)[l](0,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(S_ab,0) * Tools::g6j(S_cd,0) * ward;
+                  (*this)[l](0,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,0) * Tools::g6j(1,1,2*S_cd,1,1,0) * ward;
 
                }
 
@@ -359,7 +359,7 @@ void dTPM::bar(double scale,const dDPM &ddpm){
 
                   }
 
-                  (*this)[l](1,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(S_ab,1) * Tools::g6j(S_cd,1) * ward;
+                  (*this)[l](1,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,2) * Tools::g6j(1,1,2*S_cd,1,1,2) * ward;
 
                }
 

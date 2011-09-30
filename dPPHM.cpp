@@ -358,3 +358,62 @@ void dPPHM::fill_Random(){
       dpphm[l]->fill_Random();
 
 }
+
+/**
+ * map a dDPM on a dPPHM using the I2 map
+ * @param ddpm input dDPM
+ */
+void dPPHM::I(const dDPM &ddpm){
+
+   int a,b,c,d;
+
+   int S_ab,S_cd;
+
+   int sign;
+
+   TPM tpm;
+   tpm.bar(1.0/(N - 2.0),ddpm);
+
+   for(int l = 0;l < M;++l){
+
+      for(int S = 0;S < 2;++S){
+
+         for(int i = 0;i < dpphm[l]->gdim(S);++i){
+
+            S_ab = xTPM::gt2s(S,i,0);
+
+            a = xTPM::gt2s(S,i,1);
+            b = xTPM::gt2s(S,i,2);
+
+            for(int j = i;j < dpphm[l]->gdim(S);++j){
+
+               S_cd = xTPM::gt2s(S,j,0);
+
+               c = xTPM::gt2s(S,j,1);
+               d = xTPM::gt2s(S,j,2);
+
+               (*this)[l](S,i,j) = 0.0;
+
+               for(int S_ = 0;S_ < 2;++S_){
+
+                  if(S == S_)
+                     sign = -1;
+                  else
+                     sign = 1;
+
+                  (*this)[l](S,i,j) += (2* (S_ + 0.5) + 1.0) * sign * Tools::gC(S,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
+
+               }
+
+               if(S_ab == S_cd)
+                  (*this)[l](S,i,j) += tpm(S_ab,a,b,c,d);
+
+            }
+         }
+      }
+
+   }
+
+   this->symmetrize();
+
+}

@@ -19,7 +19,11 @@ class Tools{
 
       static void clear();
 
-      static double g6j(int,int);
+      static double g3j(int,int,int,int,int,int);
+
+      static double g6j(int,int,int,int,int,int);
+
+      static double gC(int,int,int,int);
 
       static dDPM &gunit();
 
@@ -34,8 +38,14 @@ class Tools{
       //!the projected unit matrix
       static dDPM *unit;
 
+      //!3j symbols
+      static double ******_3j;
+
       //!6j symbols
-      static double **_6j;
+      static double ******_6j;
+
+      //!symbol needed for I2 condition
+      static double ****C;
 
 };
 

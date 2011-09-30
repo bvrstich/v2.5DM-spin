@@ -156,7 +156,7 @@ void SPM::breve(double scale,const dDPM &ddpm){
 
                }
 
-               (*this)(b,d) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(S_ab,S_cd) * ward;
+               (*this)(b,d) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,2*S_cd) * ward;
 
             }
 

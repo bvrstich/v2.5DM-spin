@@ -330,7 +330,7 @@ void ssdTPM::bar(double scale,const dDPM &ddpm){
 
                   }
 
-                  (*this)[l](a,c) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(S_ab,S_cd) * ward;
+                  (*this)[l](a,c) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,2*S_cd) * ward;
 
                }
 
