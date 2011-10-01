@@ -73,6 +73,8 @@ class dDPM_unc {
 
       void uncouple(const dDPM &);
 
+      void out_sp(const char *) const;
+
       static void init(int,int);
 
    private:

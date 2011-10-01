@@ -9,6 +9,7 @@ using std::ostream;
 #include "xTPM.h"
 
 class SUP;
+class dPPHM_unc;
 
 /**
  * @author Brecht Verstichel
@@ -80,6 +81,8 @@ class dPPHM {
       void Q(const dDPM &);
 
       double barbreve() const;
+
+      void couple(const dPPHM_unc &);
 
       static void init(int,int);
 

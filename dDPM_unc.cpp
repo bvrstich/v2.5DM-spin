@@ -349,7 +349,7 @@ void dDPM_unc::uncouple(const dDPM &ddpm_c){
             (*this)[l](i,j) = 0.0;
 
             for(int S = 1;S <= 3;S+=2)
-               for(int M = -S;M <= S;M+=2)
+               for(int M_ = -S;M_ <= S;M_+=2)
                   for(int S_ab = 0;S_ab <= 2;S_ab+=2)
                      for(int M_ab = -S_ab;M_ab <= S_ab;M_ab+=2)
                         for(int S_cd = 0;S_cd <= 2;S_cd+=2)
@@ -367,9 +367,9 @@ void dDPM_unc::uncouple(const dDPM &ddpm_c){
 
                               (*this)[l](i,j) += (1 - S_ab) * (1 - S_cd) * sign_ab * sign_cd * (S + 1.0) * std::sqrt( (S_ab + 1.0) * (S_cd + 1.0) )
 
-                              * Tools::g3j(1,1,S_ab,2*s_a - 1,2*s_b - 1,-M_ab) * Tools::g3j(S_ab,1,S,M_ab,2*s_l - 1,-M)
+                              * Tools::g3j(1,1,S_ab,2*s_a - 1,2*s_b - 1,-M_ab) * Tools::g3j(S_ab,1,S,M_ab,2*s_l - 1,-M_)
 
-                              * Tools::g3j(1,1,S_cd,2*s_c - 1,2*s_d - 1,-M_cd) * Tools::g3j(S_cd,1,S,M_cd,2*s_l_ - 1,-M) * ddpm_c(l,S/2,S_ab/2,a,b,S_cd/2,c,d);
+                              * Tools::g3j(1,1,S_cd,2*s_c - 1,2*s_d - 1,-M_cd) * Tools::g3j(S_cd,1,S,M_cd,2*s_l_ - 1,-M_) * ddpm_c(l,S/2,S_ab/2,a,b,S_cd/2,c,d);
 
                            }
 
@@ -386,5 +386,41 @@ void dDPM_unc::uncouple(const dDPM &ddpm_c){
    }
 
    this->symmetrize();
+
+}
+
+/**
+ * output using sp indices, for input in the regular v2.5DM program
+ */
+void dDPM_unc::out_sp(const char *filename) const{
+
+   ofstream out(filename);
+   out.precision(15);
+
+   int a,b,c,d;
+   int s_l,s_l_;
+
+   for(int l = 0;l < M;++l){
+
+      for(int i = 0;i < ddpm[l]->gn();++i){
+
+         s_l = rxTPM_unc::gt2s(l,i,0);
+
+         a = rxTPM_unc::gt2s(l,i,1);
+         b = rxTPM_unc::gt2s(l,i,2);
+
+         for(int j = i;j < ddpm[l]->gn();++j){
+
+            s_l_ = rxTPM_unc::gt2s(l,j,0);
+
+            c = rxTPM_unc::gt2s(l,j,1);
+            d = rxTPM_unc::gt2s(l,j,2);
+
+            if(s_l == s_l_)
+               out << 2*l + s_l << "\t" << a << "\t" << b << "\t" << c << "\t" << d << "\t" << (*this)[l](i,j) << endl;
+
+         }
+      }
+   }
 
 }

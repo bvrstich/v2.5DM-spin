@@ -32,7 +32,9 @@ CPPSRC	= pr_sdp.cpp\
             EIG.cpp\
             Tools.cpp\
             rxTPM_unc.cpp\
+            xTPM_unc.cpp\
             dDPM_unc.cpp\
+            dPPHM_unc.cpp
 
 FSRC  = dangalg.for
 
