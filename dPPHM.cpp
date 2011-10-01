@@ -369,8 +369,6 @@ void dPPHM::I(const dDPM &ddpm){
 
    int S_ab,S_cd;
 
-   int sign;
-
    TPM tpm;
    tpm.bar(1.0/(N - 2.0),ddpm);
 
@@ -394,16 +392,8 @@ void dPPHM::I(const dDPM &ddpm){
 
                (*this)[l](S,i,j) = 0.0;
 
-               for(int S_ = 0;S_ < 2;++S_){
-
-                  if(S == S_)
-                     sign = -1;
-                  else
-                     sign = 1;
-
-                  (*this)[l](S,i,j) += (2* (S_ + 0.5) + 1.0) * sign * Tools::gC(S,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
-
-               }
+               for(int S_ = 0;S_ < 2;++S_)
+                  (*this)[l](S,i,j) -= (2* (S_ + 0.5) + 1.0) * Tools::gC(S,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
 
                if(S_ab == S_cd)
                   (*this)[l](S,i,j) += tpm(S_ab,a,b,c,d);

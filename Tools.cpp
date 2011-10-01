@@ -40,26 +40,26 @@ void Tools::init(int M_in,int N_in){
    unit->proj_W();
 
    //allocate
-   _6j = new double ***** [4];
+   _6j = new double ***** [5];
 
-   for(int j1 = 0;j1 < 4;++j1){
+   for(int j1 = 0;j1 < 5;++j1){
 
-      _6j[j1] = new double **** [4];
+      _6j[j1] = new double **** [5];
 
-      for(int j2 = 0;j2 < 4;++j2){
+      for(int j2 = 0;j2 < 5;++j2){
 
-         _6j[j1][j2] = new double *** [4];
+         _6j[j1][j2] = new double *** [5];
 
-         for(int j3 = 0;j3 < 4;++j3){
+         for(int j3 = 0;j3 < 5;++j3){
 
-            _6j[j1][j2][j3] = new double ** [4];
+            _6j[j1][j2][j3] = new double ** [5];
 
-            for(int j4 = 0;j4 < 4;++j4){
+            for(int j4 = 0;j4 < 5;++j4){
 
-               _6j[j1][j2][j3][j4] = new double * [4];
+               _6j[j1][j2][j3][j4] = new double * [5];
 
-               for(int j5 = 0;j5 < 4;++j5)
-                  _6j[j1][j2][j3][j4][j5] = new double [4];
+               for(int j5 = 0;j5 < 5;++j5)
+                  _6j[j1][j2][j3][j4][j5] = new double [5];
 
             }
          }
@@ -110,12 +110,12 @@ void Tools::init(int M_in,int N_in){
    }
 
    //fill the 6j list
-   for(long int j1 = 0;j1 < 4;++j1)
-      for(long int j2 = 0;j2 < 4;++j2)
-         for(long int j3 = 0;j3 < 4;++j3)
-            for(long int j4 = 0;j4 < 4;++j4)
-               for(long int j5 = 0;j5 < 4;++j5)
-                  for(long int j6 = 0;j6 < 4;++j6)
+   for(long int j1 = 0;j1 < 5;++j1)
+      for(long int j2 = 0;j2 < 5;++j2)
+         for(long int j3 = 0;j3 < 5;++j3)
+            for(long int j4 = 0;j4 < 5;++j4)
+               for(long int j5 = 0;j5 < 5;++j5)
+                  for(long int j6 = 0;j6 < 5;++j6)
                      _6j[j1][j2][j3][j4][j5][j6] = x6j_(&j1,&j2,&j3,&j4,&j5,&j6);
 
    //fill the 3j list
@@ -141,8 +141,8 @@ void Tools::init(int M_in,int N_in){
 
                C[S][S_][S_ab][S_cd] = 0.0;
 
-               for(int j = 0;j < 2;++j)
-                  C[S][S_][S_ab][S_cd] += (1 - 2*j) * g6j(1,1,2*j,2*S_ab,2*S_cd,2*S + 1) * g6j(1,1,2*j,2*S_ab,2*S_cd,2*S_ + 1);
+               for(int j = 0;j < 3;++j)
+                  C[S][S_][S_ab][S_cd] += (2*j + 1.0) * (1 - 2*(j%2)) * g6j(2*S_ab,2*S_cd,2*j,2*S_ + 1,2*S + 1,1) * g6j(2*S_ab,2*S_cd,2*j,2*S + 1,2*S_ + 1,1);
 
             }
 
