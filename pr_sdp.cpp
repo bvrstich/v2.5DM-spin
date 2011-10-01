@@ -35,8 +35,8 @@ int main(void){
 
    cout.precision(10);
 
-   const int M = 4;//nr of spatial orbitals
-   const int N = 4;//nr of particles
+   const int M = 6;//nr of spatial orbitals
+   const int N = 6;//nr of particles
 
    rxTPM::init(M,N);
    TPM::init(M,N);
@@ -57,65 +57,28 @@ int main(void){
    EIG::init(M,N);
    SUP::init(M,N);
    Tools::init(M,N);
+   rxTPM_unc::init(M,N);
+   dDPM_unc::init(M,N);
 
-   int sign_bl,sign_dl,sign_ac;
+   dDPM ddpm;
+   ddpm.fill_Random();
 
-   for(int S = 1;S <= 3;S+=2)
-      for(int S_bl = 0;S_bl <= 2;S_bl+=2)
-         for(int S_dl = 0;S_dl <= 2;S_dl+=2){
+   ddpm.proj_W();
 
-            for(int Z = 0;Z <= 2;Z+=2){
+   dDPM_unc ddpm_unc;
+   ddpm_unc.uncouple(ddpm);
 
-               double ward = 0.0;
+   ddpm_unc.print_eig();
 
-               for(int s_a = -1;s_a <= 1;s_a+=2)
-                  for(int s_c = -1;s_c <= 1;s_c+=2)
-                     for(int s_d = -1;s_d <= 1;s_d+=2)
-                        for(int s_l = -1;s_l <= 1;s_l+=2)
-                           for(int s_l_ = -1;s_l_ <= 1;s_l_+=2)
-                              for(int M_bl = -S_bl;M_bl <= S_bl;M_bl+=2)
-                                 for(int M_dl = -S_dl;M_dl <= S_dl;M_dl+=2)
-                                    for(int M_Z = -Z;M_Z <= Z;M_Z+=2)
-                                       for(int M = -S;M <= S;M+=2){
+   dDPV v(ddpm);
 
-                                          if(M_bl == 0)
-                                             sign_bl = 1;
-                                          else
-                                             sign_bl = -1;
+   ofstream out("coupled.out");
+   out.precision(10);
 
-                                          if(M_dl == 0)
-                                             sign_dl = 1;
-                                          else
-                                             sign_dl = -1;
-
-                                          if(s_a == s_c)
-                                             sign_ac = 1;
-                                          else
-                                             sign_ac = -1;
-
-                                          ward += (Z + 1.0) * std::sqrt( (S_bl + 1.0) * (S_dl + 1.0) ) * (1 - S_bl) * (1 - S_dl)
-
-                                             * sign_dl * sign_bl * sign_ac * Tools::g3j(1,S_bl,S,-s_a,M_bl,-M) * Tools::g3j(1,1,S_bl,s_a,s_l,-M_bl)
-
-                                             * Tools::g3j(1,S_dl,S,-s_c,M_dl,-M) * Tools::g3j(1,1,S_dl,s_d,s_l_,-M_dl) * Tools::g3j(1,1,Z,s_c,s_l,-M_Z)
-
-                                             *Tools::g3j(1,1,Z,s_d,s_l_,-M_Z);
+   out << v;
 
 
-                                       }
-
-               cout << S << "/2\t(" << S_bl/2 << ";" << S_dl/2 << ")\t|\t" << Z/2 << "\t" << ward << "\t";
-               
-               if(S == 1 && Z == S_dl)
-                  cout << std::sqrt( (S_bl + 1.0) * (S_dl + 1.0) ) * 0.5 * (1 - S_bl) * (1 - S_dl) << endl;
-               else
-                  cout << 0 << endl;
-
-            }
-
-         }
-
-   /*
+/*
    //hamiltoniaan
    dDPM ham;
    ham.hubbard(1.0);
@@ -194,18 +157,14 @@ int main(void){
    W.daxpy(b,extrapol);
 
 }
-
-cout << endl;
-
-cout << "Final Energy:\t" << ham.ddot(W) << endl;
 */
-Tools::clear();
-dDPM::clear();
-xTPM::clear();
-PHM::clear();
-TPM::clear();
-rxTPM::clear();
-rxPHM::clear();
+   rxTPM_unc::clear();
+   Tools::clear();
+   dDPM::clear();
+   xTPM::clear();
+   PHM::clear();
+   TPM::clear();
+   rxTPM::clear();
 
 return 0;
 

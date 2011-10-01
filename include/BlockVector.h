@@ -395,11 +395,11 @@ ostream &operator<<(ostream &output,const BlockVector<BlockMatrixType> &blockvec
 
    for(int i = 0;i < blockvector_p.gnr();++i){
 
-      std::cout << std::endl;
-      std::cout << i << "\t" << blockvector_p.gdim(i) << "\t" << blockvector_p.gdeg(i) << std::endl;
-      std::cout << std::endl;
+      output << std::endl;
+      output << i << "\t" << blockvector_p.gdim(i) << "\t" << blockvector_p.gdeg(i) << std::endl;
+      output << std::endl;
 
-      std::cout << blockvector_p[i] << std::endl;
+      output << blockvector_p[i] << std::endl;
 
    }
 
