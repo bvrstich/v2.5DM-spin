@@ -6,6 +6,21 @@
 
 #endif
 
+//I1 I2
+#ifdef __I
+
+#define __I2_CON
+
+#endif
+
+//I1 I2 Q2
+#ifdef __IQ2
+
+#define __Q2_CON
+#define __I2_CON
+
+#endif
+
 #include "lapack.h"
 #include "angalg.h"
 #include "Matrix.h"

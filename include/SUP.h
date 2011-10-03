@@ -7,6 +7,8 @@
 using std::ostream;
 
 class dDPM;
+class dPPHM;
+class EIG;
 
 /**
  * @author Brecht Verstichel
@@ -57,6 +59,12 @@ class SUP{
       const dDPM &gQ2() const;
 #endif
 
+#ifdef __I2_CON
+      dPPHM &gI2();
+
+      const dPPHM &gI2() const;
+#endif
+
       int gN() const;
 
       int gM() const;
@@ -94,6 +102,11 @@ class SUP{
 #ifdef __Q2_CON
       //!pointer to a dDPM object, containts the Q2(W) matrix that has to be positive semidefinite: Q2 condition
       dDPM *Q2;
+#endif
+
+#ifdef __I2_CON
+      //!pointer to a dPPHM object, containts the I2(W) matrix that has to be positive semidefinite: I2 condition
+      dPPHM *I2;
 #endif
 
       //!number of sp orbitals
