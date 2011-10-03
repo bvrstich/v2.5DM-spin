@@ -9,6 +9,7 @@ using std::ostream;
 #include "BlockMatrix.h"
 
 class dDPM;
+class dPPHM;
 
 /**
  * @author Brecht Verstichel
@@ -66,6 +67,8 @@ class TPM : public BlockMatrix {
       double spin() const;
 
       void bar(double scale,const dDPM &);
+
+      void bar(double scale,const dPPHM &);
 
       static void test_basis();
 

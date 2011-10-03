@@ -108,6 +108,8 @@ class dDPM {
 
       void Q(char,const dDPM &);
 
+      void I(const dPPHM &);
+
       double dotunit() const;
 
       static void init(int,int);

@@ -367,6 +367,44 @@ void TPM::bar(double scale,const dDPM &ddpm){
 }
 
 /**
+ * make a TPM object from a dPPHM object by tracing the third index.
+ * @param scale factor to scale the TPM with
+ * @param dpphm input dPPHM
+ */
+void TPM::bar(double scale,const dPPHM &dpphm){
+
+   int a,b,c,d;
+
+   for(int S = 0;S < 2;++S){
+
+      for(int i = 0;i < this->gdim(S);++i){
+
+         a = t2s[S][i][0];
+         b = t2s[S][i][1];
+
+         for(int j = i;j < this->gdim(S);++j){
+
+            c = t2s[S][j][0];
+            d = t2s[S][j][1];
+
+            (*this)(S,i,j) = 0;
+
+            for(int l = 0;l < M;++l)
+               for(int Z = 0;Z < 2;++Z)
+                  (*this)(S,i,j) += (2.0*(Z + 0.5)+ 1.0) * dpphm(l,Z,S,a,b,S,c,d);
+
+            (*this)(S,i,j) *= scale/(2.0*S + 1.0);
+
+         }
+      }
+
+   }
+
+   this->symmetrize();
+
+}
+
+/**
  * test if basis is correctly constructed
  */
 void TPM::test_basis(){

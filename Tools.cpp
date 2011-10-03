@@ -156,15 +156,15 @@ void Tools::clear(){
    delete unit;
 
    //delete the 6j list
-   for(long int j1 = 0;j1 < 4;++j1){
+   for(long int j1 = 0;j1 < 5;++j1){
 
-      for(long int j2 = 0;j2 < 4;++j2){
+      for(long int j2 = 0;j2 < 5;++j2){
 
-         for(long int j3 = 0;j3 < 4;++j3){
+         for(long int j3 = 0;j3 < 5;++j3){
 
-            for(long int j4 = 0;j4 < 4;++j4){
+            for(long int j4 = 0;j4 < 5;++j4){
 
-               for(long int j5 = 0;j5 < 4;++j5)
+               for(long int j5 = 0;j5 < 5;++j5)
                   delete [] _6j[j1][j2][j3][j4][j5];
 
                delete [] _6j[j1][j2][j3][j4];
