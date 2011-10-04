@@ -13,6 +13,7 @@ double ******Tools::_6j;
 double ******Tools::_3j;
 
 double ****Tools::C;
+double ****Tools::D;
 
 int Tools::M;
 int Tools::N;
@@ -109,6 +110,22 @@ void Tools::init(int M_in,int N_in){
       }
    }
 
+   D = new double *** [2];
+
+   for(int S = 0;S < 2;++S){
+
+      D[S] = new double ** [2];
+
+      for(int S_ = 0;S_ < 2;++S_){
+
+         D[S][S_] = new double * [2];
+
+         for(int S_ab = 0;S_ab < 2;++S_ab)
+            D[S][S_][S_ab] = new double [2];
+
+      }
+   }
+
    //fill the 6j list
    for(long int j1 = 0;j1 < 5;++j1)
       for(long int j2 = 0;j2 < 5;++j2)
@@ -134,6 +151,7 @@ void Tools::init(int M_in,int N_in){
 
                   }
    
+   //fill the C list
    for(int S = 0;S < 2;++S)
       for(int S_ = 0;S_ < 2;++S_)
          for(int S_ab = 0;S_ab < 2;++S_ab)
@@ -145,6 +163,20 @@ void Tools::init(int M_in,int N_in){
                   C[S][S_][S_ab][S_cd] += (2*j + 1.0) * (1 - 2*(j%2)) * g6j(2*S_ab,2*S_cd,2*j,2*S_ + 1,2*S + 1,1) * g6j(2*S_ab,2*S_cd,2*j,2*S + 1,2*S_ + 1,1);
 
             }
+
+   //fill the D list
+   for(int S = 0;S < 2;++S)
+      for(int Z = 0;Z < 2;++Z)
+         for(int S_ab = 0;S_ab < 2;++S_ab)
+            for(int S_cd = 0;S_cd < 2;++S_cd){
+
+               D[S][Z][S_ab][S_cd] = 0.0;
+
+               for(int j = 1;j <= 3;j+=2)
+                  D[S][Z][S_ab][S_cd] += (j + 1.0) * g6j(1,2*S_ab,j,2*S + 1,2*Z,1) * g6j(1,2*S_cd,j,2*S + 1,2*Z,1) * g6j(1,1,2*S_ab,1,j,2*S_cd);
+
+            }
+
 
 }
 
@@ -232,6 +264,23 @@ void Tools::clear(){
 
    delete [] C;
 
+   for(int S = 0;S < 2;++S){
+
+      for(int S_ = 0;S_ < 2;++S_){
+
+         for(int S_ab = 0;S_ab < 2;++S_ab)
+            delete [] D[S][S_][S_ab];
+
+         delete [] D[S][S_];
+
+      }
+
+      delete [] D[S];
+
+   }
+
+   delete [] D;
+
 }
 
 /**
@@ -287,5 +336,19 @@ dDPM &Tools::gunit(){
 double Tools::gC(int S,int S_,int S_ab,int S_cd){
 
    return C[S][S_][S_ab][S_cd];
+
+}
+
+/**
+ * function that returns stuff needed by the Q2 map
+ * @param S first dp spin index (0 or 1 means 1/2 or 3/2)
+ * @param Z first tp spin index (0 or 1 means 0 or 1)
+ * @param S_ab intermediate spinindex (0 or 1 means 0 or 1)
+ * @param S_cd intermediate spinindex (0 or 1 means 0 or 1)
+ * @return the entry with indices S,Z,S_ab,S_cd
+ */
+double Tools::gD(int S,int Z,int S_ab,int S_cd){
+
+   return D[S][Z][S_ab][S_cd];
 
 }

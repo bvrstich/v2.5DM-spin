@@ -407,3 +407,118 @@ void dPPHM::I(const dDPM &ddpm){
    this->symmetrize();
 
 }
+
+/**
+ * map a dDPM on a dPPHM using the Q2 map
+ * @param ddpm input dDPM
+ */
+void dPPHM::Q(const dDPM &ddpm){
+
+   int a,b,c,d;
+
+   int S_ab,S_cd;
+
+   int sign_ab,sign_cd;
+
+   double norm_ab,norm_cd;
+
+   TPM tpm;
+   tpm.bar(1.0/(N - 2.0),ddpm);
+
+   SPM spm;
+   spm.bar(1.0/(N - 1.0),tpm);
+
+   double ward = 2.0 * ddpm.trace() / (N*(N - 1.0)*(N - 2.0));
+
+   for(int l = 0;l < M;++l){
+
+      //first S = 1/2
+      for(int i = 0;i < dpphm[l]->gdim(0);++i){
+
+         S_ab = xTPM::gt2s(0,i,0);
+
+         a = xTPM::gt2s(0,i,1);
+         b = xTPM::gt2s(0,i,2);
+
+         norm_ab = 1.0;
+
+         if(a == b)
+            norm_ab /= std::sqrt(2.0);
+
+         sign_ab = 1 - 2*S_ab;
+
+         for(int j = i;j < dpphm[l]->gdim(0);++j){
+
+            S_cd = xTPM::gt2s(0,j,0);
+
+            c = xTPM::gt2s(0,j,1);
+            d = xTPM::gt2s(0,j,2);
+
+            sign_cd = 1 - 2*S_cd;
+
+            norm_cd = 1.0;
+
+            if(c == d)
+               norm_cd /= std::sqrt(2.0);
+
+            //dp term
+            (*this)[l](0,i,j) = 0.0;
+
+            for(int S_ = 0;S_ < 2;++S_)
+               (*this)[l](0,i,j) += (2* (S_ + 0.5) + 1.0) * Tools::gC(0,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
+
+            if(b == d){
+
+               if(a == c){
+
+                  //np_a
+                  if(a == l)
+                     (*this)[l](0,i,j) += 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * ward;
+
+                  //np_d
+                  if(b == l)
+                     (*this)[l](0,i,j) += 0.5 * sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * ward;
+
+                  //sp(2)_a
+                  if(S_ab == S_cd)
+                     (*this)[l](0,i,j) += norm_ab * norm_cd * spm(l,l);
+
+               }
+
+               //sp(1)_d
+               if(b == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,c);
+
+               //sp(3)_a first part
+               if(c == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,l);
+               
+
+               //sp(3)_c first part
+               if(a == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(c,l);
+
+               //tp(2)_d
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::gD(0,Z,S_ab,S_cd) * tpm(Z,a,l,c,l);
+
+               if(a == l)
+                  hard *= std::sqrt(2.0);
+
+               if(c == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) += sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+
+            }
+
+         }
+      }
+
+   }
+
+   this->symmetrize();
+
+}

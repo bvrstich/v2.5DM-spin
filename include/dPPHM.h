@@ -77,6 +77,8 @@ class dPPHM {
 
       void I(const dDPM &);
 
+      void Q(const dDPM &);
+
       static void init(int,int);
 
    private:

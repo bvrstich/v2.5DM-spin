@@ -25,6 +25,8 @@ class Tools{
 
       static double gC(int,int,int,int);
 
+      static double gD(int,int,int,int);
+
       static dDPM &gunit();
 
    private:
@@ -44,8 +46,11 @@ class Tools{
       //!6j symbols
       static double ******_6j;
 
-      //!symbol needed for I2 condition
+      //!symbol needed for I2 and Q2 condition, see notes
       static double ****C;
+
+      //!symbol needed for Q2 condition, see notes
+      static double ****D;
 
 };
 
