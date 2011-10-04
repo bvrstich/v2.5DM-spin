@@ -409,7 +409,7 @@ void dPPHM::I(const dDPM &ddpm){
 }
 
 /**
- * map a dDPM on a dPPHM using the Q2 map
+ * map a dDPM on a dPPHM using the Q1 map
  * @param ddpm input dDPM
  */
 void dPPHM::Q(const dDPM &ddpm){
@@ -493,7 +493,6 @@ void dPPHM::Q(const dDPM &ddpm){
                if(c == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,l);
                
-
                //sp(3)_c first part
                if(a == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(c,l);
@@ -511,6 +510,254 @@ void dPPHM::Q(const dDPM &ddpm){
                   hard *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) += sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+
+            }
+
+            if(a == d){
+
+               if(b == c){
+
+                  //np_b
+                  if(a == l)
+                     (*this)[l](0,i,j) += sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * ward;
+
+                  //np_c
+                  if(b == l)
+                     (*this)[l](0,i,j) += sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * ward;
+
+                  //sp(2)_b
+                  if(S_ab == S_cd)
+                     (*this)[l](0,i,j) += sign_ab * norm_ab * norm_cd * spm(l,l);
+
+               }
+
+               //sp(1)_b
+               if(a == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(b,c);
+
+               //sp(3)_b second part
+               if(c == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(l,b);
+
+               //sp(3)_c second part
+               if(b == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(l,c);
+
+               //tp(2)_b
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::gD(0,Z,S_ab,S_cd) * tpm(Z,b,l,c,l);
+
+               if(b == l)
+                  hard *= std::sqrt(2.0);
+
+               if(c == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) += sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+
+            }
+
+            if(b == c){
+
+               //sp(1)_c
+               if(b == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,d);
+
+               //sp(3)_a second part
+               if(d == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,l);
+
+               //sp(3)_d second part
+               if(a == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(d,l);
+
+               //tp(2)_c
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::gD(0,Z,S_ab,S_cd) * tpm(Z,a,l,d,l);
+
+               if(a == l)
+                  hard *= std::sqrt(2.0);
+
+               if(d == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) += sign_ab * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+
+
+            }
+
+            if(a == c){
+
+               //sp(1)_a
+               if(a == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(b,d);
+
+               //sp(3)_b first part
+               if(d == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(b,l);
+
+               //sp(3)_d first part
+               if(b == l)
+                  (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(d,l);
+
+               //tp(2)_a
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::gD(0,Z,S_ab,S_cd) * tpm(Z,b,l,d,l);
+
+               if(b == l)
+                  hard *= std::sqrt(2.0);
+
+               if(d == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) += std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+
+            }
+
+            //tp(1)_a
+            if(a == l){
+
+               if(l == b)
+                  (*this)[l](0,i,j) += 0.5 * norm_ab * std::sqrt( 2.0 * (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_cd,l,b,c,d);
+               else
+                  (*this)[l](0,i,j) += 0.5 * norm_ab * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_cd,l,b,c,d);
+
+            }
+
+            //tp(1)_b
+            if(b == l){
+
+               if(a == l)
+                  (*this)[l](0,i,j) += 0.5 * sign_ab * sign_cd * norm_ab * std::sqrt( 2.0 * (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_cd,a,l,c,d);
+               else
+                  (*this)[l](0,i,j) += 0.5 * sign_ab * sign_cd * norm_ab * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_cd,a,l,c,d);
+
+            }
+
+            //tp(1)_c
+            if(c == l){
+
+               if(d == l)
+                  (*this)[l](0,i,j) += 0.5 * norm_cd * std::sqrt( 2.0 * (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_ab,a,b,l,d);
+               else
+                  (*this)[l](0,i,j) += 0.5 * norm_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_ab,a,b,l,d);
+
+            }
+
+            //tp(1)_d
+            if(d == l){
+
+               if(c == l)
+                  (*this)[l](0,i,j) += 0.5 * norm_cd * sign_ab * sign_cd * std::sqrt( 2.0 * (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_ab,a,b,c,l);
+               else
+                  (*this)[l](0,i,j) += 0.5 * norm_cd * sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_ab,a,b,c,l);
+
+            }
+
+         }
+      }
+
+      //S = 3/2 is a lot easier
+      for(int i = 0;i < dpphm[l]->gdim(1);++i){
+
+         S_ab = xTPM::gt2s(1,i,0);
+
+         a = xTPM::gt2s(1,i,1);
+         b = xTPM::gt2s(1,i,2);
+
+         for(int j = i;j < dpphm[l]->gdim(1);++j){
+
+            S_cd = xTPM::gt2s(1,j,0);
+
+            c = xTPM::gt2s(1,j,1);
+            d = xTPM::gt2s(1,j,2);
+
+            //dp term
+            (*this)[l](1,i,j) = 0.0;
+
+            for(int S_ = 0;S_ < 2;++S_)
+               (*this)[l](1,i,j) += (2* (S_ + 0.5) + 1.0) * Tools::gC(1,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
+
+            //sp(2) full
+            if(i == j)
+               (*this)[l](1,i,j) += spm(l,l);
+
+            if(b == d){
+
+               //tp(2)_d
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::gD(1,Z,S_ab,S_cd) * tpm(Z,a,l,c,l);
+
+               if(a == l)
+                  hard *= std::sqrt(2.0);
+
+               if(c == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](1,i,j) += 3.0 * hard;
+
+            }
+
+            if(a == d){
+
+               //tp(2)_b
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::gD(1,Z,S_ab,S_cd) * tpm(Z,b,l,c,l);
+
+               if(b == l)
+                  hard *= std::sqrt(2.0);
+
+               if(c == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](1,i,j) -= 3.0 * hard;
+
+            }
+
+            if(b == c){
+
+               //tp(2)_c
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::gD(1,Z,S_ab,S_cd) * tpm(Z,a,l,d,l);
+
+               if(a == l)
+                  hard *= std::sqrt(2.0);
+
+               if(d == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](1,i,j) -= 3.0 * hard;
+
+
+            }
+
+            if(a == c){
+
+               //tp(2)_a
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::gD(1,Z,S_ab,S_cd) * tpm(Z,b,l,d,l);
+
+               if(b == l)
+                  hard *= std::sqrt(2.0);
+
+               if(d == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](1,i,j) += 3.0 * hard;
 
             }
 
