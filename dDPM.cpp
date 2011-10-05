@@ -2872,6 +2872,8 @@ void dDPM::Q(const dPPHM &dpphm){
    TPM tpm;
    tpm.bar(1.0/(N - 2.0),dpphm);
 
+   double ward = 2.0 * dpphm.bartilde()/( N*(N - 1.0)*(N - 2.0) );
+
    for(int l = 0;l < M;++l){
 
       for(int S = 0;S < 2;++S){
@@ -2894,6 +2896,9 @@ void dDPM::Q(const dPPHM &dpphm){
 
                for(int S_ = 0;S_ < 2;++S_)
                   (*this)[l](S,i,j) += (2* (S_ + 0.5) + 1.0) * Tools::gC(S,S_,S_ab,S_cd) * dpphm(l,S_,S_ab,a,b,S_cd,c,d);
+
+               if(i == j)
+                  (*this)[l](S,i,j) += ward;
 
             }
          }

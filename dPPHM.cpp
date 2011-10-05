@@ -466,7 +466,7 @@ void dPPHM::Q(const dDPM &ddpm){
 
             for(int S_ = 0;S_ < 2;++S_)
                (*this)[l](0,i,j) += (2* (S_ + 0.5) + 1.0) * Tools::gC(0,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
-/*
+
             if(b == d){
 
                if(a == c){
@@ -478,13 +478,13 @@ void dPPHM::Q(const dDPM &ddpm){
                   //np_d
                   if(b == l)
                      (*this)[l](0,i,j) += 0.5 * sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * ward;
-
+/*
                   //sp(2)_a
                   if(S_ab == S_cd)
                      (*this)[l](0,i,j) += norm_ab * norm_cd * spm(l,l);
-
+*/
                }
-
+/*
                //sp(1)_d
                if(b == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,c);
@@ -510,7 +510,7 @@ void dPPHM::Q(const dDPM &ddpm){
                   hard *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) += sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
-
+*/
             }
 
             if(a == d){
@@ -524,13 +524,13 @@ void dPPHM::Q(const dDPM &ddpm){
                   //np_c
                   if(b == l)
                      (*this)[l](0,i,j) += sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * ward;
-
+/*
                   //sp(2)_b
                   if(S_ab == S_cd)
                      (*this)[l](0,i,j) += sign_ab * norm_ab * norm_cd * spm(l,l);
-
+*/
                }
-
+/*
                //sp(1)_b
                if(a == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(b,c);
@@ -556,9 +556,9 @@ void dPPHM::Q(const dDPM &ddpm){
                   hard *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) += sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
-
+*/
             }
-
+/*
             if(b == c){
 
                //sp(1)_c
@@ -767,5 +767,35 @@ void dPPHM::Q(const dDPM &ddpm){
    }
 
    this->symmetrize();
+
+}
+
+/**
+ * a sort of skew trace, see notes for info
+ */
+double dPPHM::bartilde() const {
+
+   double ward = 0.0;
+
+   for(int S_ab = 0;S_ab < 2;++S_ab)
+      for(int S_cd = 0;S_cd < 2;++S_cd){
+
+         double hard = 0.0;
+
+         for(int l = 0;l < M;++l)
+            for(int b = 0;b < M;++b){
+
+               if(l == b)
+                  hard += 2.0 * (*this)(l,0,S_ab,l,b,S_cd,l,b);
+               else
+                  hard += (*this)(l,0,S_ab,l,b,S_cd,l,b);
+
+            }
+         
+         ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * hard;
+
+      }
+
+   return ward;
 
 }
