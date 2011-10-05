@@ -466,7 +466,7 @@ void dPPHM::Q(const dDPM &ddpm){
 
             for(int S_ = 0;S_ < 2;++S_)
                (*this)[l](0,i,j) += (2* (S_ + 0.5) + 1.0) * Tools::gC(0,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
-
+/*
             if(b == d){
 
                if(a == c){
@@ -659,7 +659,7 @@ void dPPHM::Q(const dDPM &ddpm){
                   (*this)[l](0,i,j) += 0.5 * norm_cd * sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * tpm(S_ab,a,b,c,l);
 
             }
-
+*/
          }
       }
 
@@ -683,7 +683,7 @@ void dPPHM::Q(const dDPM &ddpm){
 
             for(int S_ = 0;S_ < 2;++S_)
                (*this)[l](1,i,j) += (2* (S_ + 0.5) + 1.0) * Tools::gC(1,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
-
+/*
             //sp(2) full
             if(i == j)
                (*this)[l](1,i,j) += spm(l,l);
@@ -760,7 +760,7 @@ void dPPHM::Q(const dDPM &ddpm){
                (*this)[l](1,i,j) += 3.0 * hard;
 
             }
-
+*/
          }
       }
 

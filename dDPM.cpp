@@ -2858,3 +2858,49 @@ void dDPM::I(const dPPHM &dpphm){
    this->symmetrize();
 
 }
+
+/**
+ * map a dPPHM on a dDPM object with the Q1 down map.
+ * @param dpphm input dPPHM matrix
+ */
+void dDPM::Q(const dPPHM &dpphm){
+
+   int a,b,c,d;
+
+   int S_ab,S_cd;
+
+   TPM tpm;
+   tpm.bar(1.0/(N - 2.0),dpphm);
+
+   for(int l = 0;l < M;++l){
+
+      for(int S = 0;S < 2;++S){
+
+         for(int i = 0;i < ddpm[l]->gdim(S);++i){
+
+            S_ab = rxTPM::gt2s(l,S,i,0);
+
+            a = rxTPM::gt2s(l,S,i,1);
+            b = rxTPM::gt2s(l,S,i,2);
+
+            for(int j = i;j < ddpm[l]->gdim(S);++j){
+
+               S_cd = rxTPM::gt2s(l,S,j,0);
+
+               c = rxTPM::gt2s(l,S,j,1);
+               d = rxTPM::gt2s(l,S,j,2);
+
+               (*this)[l](S,i,j) = 0.0;
+
+               for(int S_ = 0;S_ < 2;++S_)
+                  (*this)[l](S,i,j) += (2* (S_ + 0.5) + 1.0) * Tools::gC(S,S_,S_ab,S_cd) * dpphm(l,S_,S_ab,a,b,S_cd,c,d);
+
+            }
+         }
+      }
+
+   }
+
+   this->symmetrize();
+
+}

@@ -106,9 +106,14 @@ class dDPM {
 
       double line_search(double,const dDPM &,const dDPM &);
 
+      //Q2 up and down
       void Q(char,const dDPM &);
 
+      //I2 down
       void I(const dPPHM &);
+
+      //Q1 down
+      void Q(const dPPHM &);
 
       double dotunit() const;
 
