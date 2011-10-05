@@ -2167,6 +2167,14 @@ void dDPM::constr_grad(double t,const dDPM &ham,const SUP &P){
 
 #endif
 
+#ifdef __Q1_CON
+
+   hulp.Q(P.gQ1());
+
+   *this += hulp;
+
+#endif
+
    this->dscal(t);
 
    *this -= ham;
@@ -2264,6 +2272,19 @@ void dDPM::H(double t,const dDPM &b,const SUP &P){
    hulp_pph.L_map(P.gI2(),Ib);
 
    ddpm.I(hulp_pph);
+
+   *this += ddpm;
+
+#endif
+
+#ifdef __Q1_CON
+   
+   dPPHM Q1b;
+   Q1b.Q(b);
+
+   hulp_pph.L_map(P.gQ1(),Q1b);
+
+   ddpm.Q(hulp_pph);
 
    *this += ddpm;
 

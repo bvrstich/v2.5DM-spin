@@ -65,6 +65,12 @@ class SUP{
       const dPPHM &gI2() const;
 #endif
 
+#ifdef __Q1_CON
+      dPPHM &gQ1();
+
+      const dPPHM &gQ1() const;
+#endif
+
       int gN() const;
 
       int gM() const;
@@ -107,6 +113,11 @@ class SUP{
 #ifdef __I2_CON
       //!pointer to a dPPHM object, containts the I2(W) matrix that has to be positive semidefinite: I2 condition
       dPPHM *I2;
+#endif
+
+#ifdef __Q1_CON
+      //!pointer to a dPPHM object, containts the Q1(W) matrix that has to be positive semidefinite: Q1 condition
+      dPPHM *Q1;
 #endif
 
       //!number of sp orbitals

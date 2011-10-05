@@ -21,6 +21,23 @@
 
 #endif
 
+//I1 I2 Q1
+#ifdef __IQ1
+
+#define __I2_CON
+#define __Q1_CON
+
+#endif
+
+//I1 I2 Q1 Q2
+#ifdef __IQ
+
+#define __I2_CON
+#define __Q1_CON
+#define __Q2_CON
+
+#endif
+
 #include "lapack.h"
 #include "angalg.h"
 #include "Matrix.h"
