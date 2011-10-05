@@ -2881,6 +2881,12 @@ void dDPM::Q(const dPPHM &dpphm){
    ssdTPM ssdtpm;
    ssdtpm.bar(0.5/((N - 1.0)*(N - 2.0)),dpphm);
 
+   PHM phm;
+   phm.spinsum(1.0/(N - 2.0),dpphm);
+
+   dTPM dtpm;
+   dtpm.bar(1.0/(N - 2.0),dpphm);
+
    double ward = 2.0 * dpphm.barbreve()/( N*(N - 1.0)*(N - 2.0) );
 
    double norm_ab,norm_cd;
@@ -2928,17 +2934,19 @@ void dDPM::Q(const dPPHM &dpphm){
 
                if(S_ab == S_cd){
 
+                  (*this)[l](S,i,j) += phm(S_cd,a,b,c,d) + sign_cd * phm(S_cd,b,a,c,d) + sign_ab * phm(S_ab,d,c,a,b) + phm(S_ab,c,d,a,b) ;
+
                   if(a == c)
-                     (*this)[l](S,i,j) -= norm_ab * norm_cd * ( breve(b,d) + ssdtpm[b](b,d) + ssdtpm[d](b,d) );
+                     (*this)[l](S,i,j) -= norm_ab * norm_cd * ( breve(b,d) + ssdtpm[b](b,d) + ssdtpm[d](b,d) - dtpm[a](S_ab,b,d) );
 
                   if(b == c)
-                     (*this)[l](S,i,j) -= norm_ab * norm_cd * sign_ab * ( breve(a,d) + ssdtpm[a](a,d) + ssdtpm[d](a,d) );
+                     (*this)[l](S,i,j) -= norm_ab * norm_cd * sign_ab * ( breve(a,d) + ssdtpm[a](a,d) + ssdtpm[d](a,d) - dtpm[b](S_ab,a,d) );
 
                   if(a == d)
-                     (*this)[l](S,i,j) -= norm_ab * norm_cd * sign_cd * ( breve(b,c) + ssdtpm[b](b,c) + ssdtpm[c](b,c) );
+                     (*this)[l](S,i,j) -= norm_ab * norm_cd * sign_cd * ( breve(b,c) + ssdtpm[b](b,c) + ssdtpm[c](b,c) - dtpm[a](S_ab,b,c) );
 
                   if(b == d)
-                     (*this)[l](S,i,j) -= norm_ab * norm_cd * ( breve(a,c) + ssdtpm[a](a,c) + ssdtpm[c](a,c) );
+                     (*this)[l](S,i,j) -= norm_ab * norm_cd * ( breve(a,c) + ssdtpm[a](a,c) + ssdtpm[c](a,c) - dtpm[b](S_ab,a,c) );
 
                }
 
