@@ -478,17 +478,17 @@ void dPPHM::Q(const dDPM &ddpm){
                   //np_d
                   if(b == l)
                      (*this)[l](0,i,j) += 0.5 * sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * ward;
-/*
+
                   //sp(2)_a
                   if(S_ab == S_cd)
                      (*this)[l](0,i,j) += norm_ab * norm_cd * spm(l,l);
-*/
+
                }
 
                //sp(1)_d
                if(b == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,c);
-/*
+
                //sp(3)_a first part
                if(c == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,l);
@@ -496,7 +496,7 @@ void dPPHM::Q(const dDPM &ddpm){
                //sp(3)_c first part
                if(a == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(c,l);
-
+/*
                //tp(2)_d
                double hard = 0.0;
 
@@ -524,17 +524,17 @@ void dPPHM::Q(const dDPM &ddpm){
                   //np_c
                   if(b == l)
                      (*this)[l](0,i,j) += sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * ward;
-/*
+
                   //sp(2)_b
                   if(S_ab == S_cd)
                      (*this)[l](0,i,j) += sign_ab * norm_ab * norm_cd * spm(l,l);
-*/
+
                }
 
                //sp(1)_b
                if(a == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(b,c);
-/*
+
                //sp(3)_b second part
                if(c == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(l,b);
@@ -542,7 +542,7 @@ void dPPHM::Q(const dDPM &ddpm){
                //sp(3)_c second part
                if(b == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(l,c);
-
+/*
                //tp(2)_b
                double hard = 0.0;
 
@@ -564,7 +564,7 @@ void dPPHM::Q(const dDPM &ddpm){
                //sp(1)_c
                if(b == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,d);
-/*
+
                //sp(3)_a second part
                if(d == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,l);
@@ -572,7 +572,7 @@ void dPPHM::Q(const dDPM &ddpm){
                //sp(3)_d second part
                if(a == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(d,l);
-
+/*
                //tp(2)_c
                double hard = 0.0;
 
@@ -595,7 +595,7 @@ void dPPHM::Q(const dDPM &ddpm){
                //sp(1)_a
                if(a == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(b,d);
-/*
+
                //sp(3)_b first part
                if(d == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(b,l);
@@ -603,7 +603,7 @@ void dPPHM::Q(const dDPM &ddpm){
                //sp(3)_d first part
                if(b == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * sign_ab * sign_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(d,l);
-
+/*
                //tp(2)_a
                double hard = 0.0;
 
@@ -683,11 +683,11 @@ void dPPHM::Q(const dDPM &ddpm){
 
             for(int S_ = 0;S_ < 2;++S_)
                (*this)[l](1,i,j) += (2* (S_ + 0.5) + 1.0) * Tools::gC(1,S_,S_ab,S_cd) * ddpm(l,S_,S_ab,a,b,S_cd,c,d);
-/*
+
             //sp(2) full
             if(i == j)
                (*this)[l](1,i,j) += spm(l,l);
-
+/*
             if(b == d){
 
                //tp(2)_d

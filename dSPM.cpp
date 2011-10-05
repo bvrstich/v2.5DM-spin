@@ -117,3 +117,15 @@ void dSPM::trace(double scale,const dDPM &ddpm){
       dspm[l] = scale * ddpm[l].trace();
 
 }
+
+/**
+ * construct the dSPM object from a dPPHM by tracing the different blocks
+ * @param scale all the traces with this value
+ * @param dpphm the input dPPHM
+ */
+void dSPM::trace(double scale,const dPPHM &dpphm){
+
+   for(int l = 0;l < M;++l)
+      dspm[l] = scale * dpphm[l].trace();
+
+}

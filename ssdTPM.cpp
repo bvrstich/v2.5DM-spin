@@ -349,3 +349,54 @@ void ssdTPM::bar(double scale,const dDPM &ddpm){
    this->symmetrize();
 
 }
+
+/**
+ * map a dPPHM matrix on a ssdTPM by using a special "bar" function, the different blocks of a dPPHM matrix.
+ * special because the intermediate spin is not required to be diagonal, instead the usual [][] is used.
+ * @param scale the ssdTPM with this number
+ * @param dpphm input dPPHM object
+ */
+void ssdTPM::bar(double scale,const dPPHM &ddpm){
+
+   double ward,hard;
+
+   for(int l = 0;l < M;++l){
+
+      for(int a = 0;a < M;++a)
+         for(int c = a;c < M;++c){
+
+            (*this)[l](a,c) = 0.0;
+
+            for(int S_ab = 0;S_ab < 2;++S_ab)
+               for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                  ward = 0.0;
+
+                  for(int b = 0;b < M;++b){
+
+                     hard = ddpm(l,0,S_ab,a,b,S_cd,c,b);
+
+                     if(a == b)
+                        hard *= std::sqrt(2.0);
+
+                     if(c == b)
+                        hard *= std::sqrt(2.0);
+
+                     ward += hard;
+
+                  }
+
+                  (*this)[l](a,c) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * ward;
+
+               }
+
+            //finally scale
+            (*this)[l](a,c) *= scale;
+
+         }
+
+   }
+
+   this->symmetrize();
+
+}

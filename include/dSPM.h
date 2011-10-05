@@ -43,6 +43,8 @@ class dSPM {
 
       void trace(double,const dDPM &);
 
+      void trace(double,const dPPHM &);
+
       static void init(int,int);
 
    private:
