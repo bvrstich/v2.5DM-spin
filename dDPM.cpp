@@ -2872,7 +2872,13 @@ void dDPM::Q(const dPPHM &dpphm){
    TPM tpm;
    tpm.bar(1.0/(N - 2.0),dpphm);
 
-   double ward = 2.0 * dpphm.bartilde()/( N*(N - 1.0)*(N - 2.0) );
+   SPM breve;
+   breve.breve(0.5/((N - 1.0)*(N - 2.0)),dpphm);
+
+   double ward = 2.0 * dpphm.barbreve()/( N*(N - 1.0)*(N - 2.0) );
+
+   double norm_ab,norm_cd;
+   int sign_ab,sign_cd;
 
    for(int l = 0;l < M;++l){
 
@@ -2885,12 +2891,26 @@ void dDPM::Q(const dPPHM &dpphm){
             a = rxTPM::gt2s(l,S,i,1);
             b = rxTPM::gt2s(l,S,i,2);
 
+            norm_ab = 1.0;
+
+            sign_ab = 1 - 2*S_ab;
+
+            if(a == b)
+               norm_ab /= std::sqrt(2.0);
+
             for(int j = i;j < ddpm[l]->gdim(S);++j){
 
                S_cd = rxTPM::gt2s(l,S,j,0);
 
                c = rxTPM::gt2s(l,S,j,1);
                d = rxTPM::gt2s(l,S,j,2);
+
+               norm_cd = 1.0;
+
+               sign_cd = 1 - 2*S_cd;
+
+               if(c == d)
+                  norm_cd /= std::sqrt(2.0);
 
                (*this)[l](S,i,j) = 0.0;
 
@@ -2899,6 +2919,22 @@ void dDPM::Q(const dPPHM &dpphm){
 
                if(i == j)
                   (*this)[l](S,i,j) += ward;
+
+               if(S_ab == S_cd){
+
+                  if(a == c)
+                     (*this)[l](S,i,j) -= norm_ab * norm_cd * breve(b,d);
+
+                  if(b == c)
+                     (*this)[l](S,i,j) -= norm_ab * norm_cd * sign_ab * breve(a,d);
+
+                  if(a == d)
+                     (*this)[l](S,i,j) -= norm_ab * norm_cd * sign_cd * breve(b,c);
+
+                  if(b == d)
+                     (*this)[l](S,i,j) -= norm_ab * norm_cd * breve(a,c);
+
+               }
 
             }
          }

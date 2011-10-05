@@ -79,7 +79,7 @@ class dPPHM {
 
       void Q(const dDPM &);
 
-      double bartilde() const;
+      double barbreve() const;
 
       static void init(int,int);
 
