@@ -9,11 +9,11 @@ using std::endl;
 
 dDPM *Tools::unit;
 
+double *********Tools::_9j;
 double ******Tools::_6j;
 double ******Tools::_3j;
 
 double ****Tools::C;
-double ****Tools::D;
 
 int Tools::M;
 int Tools::N;
@@ -94,6 +94,48 @@ void Tools::init(int M_in,int N_in){
       }
    }
 
+   //allocate
+   _9j = new double ******** [5];
+
+   for(int j1 = 0;j1 < 5;++j1){
+
+      _9j[j1] = new double ******* [5];
+
+      for(int j2 = 0;j2 < 5;++j2){
+
+         _9j[j1][j2] = new double ****** [5];
+
+         for(int j3 = 0;j3 < 5;++j3){
+
+            _9j[j1][j2][j3] = new double ***** [5];
+
+            for(int j4 = 0;j4 < 5;++j4){
+
+               _9j[j1][j2][j3][j4] = new double **** [5];
+
+               for(int j5 = 0;j5 < 5;++j5){
+
+                  _9j[j1][j2][j3][j4][j5] = new double *** [5];
+
+                  for(int j6 = 0;j6 < 5;++j6){
+
+                     _9j[j1][j2][j3][j4][j5][j6] = new double ** [5];
+
+                     for(int j7 = 0;j7 < 5;++j7){
+
+                        _9j[j1][j2][j3][j4][j5][j6][j7] = new double * [5];
+
+                        for(int j8 = 0;j8 < 5;++j8)
+                           _9j[j1][j2][j3][j4][j5][j6][j7][j8] = new double [5];
+
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
    C = new double *** [2];
 
    for(int S = 0;S < 2;++S){
@@ -106,22 +148,6 @@ void Tools::init(int M_in,int N_in){
 
          for(int S_ab = 0;S_ab < 2;++S_ab)
             C[S][S_][S_ab] = new double [2];
-
-      }
-   }
-
-   D = new double *** [2];
-
-   for(int S = 0;S < 2;++S){
-
-      D[S] = new double ** [2];
-
-      for(int S_ = 0;S_ < 2;++S_){
-
-         D[S][S_] = new double * [2];
-
-         for(int S_ab = 0;S_ab < 2;++S_ab)
-            D[S][S_][S_ab] = new double [2];
 
       }
    }
@@ -150,7 +176,19 @@ void Tools::init(int M_in,int N_in){
                      _3j[j1][j2][j3][m1][m2][m3] = x3j_(&j1,&j2,&j3,&M1,&M2,&M3);
 
                   }
-   
+
+   //fill the 9j list
+   for(long int j1 = 0;j1 < 5;++j1)
+      for(long int j2 = 0;j2 < 5;++j2)
+         for(long int j3 = 0;j3 < 5;++j3)
+            for(long int j4 = 0;j4 < 5;++j4)
+               for(long int j5 = 0;j5 < 5;++j5)
+                  for(long int j6 = 0;j6 < 5;++j6)
+                     for(long int j7 = 0;j7 < 5;++j7)
+                        for(long int j8 = 0;j8 < 5;++j8)
+                           for(long int j9 = 0;j9 < 5;++j9)
+                              _9j[j1][j2][j3][j4][j5][j6][j7][j8][j9] = x9j_(&j1,&j2,&j3,&j4,&j5,&j6,&j7,&j8,&j9);
+
    //fill the C list
    for(int S = 0;S < 2;++S)
       for(int S_ = 0;S_ < 2;++S_)
@@ -163,20 +201,6 @@ void Tools::init(int M_in,int N_in){
                   C[S][S_][S_ab][S_cd] += (2*j + 1.0) * (1 - 2*(j%2)) * g6j(2*S_ab,2*S_cd,2*j,2*S_ + 1,2*S + 1,1) * g6j(2*S_ab,2*S_cd,2*j,2*S + 1,2*S_ + 1,1);
 
             }
-
-   //fill the D list
-   for(int S = 0;S < 2;++S)
-      for(int Z = 0;Z < 2;++Z)
-         for(int S_ab = 0;S_ab < 2;++S_ab)
-            for(int S_cd = 0;S_cd < 2;++S_cd){
-
-               D[S][Z][S_ab][S_cd] = 0.0;
-
-               for(int j = 1;j <= 3;j+=2)
-                  D[S][Z][S_ab][S_cd] += (j + 1.0) * g6j(1,2*S_ab,j,2*S + 1,2*Z,1) * g6j(1,2*S_cd,j,2*S + 1,2*Z,1) * g6j(1,1,2*S_ab,1,j,2*S_cd);
-
-            }
-
 
 }
 
@@ -216,6 +240,55 @@ void Tools::clear(){
    }
 
    delete [] _6j;
+
+   //delete the 9j list
+   for(long int j1 = 0;j1 < 5;++j1){
+
+      for(long int j2 = 0;j2 < 5;++j2){
+
+         for(long int j3 = 0;j3 < 5;++j3){
+
+            for(long int j4 = 0;j4 < 5;++j4){
+
+               for(long int j5 = 0;j5 < 5;++j5){
+
+                  for(long int j6 = 0;j6 < 5;++j6){
+
+                     for(long int j7 = 0;j7 < 5;++j7){
+
+                        for(long int j8 = 0;j8 < 5;++j8)
+                           delete [] _9j[j1][j2][j3][j4][j5][j6][j7][j8];
+
+                        delete [] _9j[j1][j2][j3][j4][j5][j6][j7];
+
+                     }
+
+                     delete [] _9j[j1][j2][j3][j4][j5][j6];
+
+                  }
+
+                  delete [] _9j[j1][j2][j3][j4][j5];
+
+               }
+
+               delete [] _9j[j1][j2][j3][j4];
+
+            }
+
+            delete [] _9j[j1][j2][j3];
+
+         }
+
+         delete [] _9j[j1][j2];
+
+      }
+
+      delete [] _9j[j1];
+
+   }
+
+   delete [] _9j;
+
 
    //delete the 3j list
    for(long int j1 = 0;j1 < 4;++j1){
@@ -263,23 +336,6 @@ void Tools::clear(){
    }
 
    delete [] C;
-
-   for(int S = 0;S < 2;++S){
-
-      for(int S_ = 0;S_ < 2;++S_){
-
-         for(int S_ab = 0;S_ab < 2;++S_ab)
-            delete [] D[S][S_][S_ab];
-
-         delete [] D[S][S_];
-
-      }
-
-      delete [] D[S];
-
-   }
-
-   delete [] D;
 
 }
 
@@ -340,15 +396,20 @@ double Tools::gC(int S,int S_,int S_ab,int S_cd){
 }
 
 /**
- * function that returns stuff needed by the Q2 map
- * @param S first dp spin index (0 or 1 means 1/2 or 3/2)
- * @param Z first tp spin index (0 or 1 means 0 or 1)
- * @param S_ab intermediate spinindex (0 or 1 means 0 or 1)
- * @param S_cd intermediate spinindex (0 or 1 means 0 or 1)
- * @return the entry with indices S,Z,S_ab,S_cd
+ * watch out, the j's you have to enter are 2 times the physical angular momentum! (i.e. S = 1/2 means you enter j = 1)
+ * @param j1 first j
+ * @param j2 second j
+ * @param j3 third j
+ * @param j4 fourth j
+ * @param j5 fifth j
+ * @param j6 sixt j
+ * @param j7 seventh j
+ * @param j8 eight j
+ * @param j9 ninth j
+ * @return the 9j symbol
  */
-double Tools::gD(int S,int Z,int S_ab,int S_cd){
+double Tools::g9j(int j1,int j2,int j3,int j4,int j5,int j6,int j7,int j8,int j9){
 
-   return D[S][Z][S_ab][S_cd];
+   return _9j[j1][j2][j3][j4][j5][j6][j7][j8][j9];
 
 }

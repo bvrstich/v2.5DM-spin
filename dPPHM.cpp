@@ -501,7 +501,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::gD(0,Z,S_ab,S_cd) * tpm(Z,a,l,c,l);
+                  hard += (2*Z + 1.0) * Tools::g9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,c,l);
 
                if(a == l)
                   hard *= std::sqrt(2.0);
@@ -509,7 +509,7 @@ void dPPHM::Q(const dDPM &ddpm){
                if(c == l)
                   hard *= std::sqrt(2.0);
 
-               (*this)[l](0,i,j) += sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+               (*this)[l](0,i,j) -= sign_ab * sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
 
             }
 
@@ -547,7 +547,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::gD(0,Z,S_ab,S_cd) * tpm(Z,b,l,c,l);
+                  hard += (2*Z + 1.0) * Tools::g9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,c,l);
 
                if(b == l)
                   hard *= std::sqrt(2.0);
@@ -555,7 +555,7 @@ void dPPHM::Q(const dDPM &ddpm){
                if(c == l)
                   hard *= std::sqrt(2.0);
 
-               (*this)[l](0,i,j) += sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+               (*this)[l](0,i,j) -= sign_cd * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
 
             }
 
@@ -577,7 +577,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::gD(0,Z,S_ab,S_cd) * tpm(Z,a,l,d,l);
+                  hard += (2*Z + 1.0) * Tools::g9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,d,l);
 
                if(a == l)
                   hard *= std::sqrt(2.0);
@@ -585,7 +585,7 @@ void dPPHM::Q(const dDPM &ddpm){
                if(d == l)
                   hard *= std::sqrt(2.0);
 
-               (*this)[l](0,i,j) += sign_ab * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+               (*this)[l](0,i,j) -= sign_ab * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
 
             }
 
@@ -607,7 +607,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::gD(0,Z,S_ab,S_cd) * tpm(Z,b,l,d,l);
+                  hard += (2*Z + 1.0) * Tools::g9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,d,l);
 
                if(b == l)
                   hard *= std::sqrt(2.0);
@@ -615,7 +615,7 @@ void dPPHM::Q(const dDPM &ddpm){
                if(d == l)
                   hard *= std::sqrt(2.0);
 
-               (*this)[l](0,i,j) += std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
+               (*this)[l](0,i,j) -= std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * norm_ab * norm_cd * hard;
 
             }
 
@@ -693,7 +693,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::gD(1,Z,S_ab,S_cd) * tpm(Z,a,l,c,l);
+                  hard += (2*Z + 1.0) * Tools::g9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,c,l);
 
                if(a == l)
                   hard *= std::sqrt(2.0);
@@ -701,7 +701,7 @@ void dPPHM::Q(const dDPM &ddpm){
                if(c == l)
                   hard *= std::sqrt(2.0);
 
-               (*this)[l](1,i,j) += 3.0 * hard;
+               (*this)[l](1,i,j) -= 3.0 * hard;
 
             }
 
@@ -711,7 +711,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::gD(1,Z,S_ab,S_cd) * tpm(Z,b,l,c,l);
+                  hard += (2*Z + 1.0) * Tools::g9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,c,l);
 
                if(b == l)
                   hard *= std::sqrt(2.0);
@@ -719,7 +719,7 @@ void dPPHM::Q(const dDPM &ddpm){
                if(c == l)
                   hard *= std::sqrt(2.0);
 
-               (*this)[l](1,i,j) -= 3.0 * hard;
+               (*this)[l](1,i,j) += 3.0 * hard;
 
             }
 
@@ -729,7 +729,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::gD(1,Z,S_ab,S_cd) * tpm(Z,a,l,d,l);
+                  hard += (2*Z + 1.0) * Tools::g9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,d,l);
 
                if(a == l)
                   hard *= std::sqrt(2.0);
@@ -737,7 +737,7 @@ void dPPHM::Q(const dDPM &ddpm){
                if(d == l)
                   hard *= std::sqrt(2.0);
 
-               (*this)[l](1,i,j) -= 3.0 * hard;
+               (*this)[l](1,i,j) += 3.0 * hard;
 
 
             }
@@ -748,7 +748,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::gD(1,Z,S_ab,S_cd) * tpm(Z,b,l,d,l);
+                  hard += (2*Z + 1.0) * Tools::g9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,d,l);
 
                if(b == l)
                   hard *= std::sqrt(2.0);
@@ -756,7 +756,7 @@ void dPPHM::Q(const dDPM &ddpm){
                if(d == l)
                   hard *= std::sqrt(2.0);
 
-               (*this)[l](1,i,j) += 3.0 * hard;
+               (*this)[l](1,i,j) -= 3.0 * hard;
 
             }
 

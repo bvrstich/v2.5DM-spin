@@ -416,7 +416,9 @@ void dTPM::bar(double scale,const dPPHM &dpphm){
 
                         }
 
-                        (*this)[l](Z,b,d) += (2*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::gD(S,Z,S_ab,S_cd) * ward;
+                        (*this)[l](Z,b,d) += (2*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * 
+                        
+                           Tools::g9j(2*S + 1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * ward;
 
                      }
 
