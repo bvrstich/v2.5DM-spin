@@ -51,6 +51,7 @@
 #include "xSPM.h"
 #include "PHM.h"
 #include "xTPM.h"
+#include "rxPHM.h"
 
 #include "dDPM.h"
 #include "dSPM.h"
