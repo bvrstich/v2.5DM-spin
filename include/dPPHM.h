@@ -94,9 +94,6 @@ class dPPHM {
       //!double array of xTPM objects
       xTPM **dpphm;
 
-      //!static array holding the 6j symbols needed
-      static double **_6j;
-
 };
 
 #endif

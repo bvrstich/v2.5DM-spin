@@ -50,13 +50,14 @@ int main(void){
    dTPM::init(M,N);
    ssdTPM::init(M,N);
    dPPHM::init(M,N);
+   dPHHM::init(M,N);
    dDPV::init(M,N);
    dPPHV::init(M,N);
+   dPHHV::init(M,N);
    EIG::init(M,N);
    SUP::init(M,N);
    Tools::init(M,N);
 
-   /*
    //hamiltoniaan
    dDPM ham;
    ham.hubbard(1.0);
@@ -72,82 +73,82 @@ int main(void){
    //outer iteration: scaling of the potential barrier
    while(t > 1.0e-10){
 
-   cout << t << "\t" << W.trace() << "\t" << W.ddot(ham) << "\t";
+      cout << t << "\t" << W.trace() << "\t" << W.ddot(ham) << "\t";
 
-   int nr_cg_iter = 0;
-   int nr_newton_iter = 0;
+      int nr_cg_iter = 0;
+      int nr_newton_iter = 0;
 
-   double convergence = 1.0;
+      double convergence = 1.0;
 
-//inner iteration: 
-//Newton's method for finding the minimum of the current potential
-while(convergence > tolerance){
+      //inner iteration: 
+      //Newton's method for finding the minimum of the current potential
+      while(convergence > tolerance){
 
-++nr_newton_iter;
+         ++nr_newton_iter;
 
-SUP P;
+         SUP P;
 
-P.fill(W);
+         P.fill(W);
 
-P.invert();
+         P.invert();
 
-//eerst -gradient aanmaken:
-dDPM grad;
+         //eerst -gradient aanmaken:
+         dDPM grad;
 
-grad.constr_grad(t,ham,P);
+         grad.constr_grad(t,ham,P);
 
-//dit wordt de stap:
-dDPM delta;
+         //dit wordt de stap:
+         dDPM delta;
 
-//los het hessiaan stelsel op:
-nr_cg_iter += delta.solve(t,P,grad);
+         //los het hessiaan stelsel op:
+         nr_cg_iter += delta.solve(t,P,grad);
 
-//line search
-double a = delta.line_search(t,P,ham);
+         //line search
+         double a = delta.line_search(t,P,ham);
 
-//W += a*delta;
-W.daxpy(a,delta);
+         //W += a*delta;
+         W.daxpy(a,delta);
 
-convergence = a*a*delta.ddot(delta);
+         convergence = a*a*delta.ddot(delta);
 
-}
+      }
 
-cout << nr_newton_iter << "\t" << nr_cg_iter << endl;
+      cout << nr_newton_iter << "\t" << nr_cg_iter << endl;
 
-t /= 1.5;
+      t /= 1.5;
 
-//what is the tolerance for the newton method?
-tolerance = 1.0e-5*t;
+      //what is the tolerance for the newton method?
+      tolerance = 1.0e-5*t;
 
-if(tolerance < 1.0e-12)
-tolerance = 1.0e-12;
+      if(tolerance < 1.0e-12)
+         tolerance = 1.0e-12;
 
-//extrapolatie:
-dDPM extrapol(W);
+      //extrapolatie:
+      dDPM extrapol(W);
 
-extrapol -= backup;
+      extrapol -= backup;
 
-//overzetten voor volgende stap
-backup = W;
+      //overzetten voor volgende stap
+      backup = W;
 
-double b = extrapol.line_search(t,W,ham);
+      double b = extrapol.line_search(t,W,ham);
 
-W.daxpy(b,extrapol);
+      W.daxpy(b,extrapol);
 
-}
+   }
 
-cout << endl;
+   cout << endl;
 
-cout << "Final Energy:\t" << ham.ddot(W) << endl;
-*/
-Tools::clear();
-dDPM::clear();
-xTPM::clear();
-PHM::clear();
-TPM::clear();
-rxTPM::clear();
-rxPHM::clear();
+   cout << "Final Energy:\t" << ham.ddot(W) << endl;
 
-return 0;
+   Tools::clear();
+   dDPM::clear();
+   xTPM::clear();
+   PHM::clear();
+   TPM::clear();
+   rxTPM::clear();
+   rxPHM::clear();
+
+   return 0;
 
 }

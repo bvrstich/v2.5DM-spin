@@ -58,9 +58,11 @@
 #include "dTPM.h"
 #include "ssdTPM.h"
 #include "dPPHM.h"
+#include "dPHHM.h"
 
 #include "dDPV.h"
 #include "dPPHV.h"
+#include "dPHHV.h"
 
 #include "SUP.h"
 #include "EIG.h"

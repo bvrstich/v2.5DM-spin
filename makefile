@@ -24,8 +24,10 @@ CPPSRC	= pr_sdp.cpp\
             dTPM.cpp\
             ssdTPM.cpp\
             dPPHM.cpp\
+            dPHHM.cpp\
             dDPV.cpp\
             dPPHV.cpp\
+            dPHHV.cpp\
             SUP.cpp\
             EIG.cpp\
             Tools.cpp

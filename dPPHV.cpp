@@ -28,12 +28,12 @@ void dPPHV::init(int M_in,int N_in){
 /**
  * standard constructor on a dPPHM input, diagonalizes a dPPHM and puts the eigenvalues in the allocated dPPHV object
  */
-dPPHV::dPPHV(dPPHM &ddpm) {
+dPPHV::dPPHV(dPPHM &dpphm) {
 
    dpphv = new BlockVector<xTPM> * [M];
 
    for(int l = 0;l < M;++l)
-      dpphv[l] = new BlockVector<xTPM> (ddpm[l]);
+      dpphv[l] = new BlockVector<xTPM> (dpphm[l]);
    
 }
 
