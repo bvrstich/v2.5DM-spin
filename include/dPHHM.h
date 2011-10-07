@@ -75,6 +75,10 @@ class dPHHM {
 
       void fill_Random();
 
+      void G1(const dDPM &);
+
+      void test_sym() const;
+
       static void init(int,int);
 
    private:

@@ -116,6 +116,9 @@ const rxPHM &dPHHM::operator[](int l) const{
  */
 double dPHHM::operator()(int l,int S,int S_bl,int a,int b,int S_dl,int c,int d) const {
 
+   if( S == 1 && ( S_bl == 0 || S_dl == 0) )
+      return 0.0;
+
    if(S_bl == 1 && b == l)
       return 0.0;
 
@@ -313,5 +316,228 @@ void dPHHM::fill_Random(){
 
    for(int l = 0;l < M;++l)
       dphhm[l]->fill_Random();
+
+}
+
+/**
+ * Map a dDPM on a dPHHM using the G1 map
+ * @param ddpm input dDPM
+ */
+void dPHHM::G1(const dDPM &ddpm){
+
+   int a,b,c,d;
+   int S_bl,S_dl;
+
+   int norm_bl,norm_dl;
+   int sign_bl,sign_dl;
+
+   TPM tpm;
+   tpm.bar(1.0/(N - 2.0),ddpm);
+
+   SPM spm;
+   spm.bar(1.0/(N - 1.0),tpm);
+
+   for(int l = 0;l < M;++l){
+
+      //first S = 1/2
+      for(int i = 0;i < dphhm[l]->gdim(0);++i){
+
+         S_bl = rxPHM::gph2s(l,0,i,0);
+
+         a = rxPHM::gph2s(l,0,i,1);
+         b = rxPHM::gph2s(l,0,i,2);
+
+         sign_bl = 1 - 2*S_bl;
+
+         norm_bl = 1.0;
+
+         if(b == l)
+            norm_bl /= std::sqrt(2.0);
+
+         for(int j = i;j < dphhm[l]->gdim(0);++j){
+
+            S_dl = rxPHM::gph2s(l,0,j,0);
+
+            c = rxPHM::gph2s(l,0,j,1);
+            d = rxPHM::gph2s(l,0,j,2);
+
+            sign_dl = 1 - 2*S_dl;
+
+            norm_dl = 1.0;
+
+            if(d == l)
+               norm_dl /= std::sqrt(2.0);
+
+            //let the games begin: first the dp
+            (*this)[l](0,i,j) = 0.0;
+
+            for(int S_ = 0;S_ < 2;S_++)
+               for(int S_ab = 0;S_ab < 2;++S_ab)
+                  for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                     (*this)[l](0,i,j) += norm_bl * norm_dl * (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
+                     
+                        * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,1,2*S_dl,1)
+
+                        * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
+
+                  }
+
+            if(a == d)
+               (*this)[l](0,i,j) *= std::sqrt(2.0);
+
+            if(c == b)
+               (*this)[l](0,i,j) *= std::sqrt(2.0);
+
+            //tp(1)
+            if(S_bl == S_dl)
+               if(a == c)
+                  (*this)[l](0,i,j) += tpm(S_bl,b,l,d,l);
+
+            //part only in S = 1/2 blocks
+            if(a == b){
+
+               //sp_d
+               if(c == d)
+                  (*this)[l](0,i,j) += 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * norm_bl * norm_dl * sign_bl * sign_dl * spm(l,l);
+
+               //sp_b
+               if(c == l)
+                  (*this)[l](0,i,j) += 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * norm_bl * norm_dl * sign_bl * spm(d,l);
+
+               //tp(2)_a
+               double hard = tpm(S_dl,c,l,d,l);
+
+               if(c == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) -= norm_bl * 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_bl * sign_dl * hard;
+
+            }
+
+            if(c == d){
+
+               //sp_c
+               if(a == l)
+                  (*this)[l](0,i,j) += 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * norm_bl * norm_dl * sign_dl * spm(b,l);
+
+               //tp(2)_d
+               double hard = tpm(S_bl,a,l,b,l);
+
+               if(a == l)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) -= norm_dl * 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_bl * sign_dl * hard;
+
+            }
+
+            if(a == l){
+
+               //sp_a
+               if(c == l)
+                  (*this)[l](0,i,j) += 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * norm_bl * norm_dl * spm(b,d);
+
+               //tp(2)_b
+               double hard = tpm(S_dl,c,b,d,l);
+
+               if(c == b)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) -= norm_bl * 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_dl * hard;
+
+            }
+
+            if(c == l){
+
+               //tp(2)_c
+               double hard = tpm(S_bl,a,d,b,l);
+
+               if(a == d)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](0,i,j) -= norm_dl * 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_bl * hard;
+
+            }
+
+         }
+      }
+
+      //then S = 3/2
+      for(int i = 0;i < dphhm[l]->gdim(1);++i){
+
+         S_bl = rxPHM::gph2s(l,1,i,0);
+
+         a = rxPHM::gph2s(l,1,i,1);
+         b = rxPHM::gph2s(l,1,i,2);
+
+         for(int j = i;j < dphhm[l]->gdim(1);++j){
+
+            S_dl = rxPHM::gph2s(l,1,j,0);
+
+            c = rxPHM::gph2s(l,1,j,1);
+            d = rxPHM::gph2s(l,1,j,2);
+
+            //dp
+            (*this)[l](1,i,j) = 0.0;
+
+            for(int S_ = 0;S_ < 2;S_++)
+               for(int S_ab = 0;S_ab < 2;++S_ab)
+                  for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                     (*this)[l](1,i,j) += (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
+                     
+                        * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,3,2*S_dl,1)
+
+                        * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
+
+                  }
+
+            if(a == d)
+               (*this)[l](1,i,j) *= std::sqrt(2.0);
+
+            if(c == b)
+               (*this)[l](1,i,j) *= std::sqrt(2.0);
+
+            //tp(1)
+            if(a == c)
+               (*this)[l](1,i,j) += tpm(1,b,l,d,l);
+
+         }
+      }
+
+   }
+
+   this->symmetrize();
+
+}
+
+/**
+ * test the symmetry after the map
+ */
+void dPHHM::test_sym() const {
+
+   for(int l = 0;l < M;++l){
+
+      cout << "l = " << l << endl;
+      cout << endl;
+
+      for(int S = 0;S < 2;++S)
+         for(int S_bl = 0;S_bl < 2;++S_bl)
+            for(int S_dl = 0;S_dl < 2;++S_dl)
+               for(int a = 0;a < M;++a)
+                  for(int b = 0;b < M;++b)
+                     for(int c = 0;c < M;++c){
+
+                        if(fabs((*this)(l,S,S_bl,a,b,S_dl,c,b)- (1 - 2*S_bl) * (1 - 2*S_dl) * (*this)(b,S,S_bl,a,l,S_dl,c,l)) > 1.0e-12){
+
+                           cout << 2*S + 1 << "/2\t(" << S_bl << ";" << S_dl << ")\t|\t" << a << "\t" << b << "\t" << c << "\t|\t"
+                        
+                           << (*this)(l,S,S_bl,a,b,S_dl,c,b) << "\t" << (1 - 2*S_bl) * (1 - 2*S_dl) * (*this)(b,S,S_bl,a,l,S_dl,c,l) << endl;
+
+                        }
+
+                     }
+
+   }
 
 }
