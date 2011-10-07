@@ -483,90 +483,7 @@ void dPPHM::Q(const dDPM &ddpm){
                   if(S_ab == S_cd)
                      (*this)[l](0,i,j) += norm_ab * norm_cd * spm(l,l);
 
-   }
-
-   this->symmetrize();
-
-}
-
-/**
- * couple an uncoupled dDPM to a coupled one ...
- */
-void dPPHM::couple(const dPPHM_unc &dpphm_u){
-
-   int a,b,c,d;
-
-   int S_ab,S_cd;
-
-   int sign_ab,sign_cd;
-
-   int sign_l;
-
-   for(int l = 0;l < M;++l){
-
-      for(int S = 0;S < 2;++S){
-
-         for(int i = 0;i < dpphm[l]->gdim(S);++i){
-
-            S_ab = xTPM::gt2s(S,i,0);
-
-            a = xTPM::gt2s(S,i,1);
-            b = xTPM::gt2s(S,i,2);
-
-            for(int j = i;j < dpphm[l]->gdim(S);++j){
-
-               S_cd = xTPM::gt2s(S,j,0);
-
-               c = xTPM::gt2s(S,j,1);
-               d = xTPM::gt2s(S,j,2);
-
-               (*this)[l](S,i,j) = 0.0;
-
-               int S_ = 2*S + 1;
-
-               for(int M_ = -S_;M_ <= S_;M_+=2)
-                  for(int s_a = -1;s_a <= 1;s_a+=2)
-                     for(int s_b = -1;s_b <= 1;s_b+=2)
-                        for(int s_c = -1;s_c <= 1;s_c+=2)
-                           for(int s_d = -1;s_d <= 1;s_d+=2)
-                              for(int s_l = -1;s_l <= 1;s_l+=2)
-                                 for(int s_l_ = -1;s_l_ <= 1;s_l_+=2)
-                                    for(int M_ab = -2*S_ab;M_ab <= 2*S_ab;M_ab+=2)
-                                       for(int M_cd = -2*S_cd;M_cd <= 2*S_cd;M_cd+=2){
-
-                                          if(M_ab == 0)
-                                             sign_ab = 1;
-                                          else
-                                             sign_ab = -1;
-
-                                          if(M_cd == 0)
-                                             sign_cd = 1;
-                                          else
-                                             sign_cd = -1;
-
-                                          if(s_l == s_l_)
-                                             sign_l = 1;
-                                          else
-                                             sign_l = -1;
-
-                                          (*this)[l](S,i,j) += sign_l * (1 - 2*S_ab) * (1 - 2*S_cd) * sign_ab * sign_cd
-
-                                             * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) )
-
-                                             * Tools::g3j(1,1,2*S_ab,s_a,s_b,-M_ab) * Tools::g3j(2*S_ab,1,2*S + 1,M_ab,-s_l,-M_)
-
-                                             * Tools::g3j(1,1,2*S_cd,s_c,s_d,-M_cd) * Tools::g3j(2*S_cd,1,2*S + 1,M_cd,-s_l_,-M_) 
-
-                                             * dpphm_u[l]((s_l + 1)/2,2*a + (s_a + 1)/2,2*b + (s_b + 1)/2,(s_l_ + 1)/2,2*c + (s_c + 1)/2,2*d + (s_d + 1)/2);
-
-
-                                       }
-
-               if(a == b)
-                  (*this)[l](S,i,j) /= std::sqrt(2.0);
-
-               if(c == d)
-                  (*this)[l](S,i,j) /= std::sqrt(2.0);
+               }
 
                //sp(1)_d
                if(b == l)
@@ -575,7 +492,7 @@ void dPPHM::couple(const dPPHM_unc &dpphm_u){
                //sp(3)_a first part
                if(c == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,l);
-               
+
                //sp(3)_c first part
                if(a == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(c,l);
@@ -853,6 +770,98 @@ void dPPHM::couple(const dPPHM_unc &dpphm_u){
 }
 
 /**
+ * couple an uncoupled dDPM to a coupled one ...
+ */
+void dPPHM::couple(const dPPHM_unc &dpphm_u){
+
+   int a,b,c,d;
+
+   int S_ab,S_cd;
+
+   int sign_ab,sign_cd;
+
+   int sign_l;
+
+   for(int l = 0;l < M;++l){
+
+      for(int S = 0;S < 2;++S){
+
+         for(int i = 0;i < dpphm[l]->gdim(S);++i){
+
+            S_ab = xTPM::gt2s(S,i,0);
+
+            a = xTPM::gt2s(S,i,1);
+            b = xTPM::gt2s(S,i,2);
+
+            for(int j = i;j < dpphm[l]->gdim(S);++j){
+
+               S_cd = xTPM::gt2s(S,j,0);
+
+               c = xTPM::gt2s(S,j,1);
+               d = xTPM::gt2s(S,j,2);
+
+               (*this)[l](S,i,j) = 0.0;
+
+               int S_ = 2*S + 1;
+
+               for(int M_ = -S_;M_ <= S_;M_+=2)
+                  for(int s_a = -1;s_a <= 1;s_a+=2)
+                     for(int s_b = -1;s_b <= 1;s_b+=2)
+                        for(int s_c = -1;s_c <= 1;s_c+=2)
+                           for(int s_d = -1;s_d <= 1;s_d+=2)
+                              for(int s_l = -1;s_l <= 1;s_l+=2)
+                                 for(int s_l_ = -1;s_l_ <= 1;s_l_+=2)
+                                    for(int M_ab = -2*S_ab;M_ab <= 2*S_ab;M_ab+=2)
+                                       for(int M_cd = -2*S_cd;M_cd <= 2*S_cd;M_cd+=2){
+
+                                          if(M_ab == 0)
+                                             sign_ab = 1;
+                                          else
+                                             sign_ab = -1;
+
+                                          if(M_cd == 0)
+                                             sign_cd = 1;
+                                          else
+                                             sign_cd = -1;
+
+                                          if(s_l == s_l_)
+                                             sign_l = 1;
+                                          else
+                                             sign_l = -1;
+
+                                          (*this)[l](S,i,j) += sign_l * (1 - 2*S_ab) * (1 - 2*S_cd) * sign_ab * sign_cd
+
+                                             * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) )
+
+                                             * Tools::g3j(1,1,2*S_ab,s_a,s_b,-M_ab) * Tools::g3j(2*S_ab,1,2*S + 1,M_ab,-s_l,-M_)
+
+                                             * Tools::g3j(1,1,2*S_cd,s_c,s_d,-M_cd) * Tools::g3j(2*S_cd,1,2*S + 1,M_cd,-s_l_,-M_) 
+
+                                             * dpphm_u[l]((s_l + 1)/2,2*a + (s_a + 1)/2,2*b + (s_b + 1)/2,(s_l_ + 1)/2,2*c + (s_c + 1)/2,2*d + (s_d + 1)/2);
+
+
+                                       }
+
+               if(a == b)
+                  (*this)[l](S,i,j) /= std::sqrt(2.0);
+
+               if(c == d)
+                  (*this)[l](S,i,j) /= std::sqrt(2.0);
+
+            }
+         }
+
+      }
+
+
+
+   }
+
+   this->symmetrize();
+
+}
+
+/**
  * a sort of skew trace, see notes for info
  */
 double dPPHM::barbreve() const {
@@ -873,7 +882,7 @@ double dPPHM::barbreve() const {
                   hard += (*this)(l,0,S_ab,l,b,S_cd,l,b);
 
             }
-         
+
          ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * hard;
 
       }
