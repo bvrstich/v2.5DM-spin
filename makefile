@@ -33,6 +33,7 @@ CPPSRC	= pr_sdp.cpp\
             Tools.cpp\
             rxTPM_unc.cpp\
             xTPM_unc.cpp\
+            rxPHM_unc.cpp\
             dDPM_unc.cpp\
             dPPHM_unc.cpp
 

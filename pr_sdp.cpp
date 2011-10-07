@@ -59,9 +59,12 @@ int main(void){
    Tools::init(M,N);
    rxTPM_unc::init(M,N);
    xTPM_unc::init(M,N);
+   rxPHM_unc::init(M,N);
    dDPM_unc::init(M,N);
    dPPHM_unc::init(M,N);
 
+   rxPHM_unc::print_basis();
+/*
    //hamiltoniaan
    dDPM ham;
    ham.hubbard(1.0);
@@ -140,7 +143,8 @@ int main(void){
       W.daxpy(b,extrapol);
 
    }
-
+*/
+   rxPHM_unc::clear();
    xTPM_unc::clear();
    rxTPM_unc::clear();
    Tools::clear();
