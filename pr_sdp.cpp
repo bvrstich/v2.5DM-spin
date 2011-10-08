@@ -62,8 +62,16 @@ int main(void){
    rxPHM_unc::init(M,N);
    dDPM_unc::init(M,N);
    dPPHM_unc::init(M,N);
+   dPHHM_unc::init(M,N);
 
-   rxPHM_unc::print_basis();
+   dDPM ddpm;
+   ddpm.unit();
+
+   dPHHM dphhm;
+   dphhm.G1(ddpm);
+
+   cout << dphhm.trace() << endl;
+
 /*
    //hamiltoniaan
    dDPM ham;

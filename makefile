@@ -35,7 +35,8 @@ CPPSRC	= pr_sdp.cpp\
             xTPM_unc.cpp\
             rxPHM_unc.cpp\
             dDPM_unc.cpp\
-            dPPHM_unc.cpp
+            dPPHM_unc.cpp\
+            dPHHM_unc.cpp
 
 FSRC  = dangalg.for
 
