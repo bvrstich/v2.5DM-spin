@@ -434,3 +434,35 @@ void dTPM::bar(double scale,const dPPHM &dpphm){
    this->symmetrize();
 
 }
+
+/**
+ * special "bar" function that maps a dPHHM on a dTPM object, see notes for info.
+ * @param scale the factor you scale the dTPM with
+ * @param dpphm input dPPHM object
+ */
+void dTPM::bar(double scale,const dPHHM &dphhm){
+
+   for(int l = 0;l < M;++l){
+
+      for(int Z = 0;Z < 2;++Z){
+
+         for(int b = 0;b < M;++b)
+            for(int d = b;d < M;++d){
+
+               (*this)[l](Z,b,d) = 0.0;
+
+               for(int S = 0;S < 2;++S)
+                  for(int a = 0;a < M;++a)
+                     (*this)[l](Z,b,d) += (2*(S + 0.5) + 1.0)/(2*Z + 1.0) * dphhm(l,S,Z,a,b,Z,a,d);
+               
+
+               (*this)[l](Z,b,d) *= scale;
+
+            }
+
+      }
+   }
+
+   this->symmetrize();
+
+}

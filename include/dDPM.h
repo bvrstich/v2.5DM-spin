@@ -115,6 +115,8 @@ class dDPM {
       //Q1 down
       void Q(const dPPHM &);
 
+      void G1(const dPHHM &);
+
       double dotunit() const;
 
       static void init(int,int);

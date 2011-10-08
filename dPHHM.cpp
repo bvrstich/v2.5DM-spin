@@ -359,7 +359,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
             //let the games begin: first the dp
             (*this)[l](0,i,j) = 0.0;
-
+/*
             for(int S_ = 0;S_ < 2;S_++)
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
@@ -377,7 +377,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
             if(c == b)
                (*this)[l](0,i,j) *= std::sqrt(2.0);
-
+*/
             //tp(1)
             if(S_bl == S_dl)
                if(a == c){
@@ -393,7 +393,7 @@ void dPHHM::G1(const dDPM &ddpm){
                   (*this)[l](0,i,j) += hard;
 
                }
-
+/*
             //part only in S = 1/2 blocks
             if(a == b){
 
@@ -470,7 +470,7 @@ void dPHHM::G1(const dDPM &ddpm){
                (*this)[l](0,i,j) -= 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_bl * hard;
 
             }
-
+*/
          }
       }
 
@@ -491,7 +491,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
             //dp
             (*this)[l](1,i,j) = 0.0;
-
+/*
             for(int S_ = 0;S_ < 2;S_++)
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
@@ -509,7 +509,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
             if(c == b)
                (*this)[l](1,i,j) *= std::sqrt(2.0);
-
+*/
             //tp(1)
             if(a == c)
                (*this)[l](1,i,j) += tpm(1,b,l,d,l);

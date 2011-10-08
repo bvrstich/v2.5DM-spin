@@ -45,6 +45,8 @@ class dTPM {
 
       void bar(double,const dPPHM &);
 
+      void bar(double,const dPHHM &);
+
       double trace() const;
 
       void dscal(double);
