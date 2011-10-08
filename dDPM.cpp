@@ -2997,6 +2997,9 @@ void dDPM::G1(const dPHHM &dphhm){
    dTPM dtpm;
    dtpm.bar(1.0/(N - 2.0),dphhm);
 
+   SPM breve;
+   breve.breve(0.5/((N - 1.0)*(N - 2.0)),dphhm);
+
    for(int l = 0;l < M;++l){
 
       for(int S = 0;S < 2;++S){
@@ -3034,16 +3037,16 @@ void dDPM::G1(const dPHHM &dphhm){
                if(S_ab == S_cd){
 
                   if(a == c)
-                     (*this)[l](S,i,j) += norm_ab * norm_cd * dtpm[a](S_ab,b,d);
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( dtpm[a](S_ab,b,d) + breve(b,d));
 
                   if(b == c)
-                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * dtpm[b](S_ab,a,d);
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( dtpm[b](S_ab,a,d) + breve(a,d) );
 
                   if(a == d)
-                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * dtpm[a](S_ab,b,c);
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( dtpm[a](S_ab,b,c) + breve(b,c) );
                      
                   if(b == d)
-                     (*this)[l](S,i,j) += norm_ab * norm_cd * dtpm[b](S_ab,a,c);
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( dtpm[b](S_ab,a,c) + breve(a,c) );
 
                }
 

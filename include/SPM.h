@@ -9,6 +9,8 @@ using std::ostream;
 #include "Matrix.h"
 #include "TPM.h"
 
+class dPHHM;
+
 /**
  * @author Brecht Verstichel
  * @date 20-04-2010\n\n
@@ -54,6 +56,8 @@ class SPM : public Matrix {
       void breve(double, const dDPM &);
 
       void breve(double, const dPPHM &);
+
+      void breve(double, const dPHHM &);
 
       static void init(int,int);
 

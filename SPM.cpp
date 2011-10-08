@@ -213,3 +213,39 @@ void SPM::breve(double scale,const dPPHM &dpphm){
    this->symmetrize();
 
 }
+
+
+/**
+ * map a dPHHM matrix on a SPM by tracing the first indices together with the diagonal third (see symmetry.pdf)
+ * @param scale the SPM with this number
+ * @param dphhm input dPHHM object
+ */
+void SPM::breve(double scale,const dPHHM &dphhm){
+
+   double ward;
+
+   for(int b = 0;b < M;++b)
+      for(int d = b;d < M;++d){
+
+         (*this)(b,d) = 0.0;
+
+         //only S = 1/2 contribution
+         for(int S_ab = 0;S_ab < 2;++S_ab)
+            for(int S_cd = 0;S_cd < 2;++S_cd){
+
+               ward = 0.0;
+
+               for(int l = 0;l < M;++l)
+                  ward += dphhm(l,0,S_ab,l,b,S_cd,l,d);
+
+               (*this)(b,d) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * ward;
+
+            }
+
+         (*this)(b,d) *= scale;
+
+      }
+
+   this->symmetrize();
+
+}
