@@ -8,6 +8,8 @@ using std::ostream;
 
 #include "SPM.h"
 
+class dPHHM;
+
 /**
  * @author Brecht Verstichel
  * @date 23-06-2011\n\n
@@ -45,6 +47,8 @@ class ssdTPM {
       void bar(double,const dDPM &);
 
       void bar(double,const dPPHM &);
+
+      void skew_bar(double,const dPHHM &);
 
       double trace() const;
 

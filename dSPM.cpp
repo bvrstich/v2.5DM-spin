@@ -129,3 +129,35 @@ void dSPM::trace(double scale,const dPPHM &dpphm){
       dspm[l] = scale * dpphm[l].trace();
 
 }
+
+/**
+ * construct the dSPM object from a dPHHM by skew-tracing the different blocks
+ * @param scale all the traces with this value
+ * @param dphhm the input dPHHM
+ */
+void dSPM::skew_trace(double scale,const dPHHM &dphhm){
+
+   double ward;
+
+   for(int l = 0;l < M;++l){
+
+      dspm[l] = 0.0;
+
+      for(int S_bl = 0;S_bl < 2;++S_bl)
+         for(int S_dl = 0;S_dl < 2;++S_dl){
+
+            ward = 0.0;
+
+            for(int a = 0;a < M;++a)
+               for(int c = 0;c < M;++c)
+                  ward += dphhm(l,0,S_bl,a,a,S_dl,c,c);
+
+            dspm[l] += std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * (1 - 2*S_bl) * (1 - 2*S_dl) * ward;
+
+         }
+
+      dspm[l] *= scale;
+
+   }
+
+}

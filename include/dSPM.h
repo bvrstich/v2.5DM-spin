@@ -7,6 +7,8 @@
 using std::ostream;
 
 class dDPM;
+class dPPHM;
+class dPHHM;
 
 /**
  * @author Brecht Verstichel
@@ -44,6 +46,8 @@ class dSPM {
       void trace(double,const dDPM &);
 
       void trace(double,const dPPHM &);
+
+      void skew_trace(double,const dPHHM &);
 
       static void init(int,int);
 

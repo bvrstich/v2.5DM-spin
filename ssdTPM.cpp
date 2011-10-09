@@ -356,7 +356,7 @@ void ssdTPM::bar(double scale,const dDPM &ddpm){
  * @param scale the ssdTPM with this number
  * @param dpphm input dPPHM object
  */
-void ssdTPM::bar(double scale,const dPPHM &ddpm){
+void ssdTPM::bar(double scale,const dPPHM &dpphm){
 
    double ward,hard;
 
@@ -374,7 +374,7 @@ void ssdTPM::bar(double scale,const dPPHM &ddpm){
 
                   for(int b = 0;b < M;++b){
 
-                     hard = ddpm(l,0,S_ab,a,b,S_cd,c,b);
+                     hard = dpphm(l,0,S_ab,a,b,S_cd,c,b);
 
                      if(a == b)
                         hard *= std::sqrt(2.0);
@@ -398,5 +398,44 @@ void ssdTPM::bar(double scale,const dPPHM &ddpm){
    }
 
    this->symmetrize();
+
+}
+
+/**
+ * map a dPHHM matrix on a ssdTPM by using a spinsummed "skew-bar" function on the different blocks of a dPHHM matrix.
+ * spinsummed because the intermediate spin is not required to be diagonal, instead the usual [][] is used.
+ * BEWARE: matrix not symmetric in general!
+ * @param scale the ssdTPM with this number
+ * @param dphhm input dPHHM object
+ */
+void ssdTPM::skew_bar(double scale,const dPHHM &dphhm){
+
+   double ward;
+
+   for(int l = 0;l < M;++l){
+
+      for(int a = 0;a < M;++a)
+         for(int c = 0;c < M;++c){
+
+            (*this)[l](a,c) = 0.0;
+
+            for(int S_bl = 0;S_bl < 2;++S_bl)
+               for(int S_dl = 0;S_dl < 2;++S_dl){
+
+                  ward = 0.0;
+
+                  for(int b = 0;b < M;++b)
+                     ward += dphhm(l,0,S_bl,b,b,S_dl,a,c);
+
+                  (*this)[l](a,c) += (1 - 2*S_bl) * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * ward;
+
+               }
+
+            //finally scale
+            (*this)[l](a,c) *= scale;
+
+         }
+
+   }
 
 }

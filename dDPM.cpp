@@ -3000,6 +3000,12 @@ void dDPM::G1(const dPHHM &dphhm){
    SPM breve;
    breve.breve(0.5/((N - 1.0)*(N - 2.0)),dphhm);
 
+   ssdTPM ssdtpm;
+   ssdtpm.skew_bar(0.5/((N - 1.0)*(N - 2.0)),dphhm);
+
+   dSPM dspm;
+   dspm.skew_trace(0.5/((N - 1.0)*(N - 2.0)),dphhm);
+
    for(int l = 0;l < M;++l){
 
       for(int S = 0;S < 2;++S){
@@ -3018,7 +3024,7 @@ void dDPM::G1(const dPHHM &dphhm){
             if(a == b)
                norm_ab /= std::sqrt(2.0);
 
-            for(int j = i;j < ddpm[l]->gdim(S);++j){
+            for(int j = 0;j < ddpm[l]->gdim(S);++j){
 
                S_cd = rxTPM::gt2s(l,S,j,0);
 
@@ -3034,19 +3040,22 @@ void dDPM::G1(const dPHHM &dphhm){
 
                (*this)[l](S,i,j) = 0.0;
 
+               if(i == j)
+                  (*this)[l](S,i,j) += dspm[a] + dspm[b];
+
                if(S_ab == S_cd){
 
                   if(a == c)
-                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( dtpm[a](S_ab,b,d) + breve(b,d));
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( dtpm[a](S_ab,b,d) + breve(b,d) + ssdtpm[b](b,d) + ssdtpm[d](d,b) );
 
                   if(b == c)
-                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( dtpm[b](S_ab,a,d) + breve(a,d) );
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( dtpm[b](S_ab,a,d) + breve(a,d) + ssdtpm[a](a,d) + ssdtpm[d](d,a) );
 
                   if(a == d)
-                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( dtpm[a](S_ab,b,c) + breve(b,c) );
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( dtpm[a](S_ab,b,c) + breve(b,c) + ssdtpm[b](b,c) + ssdtpm[c](c,b) );
                      
                   if(b == d)
-                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( dtpm[b](S_ab,a,c) + breve(a,c) );
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( dtpm[b](S_ab,a,c) + breve(a,c) + ssdtpm[a](a,c) + ssdtpm[c](c,a) );
 
                }
 
@@ -3056,6 +3065,6 @@ void dDPM::G1(const dPHHM &dphhm){
 
    }
 
-   this->symmetrize();
+//   this->symmetrize();
 
 }
