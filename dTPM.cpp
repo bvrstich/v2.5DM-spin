@@ -466,3 +466,43 @@ void dTPM::bar(double scale,const dPHHM &dphhm){
    this->symmetrize();
 
 }
+
+
+/**
+ * special "skew-bar" function that maps a dPHHM on a dTPM object, see notes for info.
+ * BEWARE: not symmetrical
+ * @param scale the factor you scale the dTPM with
+ * @param dpphm input dPPHM object
+ */
+void dTPM::skew_bar(double scale,const dPHHM &dphhm){
+
+   double ward;
+
+   for(int l = 0;l < M;++l){
+
+      for(int S_dl = 0;S_dl < 2;++S_dl){
+
+         for(int b = 0;b < M;++b)
+            for(int d = 0;d < M;++d){
+
+               (*this)[l](S_dl,b,d) = 0.0;
+
+               for(int S_bl = 0;S_bl < 2;++S_bl){
+
+                  ward = 0.0;
+
+                  for(int a = 0;a < M;++a)
+                     ward += dphhm(l,0,S_bl,a,a,S_dl,b,d);
+
+                  (*this)[l](S_dl,b,d) += std::sqrt( (2*S_bl + 1.0) / (2*S_dl + 1.0) ) * (1 - 2*S_dl) * (1 - 2*S_bl) * ward;
+
+               }
+
+               (*this)[l](S_dl,b,d) *= scale;
+
+            }
+
+      }
+   }
+
+}

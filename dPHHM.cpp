@@ -348,7 +348,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
          sign_bl = 1 - 2*S_bl;
 
-         for(int j = 0;j < dphhm[l]->gdim(0);++j){
+         for(int j = i;j < dphhm[l]->gdim(0);++j){
 
             S_dl = rxPHM::gph2s(l,0,j,0);
 
@@ -359,7 +359,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
             //let the games begin: first the dp
             (*this)[l](0,i,j) = 0.0;
-/*
+
             for(int S_ = 0;S_ < 2;S_++)
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
@@ -377,7 +377,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
             if(c == b)
                (*this)[l](0,i,j) *= std::sqrt(2.0);
-*/
+
             //tp(1)
             if(S_bl == S_dl)
                if(a == c){
@@ -404,7 +404,7 @@ void dPHHM::G1(const dDPM &ddpm){
                //sp_b
                if(c == l)
                   (*this)[l](0,i,j) += 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_bl * spm(d,l);
-/*
+
                //tp(2)_a
                double hard = tpm(S_dl,c,l,d,l);
 
@@ -415,7 +415,7 @@ void dPHHM::G1(const dDPM &ddpm){
                   hard *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) -= 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_bl * sign_dl * hard;
-*/
+
             }
 
             if(c == d){
@@ -423,7 +423,7 @@ void dPHHM::G1(const dDPM &ddpm){
                //sp_c
                if(a == l)
                   (*this)[l](0,i,j) += 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_dl * spm(b,l);
-/*
+
                //tp(2)_d
                double hard = tpm(S_bl,a,l,b,l);
 
@@ -434,7 +434,7 @@ void dPHHM::G1(const dDPM &ddpm){
                   hard *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) -= 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_bl * sign_dl * hard;
-*/
+
             }
 
             if(a == l){
@@ -442,7 +442,7 @@ void dPHHM::G1(const dDPM &ddpm){
                //sp_a
                if(c == l)
                   (*this)[l](0,i,j) += 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * spm(b,d);
-/*
+
                //tp(2)_b
                double hard = tpm(S_dl,c,b,d,l);
 
@@ -453,9 +453,9 @@ void dPHHM::G1(const dDPM &ddpm){
                   hard *= std::sqrt(2.0);
 
                (*this)[l](0,i,j) -= 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_dl * hard;
-*/
+
             }
-/*
+
             if(c == l){
 
                //tp(2)_c
@@ -470,7 +470,7 @@ void dPHHM::G1(const dDPM &ddpm){
                (*this)[l](0,i,j) -= 0.5 * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * sign_bl * hard;
 
             }
-*/
+
          }
       }
 
@@ -482,7 +482,7 @@ void dPHHM::G1(const dDPM &ddpm){
          a = rxPHM::gph2s(l,1,i,1);
          b = rxPHM::gph2s(l,1,i,2);
 
-         for(int j = 0;j < dphhm[l]->gdim(1);++j){
+         for(int j = i;j < dphhm[l]->gdim(1);++j){
 
             S_dl = rxPHM::gph2s(l,1,j,0);
 
@@ -491,7 +491,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
             //dp
             (*this)[l](1,i,j) = 0.0;
-/*
+
             for(int S_ = 0;S_ < 2;S_++)
                for(int S_ab = 0;S_ab < 2;++S_ab)
                   for(int S_cd = 0;S_cd < 2;++S_cd){
@@ -509,7 +509,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
             if(c == b)
                (*this)[l](1,i,j) *= std::sqrt(2.0);
-*/
+
             //tp(1)
             if(a == c)
                (*this)[l](1,i,j) += tpm(1,b,l,d,l);
@@ -519,7 +519,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
    }
 
-   //this->symmetrize();
+   this->symmetrize();
 
 }
 

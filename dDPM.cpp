@@ -2994,8 +2994,8 @@ void dDPM::G1(const dPHHM &dphhm){
    double norm_ab,norm_cd;
    int sign_ab,sign_cd;
 
-   dTPM dtpm;
-   dtpm.bar(1.0/(N - 2.0),dphhm);
+   dTPM bar;
+   bar.bar(1.0/(N - 2.0),dphhm);
 
    SPM breve;
    breve.breve(0.5/((N - 1.0)*(N - 2.0)),dphhm);
@@ -3005,6 +3005,12 @@ void dDPM::G1(const dPHHM &dphhm){
 
    dSPM dspm;
    dspm.skew_trace(0.5/((N - 1.0)*(N - 2.0)),dphhm);
+
+   dTPM skew_bar;
+   skew_bar.skew_bar(1.0/(N - 2.0),dphhm);
+
+   PHM phm;
+   phm.spinsum(1.0/(N - 2.0),dphhm);
 
    for(int l = 0;l < M;++l){
 
@@ -3024,7 +3030,7 @@ void dDPM::G1(const dPHHM &dphhm){
             if(a == b)
                norm_ab /= std::sqrt(2.0);
 
-            for(int j = 0;j < ddpm[l]->gdim(S);++j){
+            for(int j = i;j < ddpm[l]->gdim(S);++j){
 
                S_cd = rxTPM::gt2s(l,S,j,0);
 
@@ -3040,22 +3046,63 @@ void dDPM::G1(const dPHHM &dphhm){
 
                (*this)[l](S,i,j) = 0.0;
 
+               for(int S_ = 0;S_ < 2;S_++)
+                  for(int S_bl = 0;S_bl < 2;++S_bl)
+                     for(int S_dl = 0;S_dl < 2;++S_dl){
+
+                        (*this)[l](S,i,j) += norm_ab * norm_cd * (2*(S_ + 0.5) + 1.0) 
+                        
+                           * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
+
+                           * Tools::g6j(2*S + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S + 1,2*S_bl,1,2*S_ + 1,2*S_dl,1)
+
+                           * ( dphhm(l,S_,S_bl,a,d,S_dl,c,b) + sign_ab * dphhm(l,S_,S_bl,b,d,S_dl,c,a) + sign_cd * dphhm(l,S_,S_bl,a,c,S_dl,d,b)
+                           
+                                 + sign_ab * sign_cd * dphhm(l,S_,S_bl,b,c,S_dl,d,a) );
+
+                     }
+
+
                if(i == j)
                   (*this)[l](S,i,j) += dspm[a] + dspm[b];
 
                if(S_ab == S_cd){
 
-                  if(a == c)
-                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( dtpm[a](S_ab,b,d) + breve(b,d) + ssdtpm[b](b,d) + ssdtpm[d](d,b) );
+                  (*this)[l](S,i,j) -= norm_ab * norm_cd * ( phm(S_ab,a,d,c,b) + phm(S_ab,c,b,a,d) + phm(S_ab,b,c,d,a) + phm(S_ab,d,a,b,c)
 
-                  if(b == c)
-                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( dtpm[b](S_ab,a,d) + breve(a,d) + ssdtpm[a](a,d) + ssdtpm[d](d,a) );
+                        + sign_ab * ( phm(S_ab,a,c,d,b) + phm(S_ab,d,b,a,c) + phm(S_ab,b,d,c,a) + phm(S_ab,c,a,b,d) ) );
 
-                  if(a == d)
-                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( dtpm[a](S_ab,b,c) + breve(b,c) + ssdtpm[b](b,c) + ssdtpm[c](c,b) );
-                     
-                  if(b == d)
-                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( dtpm[b](S_ab,a,c) + breve(a,c) + ssdtpm[a](a,c) + ssdtpm[c](c,a) );
+                  if(a == c){
+
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( bar[a](S_ab,b,d) + breve(b,d) + ssdtpm[b](b,d) + ssdtpm[d](d,b)
+
+                           - skew_bar[a](S_ab,b,d) - skew_bar[a](S_ab,d,b) );
+
+                  }
+
+                  if(b == c){
+
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( bar[b](S_ab,a,d) + breve(a,d) + ssdtpm[a](a,d) + ssdtpm[d](d,a)
+
+                           - skew_bar[b](S_ab,a,d) - skew_bar[b](S_ab,d,a) );
+
+                  }
+
+                  if(a == d){
+
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( bar[a](S_ab,b,c) + breve(b,c) + ssdtpm[b](b,c) + ssdtpm[c](c,b)
+
+                           - skew_bar[a](S_ab,b,c) - skew_bar[a](S_ab,c,b) );
+
+                  }
+
+                  if(b == d){
+
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( bar[b](S_ab,a,c) + breve(a,c) + ssdtpm[a](a,c) + ssdtpm[c](c,a)
+
+                           - skew_bar[b](S_ab,a,c) - skew_bar[b](S_ab,c,a) );
+
+                  }
 
                }
 
@@ -3065,6 +3112,6 @@ void dDPM::G1(const dPHHM &dphhm){
 
    }
 
-//   this->symmetrize();
+      this->symmetrize();
 
 }

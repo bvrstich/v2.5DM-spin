@@ -47,6 +47,8 @@ class dTPM {
 
       void bar(double,const dPHHM &);
 
+      void skew_bar(double,const dPHHM &);
+
       double trace() const;
 
       void dscal(double);
