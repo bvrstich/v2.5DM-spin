@@ -58,22 +58,6 @@ int main(void){
    SUP::init(M,N);
    Tools::init(M,N);
 
-   dDPM ddpm;
-   ddpm.fill_Random();
-   
-   ddpm.proj_W();
-
-   dPHHM dphhm;
-   dphhm.fill_Random();
-
-   dDPM G1_down;
-   G1_down.G1(dphhm);
-
-   dPHHM G1_up;
-   G1_up.G1(ddpm);
-
-   cout << G1_up.ddot(dphhm) << "\t" << G1_down.ddot(ddpm) << endl;
-/*
    //hamiltoniaan
    dDPM ham;
    ham.hubbard(1.0);
@@ -156,7 +140,7 @@ int main(void){
    cout << endl;
 
    cout << "Final Energy:\t" << ham.ddot(W) << endl;
-*/
+
    Tools::clear();
    dDPM::clear();
    xTPM::clear();

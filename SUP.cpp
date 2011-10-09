@@ -34,6 +34,10 @@ void SUP::init(int M_in,int N_in){
    dim += 2*M*M*(2*M - 1);
 #endif
 
+#ifdef __G1_CON
+   dim += 4*M*M*(2*M - 1);
+#endif
+
 }
 
 /**
@@ -54,6 +58,10 @@ SUP::SUP(){
 
 #ifdef __Q1_CON
    Q1 = new dPPHM();
+#endif
+
+#ifdef __G1_CON
+   G1 = new dPHHM();
 #endif
 
 }
@@ -79,6 +87,10 @@ SUP::SUP(const SUP &X_c){
    Q1 = new dPPHM(X_c.gQ1());
 #endif
 
+#ifdef __G1_CON
+   G1 = new dPHHM(X_c.gG1());
+#endif
+
 }
 
 /**
@@ -98,6 +110,10 @@ SUP::~SUP(){
 
 #ifdef __Q1_CON
    delete Q1;
+#endif
+
+#ifdef __G1_CON
+   delete G1;
 #endif
 
 }
@@ -120,6 +136,10 @@ SUP &SUP::operator+=(const SUP &X_pl){
 
 #ifdef __Q1_CON
    *Q1 += X_pl.gQ1();
+#endif
+
+#ifdef __G1_CON
+   *G1 += X_pl.gG1();
 #endif
 
    return *this;
@@ -146,6 +166,10 @@ SUP &SUP::operator-=(const SUP &X_pl){
    *Q1 -= X_pl.gQ1();
 #endif
 
+#ifdef __G1_CON
+   *G1 -= X_pl.gG1();
+#endif
+
    return *this;
 
 }
@@ -168,6 +192,10 @@ SUP &SUP::operator=(const SUP &X_c){
 
 #ifdef __Q1_CON
    *Q1 = X_c.gQ1();
+#endif
+
+#ifdef __G1_CON
+   *G1 = X_c.gG1();
 #endif
 
    return *this;
@@ -193,6 +221,10 @@ SUP &SUP::operator=(double &a){
 
 #ifdef __Q1_CON
    *Q1 = a;
+#endif
+
+#ifdef __G1_CON
+   *G1 = a;
 #endif
 
    return *this;
@@ -287,6 +319,29 @@ const dPPHM &SUP::gQ1() const{
 
 #endif
 
+#ifdef __G1_CON
+
+/**
+ * @return pointer to the dPHHM object containing the G1 block
+ */
+dPHHM &SUP::gG1(){
+
+   return *G1;
+
+}
+
+/**
+ * the const version
+ * @return pointer to the dPHHM object containing the G1 block
+ */
+const dPHHM &SUP::gG1() const{
+
+   return *G1;
+
+}
+
+#endif
+
 ostream &operator<<(ostream &output,const SUP &X_p){
 
    output << (X_p.gI1()) << std::endl;
@@ -301,6 +356,10 @@ ostream &operator<<(ostream &output,const SUP &X_p){
 
 #ifdef __Q1_CON
    output << (X_p.gQ1()) << std::endl;
+#endif
+
+#ifdef __G1_CON
+   output << (X_p.gG1()) << std::endl;
 #endif
 
    return output;
@@ -324,6 +383,10 @@ void SUP::fill_Random(){
 
 #ifdef __Q1_CON
    Q1->fill_Random();
+#endif
+
+#ifdef __G1_CON
+   G1->fill_Random();
 #endif
 
 }
@@ -377,6 +440,10 @@ double SUP::ddot(const SUP &X_i) const{
    ward += Q1->ddot(X_i.gQ1());
 #endif
 
+#ifdef __G1_CON
+   ward += G1->ddot(X_i.gG1());
+#endif
+
    return ward;
 
 }
@@ -401,6 +468,10 @@ void SUP::invert(){
    Q1->invert();
 #endif
 
+#ifdef __G1_CON
+   G1->invert();
+#endif
+
 }
 
 /**
@@ -423,6 +494,10 @@ void SUP::dscal(double alpha){
    Q1->dscal(alpha);
 #endif
 
+#ifdef __G1_CON
+   G1->dscal(alpha);
+#endif
+
 }
 
 /**
@@ -443,6 +518,10 @@ void SUP::sqrt(int option){
 
 #ifdef __Q1_CON
    Q1->sqrt(option);
+#endif
+
+#ifdef __G1_CON
+   G1->sqrt(option);
 #endif
 
 }
@@ -469,6 +548,10 @@ void SUP::L_map(const SUP &map,const SUP &object){
    Q1->L_map(map.gQ1(),object.gQ1());
 #endif
 
+#ifdef __G1_CON
+   G1->L_map(map.gG1(),object.gG1());
+#endif
+
 }
 
 /**
@@ -492,6 +575,10 @@ void SUP::daxpy(double alpha,const SUP &X_p){
    Q1->daxpy(alpha,X_p.gQ1());
 #endif
 
+#ifdef __G1_CON
+   G1->daxpy(alpha,X_p.gG1());
+#endif
+
 }
 
 /**
@@ -513,6 +600,10 @@ double SUP::trace() const{
 
 #ifdef __Q1_CON
    ward += Q1->trace();
+#endif
+
+#ifdef __G1_CON
+   ward += G1->trace();
 #endif
 
    return ward;
@@ -541,6 +632,10 @@ SUP &SUP::mprod(const SUP &A,const SUP &B){
    Q1->mprod(A.gQ1(),B.gQ1());
 #endif
 
+#ifdef __G1_CON
+   G1->mprod(A.gG1(),B.gG1());
+#endif
+
    return *this;
 
 }
@@ -563,6 +658,10 @@ void SUP::fill(const dDPM &W){
 
 #ifdef __Q1_CON
    Q1->Q(W);
+#endif
+
+#ifdef __G1_CON
+   G1->G1(W);
 #endif
 
 }
