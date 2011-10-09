@@ -141,6 +141,12 @@ int main(void){
 
    cout << "Final Energy:\t" << ham.ddot(W) << endl;
 
+   dPHHM dphhm;
+   dphhm.G2(W);
+
+   dPHHV v(dphhm);
+   cout << v;
+
    Tools::clear();
    dDPM::clear();
    xTPM::clear();

@@ -553,3 +553,153 @@ void dPHHM::test_sym() const {
    }
 
 }
+
+/**
+ * Map a dDPM on a dPHHM using the G2 map
+ * @param ddpm input dDPM
+ */
+void dPHHM::G2(const dDPM &ddpm){
+   
+   int a,b,c,d;
+   int S_bl,S_dl;
+
+   int sign_bl,sign_dl;
+
+   TPM tpm;
+   tpm.bar(1.0/(N - 2.0),ddpm);
+
+   SPM spm;
+   spm.bar(1.0/(N - 1.0),tpm);
+
+   for(int l = 0;l < M;++l){
+
+      for(int S = 0;S < 2;++S){
+
+         for(int i = 0;i < dphhm[l]->gdim(S);++i){
+
+            S_bl = rxPHM::gph2s(l,S,i,0);
+
+            a = rxPHM::gph2s(l,S,i,1);
+            b = rxPHM::gph2s(l,S,i,2);
+
+            sign_bl = 1 - 2*S_bl;
+
+            for(int j = i;j < dphhm[l]->gdim(S);++j){
+
+               S_dl = rxPHM::gph2s(l,S,j,0);
+
+               c = rxPHM::gph2s(l,S,j,1);
+               d = rxPHM::gph2s(l,S,j,2);
+
+               sign_dl = 1 - 2*S_dl;
+
+               //first the dp
+               (*this)[l](S,i,j) = 0.0;
+
+               for(int S_ = 0;S_ < 2;S_++)
+                  for(int S_ab = 0;S_ab < 2;++S_ab)
+                     for(int S_cd = 0;S_cd < 2;++S_cd){
+
+                        (*this)[l](S,i,j) -= (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
+
+                           * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,2*S + 1,2*S_dl,1)
+
+                           * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
+
+                     }
+
+               if(a == d)
+                  (*this)[l](S,i,j) *= std::sqrt(2.0);
+
+               if(c == b)
+                  (*this)[l](S,i,j) *= std::sqrt(2.0);
+
+               //tp_a
+               double hard = 0.0;
+
+               for(int Z = 0;Z < 2;++Z)
+                  hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,d,c,b);
+
+               if(a == d)
+                  hard *= std::sqrt(2.0);
+
+               if(c == b)
+                  hard *= std::sqrt(2.0);
+
+               (*this)[l](S,i,j) -= std::sqrt( (2*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * hard;
+
+               if(b == d){
+
+                  //sp
+                  if(S_bl == S_dl){
+
+                     //sp_a
+                     (*this)[l](S,i,j) += spm(a,c);
+
+                     //sp_b
+                     if(b == l)
+                        (*this)[l](S,i,j) += sign_bl * spm(a,c);
+
+                  }
+
+                  //tp_d
+                  double hard = 0.0;
+
+                  for(int Z = 0;Z < 2;++Z)
+                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,l,c,l);
+
+                  if(a == l)
+                     hard *= std::sqrt(2.0);
+
+                  if(c == l)
+                     hard *= std::sqrt(2.0);
+
+                  (*this)[l](S,i,j) -= sign_bl * sign_dl * std::sqrt( (2*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * hard;
+
+               }
+
+               if(b == l){
+
+                  //tp_b
+                  double hard = 0.0;
+
+                  for(int Z = 0;Z < 2;++Z)
+                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,d,c,l);
+
+                  if(a == d)
+                     hard *= std::sqrt(2.0);
+
+                  if(c == l)
+                     hard *= std::sqrt(2.0);
+
+                  (*this)[l](S,i,j) -= sign_bl * std::sqrt( (2*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * hard;
+
+               }
+
+               if(d == l){
+
+                  //tp_c
+                  double hard = 0.0;
+
+                  for(int Z = 0;Z < 2;++Z)
+                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,l,c,b);
+
+                  if(a == l)
+                     hard *= std::sqrt(2.0);
+
+                  if(c == b)
+                     hard *= std::sqrt(2.0);
+
+                  (*this)[l](S,i,j) -= sign_dl * std::sqrt( (2*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * hard;
+
+               }
+
+            }
+         }
+      }
+
+   }
+
+   this->symmetrize();
+
+}
