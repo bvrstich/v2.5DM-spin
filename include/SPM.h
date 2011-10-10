@@ -59,6 +59,10 @@ class SPM : public Matrix {
 
       void breve(double, const dPHHM &);
 
+      void breve_si(double, const dPHHM &);
+
+      void barbar(double, const dPHHM &);
+
       static void init(int,int);
 
    private:

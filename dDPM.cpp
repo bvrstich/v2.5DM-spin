@@ -3137,3 +3137,100 @@ void dDPM::G1(const dPHHM &dphhm){
       this->symmetrize();
 
 }
+
+
+/**
+ * map a dPHHM on a dDPM object with the G1 down map.
+ * @param dphhm input dPHHM matrix
+ */
+void dDPM::G2(const dPHHM &dphhm){
+
+   SPM barbar;
+   barbar.barbar(0.5/((N - 1.0)*(N - 2.0)),dphhm);
+
+   SPM breve_si;
+   breve_si.breve_si(0.5/((N - 1.0)*(N - 2.0)),dphhm);
+
+   int a,b,c,d;
+
+   int S_ab,S_cd;
+
+   double norm_ab,norm_cd;
+   int sign_ab,sign_cd;
+
+   for(int l = 0;l < M;++l){
+
+      for(int S = 0;S < 2;++S){
+
+         for(int i = 0;i < ddpm[l]->gdim(S);++i){
+
+            S_ab = rxTPM::gt2s(l,S,i,0);
+
+            a = rxTPM::gt2s(l,S,i,1);
+            b = rxTPM::gt2s(l,S,i,2);
+
+            norm_ab = 1.0;
+
+            sign_ab = 1 - 2*S_ab;
+
+            if(a == b)
+               norm_ab /= std::sqrt(2.0);
+
+            for(int j = i;j < ddpm[l]->gdim(S);++j){
+
+               S_cd = rxTPM::gt2s(l,S,j,0);
+
+               c = rxTPM::gt2s(l,S,j,1);
+               d = rxTPM::gt2s(l,S,j,2);
+
+               norm_cd = 1.0;
+
+               sign_cd = 1 - 2*S_cd;
+
+               if(c == d)
+                  norm_cd /= std::sqrt(2.0);
+
+               (*this)[l](S,i,j) = 0.0;
+
+               for(int S_ = 0;S_ < 2;S_++)
+                  for(int S_bl = 0;S_bl < 2;++S_bl)
+                     for(int S_dl = 0;S_dl < 2;++S_dl){
+
+                        (*this)[l](S,i,j) -= norm_ab * norm_cd * (2*(S_ + 0.5) + 1.0) 
+                        
+                           * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
+
+                           * Tools::g6j(2*S + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S + 1,2*S_bl,1,2*S_ + 1,2*S_dl,1)
+
+                           * ( dphhm(l,S_,S_bl,a,d,S_dl,c,b) + sign_ab * dphhm(l,S_,S_bl,b,d,S_dl,c,a) + sign_cd * dphhm(l,S_,S_bl,a,c,S_dl,d,b)
+                           
+                                 + sign_ab * sign_cd * dphhm(l,S_,S_bl,b,c,S_dl,d,a) );
+
+                     }
+
+               if(S_ab == S_cd){
+
+                  if(b == d)
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( barbar(a,c) + breve_si(a,c) );
+
+                  if(a == d)
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( barbar(b,c) + breve_si(b,c) );
+
+                  if(b == c)
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( barbar(a,d) + breve_si(a,d) );
+
+                  if(a == c)
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( barbar(b,d) + breve_si(b,d) );
+
+               }
+
+
+            }
+         }
+      }
+
+   }
+
+   this->symmetrize();
+
+}

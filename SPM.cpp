@@ -214,7 +214,6 @@ void SPM::breve(double scale,const dPPHM &dpphm){
 
 }
 
-
 /**
  * map a dPHHM matrix on a SPM by tracing the first indices together with the diagonal third (see symmetry.pdf)
  * @param scale the SPM with this number
@@ -243,6 +242,67 @@ void SPM::breve(double scale,const dPHHM &dphhm){
             }
 
          (*this)(b,d) *= scale;
+
+      }
+
+   this->symmetrize();
+
+}
+
+/**
+ * map a dPHHM matrix on a SPM by tracing the second indices together with the diagonal third (see symmetry.pdf)
+ * this is for the G2 down, slightly different breve then for the G1 down, the trace is over the second index, so breve_si...
+ * @param scale the SPM with this number
+ * @param dphhm input dPHHM object
+ */
+void SPM::breve_si(double scale,const dPHHM &dphhm){
+
+   double ward;
+
+   for(int a = 0;a < M;++a)
+      for(int c = a;c < M;++c){
+
+         (*this)(a,c) = 0.0;
+
+         for(int S = 0;S < 2;++S)
+            for(int S_bl = 0;S_bl < 2;++S_bl){
+
+               ward = 0.0;
+
+               for(int l = 0;l < M;++l)
+                  ward += dphhm(l,S,S_bl,a,l,S_bl,c,l);
+
+               (*this)(a,c) += (1 - 2*S_bl) * (2*(S + 0.5) + 1.0) * ward;
+
+            }
+
+         (*this)(a,c) *= scale;
+
+      }
+
+   this->symmetrize();
+
+}
+
+/**
+ * map a dPHHM matrix on a SPM by doing a normal double bar
+ * @param scale the SPM with this number
+ * @param dphhm input dPHHM object
+ */
+void SPM::barbar(double scale,const dPHHM &dphhm){
+
+   for(int a = 0;a < M;++a)
+      for(int c = a;c < M;++c){
+
+         (*this)(a,c) = 0.0;
+
+         for(int l = 0;l < M;++l)
+            for(int S = 0;S < 2;++S)
+               for(int S_bl = 0;S_bl < 2;++S_bl)
+                  for(int b = 0;b < M;++b)
+                     (*this)(a,c) += (2*(S + 0.5) + 1.0) * dphhm(l,S,S_bl,a,b,S_bl,c,b);
+         
+         (*this)(a,c) *= scale;
 
       }
 
