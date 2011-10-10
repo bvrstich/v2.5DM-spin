@@ -506,3 +506,49 @@ void dTPM::skew_bar(double scale,const dPHHM &dphhm){
    }
 
 }
+
+/**
+ * special spinsummed "bar" function that maps a dPHHM on a dTPM object, see notes for info.
+ * spinsummed because the intermediate spin is not required to be diagonal, and to have a different name then the other bar...
+ * @param scale the factor you scale the dTPM with
+ * @param dpphm input dPPHM object
+ */
+void dTPM::ssbar(double scale,const dPHHM &dphhm){
+
+   double ward;
+
+   for(int l = 0;l < M;++l){
+
+      for(int Z = 0;Z < 2;++Z){
+
+         for(int a = 0;a < M;++a)
+            for(int c = a;c < M;++c){
+
+               (*this)[l](Z,a,c) = 0.0;
+
+               for(int S = 0;S < 2;++S)
+                  for(int S_bl = 0;S_bl < 2;++S_bl)
+                     for(int S_dl = 0;S_dl < 2;++S_dl){
+
+                        ward = 0.0;
+
+                        for(int b = 0;b < M;++b)
+                           ward += dphhm(l,S,S_bl,a,b,S_dl,c,b);
+
+                        (*this)[l](Z,a,c) += (2.0*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * (1 - 2*S_bl) * (1 - 2*S_dl)
+
+                           * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * ward;
+
+                     }
+
+
+               (*this)[l](Z,a,c) *= scale;
+
+            }
+
+      }
+   }
+
+   this->symmetrize();
+
+}

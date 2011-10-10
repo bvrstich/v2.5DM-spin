@@ -3151,6 +3151,15 @@ void dDPM::G2(const dPHHM &dphhm){
    SPM breve_si;
    breve_si.breve_si(0.5/((N - 1.0)*(N - 2.0)),dphhm);
 
+   PHM phm;
+   phm.bar(1.0/(N - 2.0),dphhm);
+
+   dTPM dtpm;
+   dtpm.ssbar(1.0/(N - 2.0),dphhm);
+
+   PHM hat_si;
+   hat_si.spinsum_si(1.0/(N - 2.0),dphhm);
+
    int a,b,c,d;
 
    int S_ab,S_cd;
@@ -3210,17 +3219,25 @@ void dDPM::G2(const dPHHM &dphhm){
 
                if(S_ab == S_cd){
 
+                  //tp_a 
+                  (*this)[l](S,i,j) -= norm_ab * norm_cd * ( phm(S_ab,a,d,c,b) + sign_ab * phm(S_ab,a,c,d,b) + sign_ab * phm(S_ab,b,d,c,a) + phm(S_ab,b,c,d,a) );
+
+                  //tp_b and tp_c
+                  (*this)[l](S,i,j) -= norm_ab * norm_cd * ( hat_si(S_ab,a,d,c,b) + sign_ab * hat_si(S_ab,b,d,c,a) + sign_ab * hat_si(S_ab,a,c,d,b) + hat_si(S_ab,b,c,d,a)
+
+                        + hat_si(S_ab,c,b,a,d) + sign_ab * hat_si(S_ab,c,a,b,d) + sign_ab * hat_si(S_ab,d,b,a,c) + hat_si(S_ab,d,a,b,c) );
+
                   if(b == d)
-                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( barbar(a,c) + breve_si(a,c) );
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( barbar(a,c) + breve_si(a,c) - dtpm[b](S_ab,a,c) );
 
                   if(a == d)
-                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( barbar(b,c) + breve_si(b,c) );
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( barbar(b,c) + breve_si(b,c) - dtpm[a](S_ab,b,c) );
 
                   if(b == c)
-                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( barbar(a,d) + breve_si(a,d) );
+                     (*this)[l](S,i,j) += sign_ab * norm_ab * norm_cd * ( barbar(a,d) + breve_si(a,d) - dtpm[b](S_ab,a,d) );
 
                   if(a == c)
-                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( barbar(b,d) + breve_si(b,d) );
+                     (*this)[l](S,i,j) += norm_ab * norm_cd * ( barbar(b,d) + breve_si(b,d) - dtpm[a](S_ab,b,d) );
 
                }
 
