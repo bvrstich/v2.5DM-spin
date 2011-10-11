@@ -136,9 +136,6 @@ class dDPM {
       //!double array of rxTPM objects
       rxTPM **ddpm;
 
-      //!static array holding the 6j symbols needed
-      static double **_6j;
-
 };
 
 #endif

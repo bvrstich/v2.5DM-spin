@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <gsl/gsl_sf_coupling.h>
 
 using std::ostream;
 using std::ofstream;
@@ -501,7 +502,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,c,l);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,c,l);
 
                if(a == l)
                   hard *= std::sqrt(2.0);
@@ -547,7 +548,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,c,l);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,c,l);
 
                if(b == l)
                   hard *= std::sqrt(2.0);
@@ -577,7 +578,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,d,l);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,d,l);
 
                if(a == l)
                   hard *= std::sqrt(2.0);
@@ -607,7 +608,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,d,l);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,d,l);
 
                if(b == l)
                   hard *= std::sqrt(2.0);
@@ -693,7 +694,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,c,l);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,c,l);
 
                if(a == l)
                   hard *= std::sqrt(2.0);
@@ -711,7 +712,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,c,l);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,c,l);
 
                if(b == l)
                   hard *= std::sqrt(2.0);
@@ -729,7 +730,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,d,l);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,a,l,d,l);
 
                if(a == l)
                   hard *= std::sqrt(2.0);
@@ -748,7 +749,7 @@ void dPPHM::Q(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,d,l);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(3,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * tpm(Z,b,l,d,l);
 
                if(b == l)
                   hard *= std::sqrt(2.0);

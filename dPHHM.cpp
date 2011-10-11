@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <gsl/gsl_sf_coupling.h>
 
 using std::ostream;
 using std::ofstream;
@@ -366,9 +367,9 @@ void dPHHM::G1(const dDPM &ddpm){
 
                      (*this)[l](0,i,j) += (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
                      
-                        * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,1,2*S_dl,1)
-
-                        * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
+                        * gsl_sf_coupling_6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * gsl_sf_coupling_6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) 
+                        
+                        * gsl_sf_coupling_6j(2*S_ + 1,2*S_bl,1,1,2*S_dl,1) * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
 
                   }
 
@@ -498,9 +499,9 @@ void dPHHM::G1(const dDPM &ddpm){
 
                      (*this)[l](1,i,j) += (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
                      
-                        * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,3,2*S_dl,1)
-
-                        * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
+                        * gsl_sf_coupling_6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * gsl_sf_coupling_6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) 
+                        
+                        * gsl_sf_coupling_6j(2*S_ + 1,2*S_bl,1,3,2*S_dl,1) * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
 
                   }
 
@@ -602,9 +603,9 @@ void dPHHM::G2(const dDPM &ddpm){
 
                         (*this)[l](S,i,j) -= (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
 
-                           * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,2*S + 1,2*S_dl,1)
-
-                           * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
+                           * gsl_sf_coupling_6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * gsl_sf_coupling_6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd)
+                           
+                           * gsl_sf_coupling_6j(2*S_ + 1,2*S_bl,1,2*S + 1,2*S_dl,1) * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
 
                      }
 
@@ -618,7 +619,7 @@ void dPHHM::G2(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,d,c,b);
+                  hard += (2*Z + 1.0) * gsl_sf_coupling_9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,d,c,b);
 
                if(a == d)
                   hard *= std::sqrt(2.0);
@@ -646,7 +647,7 @@ void dPHHM::G2(const dDPM &ddpm){
                   double hard = 0.0;
 
                   for(int Z = 0;Z < 2;++Z)
-                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,l,c,l);
+                     hard += (2*Z + 1.0) * gsl_sf_coupling_9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,l,c,l);
 
                   if(a == l)
                      hard *= std::sqrt(2.0);
@@ -664,7 +665,7 @@ void dPHHM::G2(const dDPM &ddpm){
                   double hard = 0.0;
 
                   for(int Z = 0;Z < 2;++Z)
-                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,d,c,l);
+                     hard += (2*Z + 1.0) * gsl_sf_coupling_9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,d,c,l);
 
                   if(a == d)
                      hard *= std::sqrt(2.0);
@@ -682,7 +683,7 @@ void dPHHM::G2(const dDPM &ddpm){
                   double hard = 0.0;
 
                   for(int Z = 0;Z < 2;++Z)
-                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,l,c,b);
+                     hard += (2*Z + 1.0) * gsl_sf_coupling_9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,l,c,b);
 
                   if(a == l)
                      hard *= std::sqrt(2.0);

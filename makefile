@@ -44,7 +44,7 @@ BRIGHT_ROOT= .
 
 INCLUDE = ./include
 
-LIBS= -llapack -lblas -lgfortran
+LIBS= -llapack -lblas -lgfortran -lgsl
 
 CC	= gcc
 CXX	= g++
@@ -53,9 +53,9 @@ FF = gfortran
 # -----------------------------------------------------------------------------
 #   Compiler & Linker flags
 # -----------------------------------------------------------------------------
-CFLAGS	= -I$(INCLUDE) -g -Wall
-FFLAGS   = -g -Wall
-LDFLAGS	= -g -Wall
+CFLAGS	= -I$(INCLUDE) -g -Wall -O3
+FFLAGS   = -g -Wall -O3
+LDFLAGS	= -g -Wall -O3
 
 
 # =============================================================================
