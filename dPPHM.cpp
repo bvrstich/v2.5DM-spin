@@ -33,6 +33,7 @@ dPPHM::dPPHM() {
 
    dpphm = new xTPM * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l] = new xTPM();
 
@@ -46,6 +47,7 @@ dPPHM::dPPHM(const dPPHM &W) {
 
    dpphm = new xTPM * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l] = new xTPM(W[l]);
 
@@ -56,6 +58,7 @@ dPPHM::dPPHM(const dPPHM &W) {
  */
 dPPHM::~dPPHM(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       delete dpphm[l];
 
@@ -192,6 +195,7 @@ double dPPHM::trace() const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dpphm[l]->trace();
 
@@ -205,6 +209,7 @@ double dPPHM::trace() const{
  */
 void dPPHM::dscal(double alpha){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->dscal(alpha);
 
@@ -216,6 +221,7 @@ void dPPHM::dscal(double alpha){
  */
 dPPHM &dPPHM::operator=(const dPPHM &dpphm_c){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dpphm[l] = dpphm_c[l];
 
@@ -229,6 +235,7 @@ dPPHM &dPPHM::operator=(const dPPHM &dpphm_c){
  */
 dPPHM &dPPHM::operator=(double a){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dpphm[l] = a;
 
@@ -242,6 +249,7 @@ dPPHM &dPPHM::operator=(double a){
  */
 dPPHM &dPPHM::operator+=(const dPPHM &dpphm_pl){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dpphm[l] += dpphm_pl[l];
 
@@ -255,6 +263,7 @@ dPPHM &dPPHM::operator+=(const dPPHM &dpphm_pl){
  */
 dPPHM &dPPHM::operator-=(const dPPHM &dpphm_m){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dpphm[l] -= dpphm_m[l];
 
@@ -269,6 +278,7 @@ dPPHM &dPPHM::operator-=(const dPPHM &dpphm_m){
  */
 dPPHM &dPPHM::daxpy(double alpha,const dPPHM &dpphm_pl){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->daxpy(alpha,dpphm_pl[l]);
 
@@ -284,6 +294,7 @@ dPPHM &dPPHM::daxpy(double alpha,const dPPHM &dpphm_pl){
  */
 void dPPHM::L_map(const dPPHM &map,const dPPHM &object){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->L_map(map[l],object[l]);
 
@@ -296,6 +307,7 @@ void dPPHM::L_map(const dPPHM &map,const dPPHM &object){
  */
 dPPHM &dPPHM::mprod(const dPPHM &A,const dPPHM &B){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->mprod(A[l],B[l]);
 
@@ -309,6 +321,7 @@ dPPHM &dPPHM::mprod(const dPPHM &A,const dPPHM &B){
  */
 void dPPHM::sqrt(int option){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->sqrt(option);
 
@@ -322,6 +335,7 @@ double dPPHM::ddot(const dPPHM &dpphm_i) const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dpphm[l]->ddot(dpphm_i[l]);
 
@@ -334,6 +348,7 @@ double dPPHM::ddot(const dPPHM &dpphm_i) const{
  */
 void dPPHM::invert(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->invert();
 
@@ -344,6 +359,7 @@ void dPPHM::invert(){
  */
 void dPPHM::symmetrize(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->symmetrize();
 
@@ -354,6 +370,7 @@ void dPPHM::symmetrize(){
  */
 void dPPHM::fill_Random(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->fill_Random();
 
@@ -372,6 +389,7 @@ void dPPHM::I(const dDPM &ddpm){
    TPM tpm;
    tpm.bar(1.0/(N - 2.0),ddpm);
 
+#pragma omp parallel for private(a,b,c,d,S_ab,S_cd)
    for(int l = 0;l < M;++l){
 
       for(int S = 0;S < 2;++S){
@@ -430,6 +448,7 @@ void dPPHM::Q(const dDPM &ddpm){
 
    double ward = 2.0 * ddpm.trace() / (N*(N - 1.0)*(N - 2.0));
 
+#pragma omp parallel for private(a,b,c,d,S_ab,S_cd,sign_ab,sign_cd,norm_ab,norm_cd)
    for(int l = 0;l < M;++l){
 
       //first S = 1/2
@@ -492,7 +511,7 @@ void dPPHM::Q(const dDPM &ddpm){
                //sp(3)_a first part
                if(c == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(a,l);
-               
+
                //sp(3)_c first part
                if(a == l)
                   (*this)[l](0,i,j) -= norm_ab * norm_cd * 0.5 * std::sqrt( (2*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * spm(c,l);
@@ -790,7 +809,7 @@ double dPPHM::barbreve() const {
                   hard += (*this)(l,0,S_ab,l,b,S_cd,l,b);
 
             }
-         
+
          ward += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * hard;
 
       }
@@ -806,6 +825,7 @@ double dPPHM::barbreve() const {
  */
 void dPPHM::sep_pm(dPPHM &p,dPPHM &m){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dpphm[l]->sep_pm(p[l],m[l]);
 

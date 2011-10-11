@@ -53,9 +53,9 @@ FF = gfortran
 # -----------------------------------------------------------------------------
 #   Compiler & Linker flags
 # -----------------------------------------------------------------------------
-CFLAGS	= -I$(INCLUDE) -g -Wall
-FFLAGS   = -g -Wall
-LDFLAGS	= -g -Wall
+CFLAGS	= -I$(INCLUDE) -g -Wall -fopenmp
+FFLAGS   = -g -Wall -fopenmp
+LDFLAGS	= -g -Wall -fopenmp
 
 
 # =============================================================================

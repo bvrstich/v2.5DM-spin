@@ -32,6 +32,7 @@ dDPV::dDPV(dDPM &ddpm) {
 
    ddpv = new BlockVector<rxTPM> * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ddpv[l] = new BlockVector<rxTPM> (ddpm[l]);
    
@@ -45,6 +46,7 @@ dDPV::dDPV(const dDPV &ddpv_c) {
    
    ddpv = new BlockVector<rxTPM> * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ddpv[l] = new BlockVector<rxTPM> (ddpv_c[l]);
 }
@@ -54,6 +56,7 @@ dDPV::dDPV(const dDPV &ddpv_c) {
  */
 dDPV::~dDPV(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       delete ddpv[l];
 
@@ -122,6 +125,7 @@ const BlockVector<rxTPM> &dDPV::operator[](int l) const{
  */
 dDPV &dDPV::operator=(const dDPV &ddpv_c){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *ddpv[l] = ddpv_c[l];
 
@@ -135,6 +139,7 @@ dDPV &dDPV::operator=(const dDPV &ddpv_c){
  */
 dDPV &dDPV::operator=(double a){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *ddpv[l] = a;
 
@@ -148,6 +153,7 @@ dDPV &dDPV::operator=(double a){
  */
 dDPV &dDPV::operator+=(const dDPV &ddpv_p){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *ddpv[l] += ddpv_p[l];
 
@@ -161,6 +167,7 @@ dDPV &dDPV::operator+=(const dDPV &ddpv_p){
  */
 dDPV &dDPV::operator-=(const dDPV &ddpv_m){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *ddpv[l] -= ddpv_m[l];
 
@@ -175,6 +182,7 @@ dDPV &dDPV::operator-=(const dDPV &ddpv_m){
  */
 dDPV &dDPV::daxpy(double alpha,const dDPV &ddpv_p){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ddpv[l]->daxpy(alpha,ddpv_p[l]);
 
@@ -189,6 +197,7 @@ double dDPV::sum() const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += ddpv[l]->sum();
 
@@ -203,6 +212,7 @@ double dDPV::log_product() const {
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += ddpv[l]->log_product();
 
@@ -218,6 +228,7 @@ double dDPV::ddot(const dDPV &ddpv_i) const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += ddpv[l]->ddot(ddpv_i[l]);
 
@@ -231,6 +242,7 @@ double dDPV::ddot(const dDPV &ddpv_i) const{
  */
 void dDPV::dscal(double alpha){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ddpv[l]->dscal(alpha);
 
@@ -276,6 +288,7 @@ double dDPV::lsfunc(double alpha) const {
 
    double ward = 0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += ddpv[l]->lsfunc(alpha);
 

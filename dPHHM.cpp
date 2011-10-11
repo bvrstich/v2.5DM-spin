@@ -33,6 +33,7 @@ dPHHM::dPHHM() {
 
    dphhm = new rxPHM * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l] = new rxPHM(l);
 
@@ -46,6 +47,7 @@ dPHHM::dPHHM(const dPHHM &dphhm_c) {
 
    dphhm = new rxPHM * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l] = new rxPHM(dphhm_c[l]);
 
@@ -56,6 +58,7 @@ dPHHM::dPHHM(const dPHHM &dphhm_c) {
  */
 dPHHM::~dPHHM(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       delete dphhm[l];
 
@@ -152,6 +155,7 @@ double dPHHM::trace() const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dphhm[l]->trace();
 
@@ -165,6 +169,7 @@ double dPHHM::trace() const{
  */
 void dPHHM::dscal(double alpha){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->dscal(alpha);
 
@@ -176,6 +181,7 @@ void dPHHM::dscal(double alpha){
  */
 dPHHM &dPHHM::operator=(const dPHHM &dphhm_c){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dphhm[l] = dphhm_c[l];
 
@@ -189,6 +195,7 @@ dPHHM &dPHHM::operator=(const dPHHM &dphhm_c){
  */
 dPHHM &dPHHM::operator=(double a){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dphhm[l] = a;
 
@@ -202,6 +209,7 @@ dPHHM &dPHHM::operator=(double a){
  */
 dPHHM &dPHHM::operator+=(const dPHHM &dphhm_pl){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dphhm[l] += dphhm_pl[l];
 
@@ -215,6 +223,7 @@ dPHHM &dPHHM::operator+=(const dPHHM &dphhm_pl){
  */
 dPHHM &dPHHM::operator-=(const dPHHM &dphhm_m){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dphhm[l] -= dphhm_m[l];
 
@@ -229,6 +238,7 @@ dPHHM &dPHHM::operator-=(const dPHHM &dphhm_m){
  */
 dPHHM &dPHHM::daxpy(double alpha,const dPHHM &dphhm_pl){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->daxpy(alpha,dphhm_pl[l]);
 
@@ -244,6 +254,7 @@ dPHHM &dPHHM::daxpy(double alpha,const dPHHM &dphhm_pl){
  */
 void dPHHM::L_map(const dPHHM &map,const dPHHM &object){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->L_map(map[l],object[l]);
 
@@ -256,6 +267,7 @@ void dPHHM::L_map(const dPHHM &map,const dPHHM &object){
  */
 dPHHM &dPHHM::mprod(const dPHHM &A,const dPHHM &B){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->mprod(A[l],B[l]);
 
@@ -269,6 +281,7 @@ dPHHM &dPHHM::mprod(const dPHHM &A,const dPHHM &B){
  */
 void dPHHM::sqrt(int option){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->sqrt(option);
 
@@ -282,6 +295,7 @@ double dPHHM::ddot(const dPHHM &dphhm_i) const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dphhm[l]->ddot(dphhm_i[l]);
 
@@ -294,6 +308,7 @@ double dPHHM::ddot(const dPHHM &dphhm_i) const{
  */
 void dPHHM::invert(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->invert();
 
@@ -304,6 +319,7 @@ void dPHHM::invert(){
  */
 void dPHHM::symmetrize(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->symmetrize();
 
@@ -314,6 +330,7 @@ void dPHHM::symmetrize(){
  */
 void dPHHM::fill_Random(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->fill_Random();
 
@@ -336,6 +353,7 @@ void dPHHM::G1(const dDPM &ddpm){
    SPM spm;
    spm.bar(1.0/(N - 1.0),tpm);
 
+#pragma omp parallel for private(a,b,c,d,S_bl,S_dl,sign_bl,sign_dl)
    for(int l = 0;l < M;++l){
 
       //first S = 1/2
@@ -524,37 +542,6 @@ void dPHHM::G1(const dDPM &ddpm){
 }
 
 /**
- * test the symmetry after the map
- */
-void dPHHM::test_sym() const {
-
-   for(int l = 0;l < M;++l){
-
-      cout << "l = " << l << endl;
-      cout << endl;
-
-      for(int S = 0;S < 2;++S)
-         for(int S_bl = 0;S_bl < 2;++S_bl)
-            for(int S_dl = 0;S_dl < 2;++S_dl)
-               for(int a = 0;a < M;++a)
-                  for(int b = 0;b < M;++b)
-                     for(int c = 0;c < M;++c){
-
-                        if(fabs((*this)(l,S,S_bl,a,b,S_dl,c,b)- (1 - 2*S_bl) * (1 - 2*S_dl) * (*this)(b,S,S_bl,a,l,S_dl,c,l)) > 1.0e-12){
-
-                           cout << 2*S + 1 << "/2\t(" << S_bl << ";" << S_dl << ")\t|\t" << a << "\t" << b << "\t" << c << "\t|\t"
-                        
-                           << (*this)(l,S,S_bl,a,b,S_dl,c,b) << "\t" << (1 - 2*S_bl) * (1 - 2*S_dl) * (*this)(b,S,S_bl,a,l,S_dl,c,l) << endl;
-
-                        }
-
-                     }
-
-   }
-
-}
-
-/**
  * Map a dDPM on a dPHHM using the G2 map
  * @param ddpm input dDPM
  */
@@ -571,6 +558,7 @@ void dPHHM::G2(const dDPM &ddpm){
    SPM spm;
    spm.bar(1.0/(N - 1.0),tpm);
 
+#pragma omp parallel for private(a,b,c,d,S_bl,S_dl,sign_bl,sign_dl)
    for(int l = 0;l < M;++l){
 
       for(int S = 0;S < 2;++S){
@@ -711,6 +699,7 @@ void dPHHM::G2(const dDPM &ddpm){
  */
 void dPHHM::sep_pm(dPHHM &p,dPHHM &m){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhm[l]->sep_pm(p[l],m[l]);
 

@@ -32,6 +32,7 @@ dPHHV::dPHHV(dPHHM &dphhm) {
 
    dphhv = new BlockVector<rxPHM> * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhv[l] = new BlockVector<rxPHM> (dphhm[l]);
    
@@ -45,6 +46,7 @@ dPHHV::dPHHV(const dPHHV &dphhv_c) {
    
    dphhv = new BlockVector<rxPHM> * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhv[l] = new BlockVector<rxPHM> (dphhv_c[l]);
 }
@@ -122,6 +124,7 @@ const BlockVector<rxPHM> &dPHHV::operator[](int l) const{
  */
 dPHHV &dPHHV::operator=(const dPHHV &dphhv_c){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dphhv[l] = dphhv_c[l];
 
@@ -135,6 +138,7 @@ dPHHV &dPHHV::operator=(const dPHHV &dphhv_c){
  */
 dPHHV &dPHHV::operator=(double a){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dphhv[l] = a;
 
@@ -148,6 +152,7 @@ dPHHV &dPHHV::operator=(double a){
  */
 dPHHV &dPHHV::operator+=(const dPHHV &dphhv_p){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dphhv[l] += dphhv_p[l];
 
@@ -161,6 +166,7 @@ dPHHV &dPHHV::operator+=(const dPHHV &dphhv_p){
  */
 dPHHV &dPHHV::operator-=(const dPHHV &dphhv_m){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dphhv[l] -= dphhv_m[l];
 
@@ -175,6 +181,7 @@ dPHHV &dPHHV::operator-=(const dPHHV &dphhv_m){
  */
 dPHHV &dPHHV::daxpy(double alpha,const dPHHV &dphhv_p){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhv[l]->daxpy(alpha,dphhv_p[l]);
 
@@ -189,6 +196,7 @@ double dPHHV::sum() const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dphhv[l]->sum();
 
@@ -203,6 +211,7 @@ double dPHHV::log_product() const {
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dphhv[l]->log_product();
 
@@ -218,6 +227,7 @@ double dPHHV::ddot(const dPHHV &dphhv_i) const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dphhv[l]->ddot(dphhv_i[l]);
 
@@ -231,6 +241,7 @@ double dPHHV::ddot(const dPHHV &dphhv_i) const{
  */
 void dPHHV::dscal(double alpha){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dphhv[l]->dscal(alpha);
 
@@ -276,6 +287,7 @@ double dPHHV::lsfunc(double alpha) const {
 
    double ward = 0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dphhv[l]->lsfunc(alpha);
 
