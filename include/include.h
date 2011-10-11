@@ -60,7 +60,6 @@
 #endif
 
 #include "lapack.h"
-#include "angalg.h"
 #include "Matrix.h"
 #include "Vector.h"
 #include "BlockMatrix.h"

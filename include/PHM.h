@@ -78,9 +78,6 @@ class PHM : public BlockMatrix {
       //!static list of dimension [M/2][M/2] that takes two sp indices a,b and returns a ph index i: i = s2ph[a][b]
       static int **s2ph;
 
-      //!list of 6j symbols needed.
-      static double **_6j;
-
       //!number of particles
       static int N;
 

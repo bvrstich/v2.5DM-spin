@@ -17,8 +17,6 @@ int TPM::N;
 vector< vector<int> > *TPM::t2s;
 int ***TPM::s2t;
 
-double **TPM::_6j;
-
 /**
  * initialize the static variables and allocate and initialize the static lists
  * @param M_in nr of spatial sp orbs
@@ -68,18 +66,6 @@ void TPM::init(int M_in,int N_in){
 
    }
 
-   //allocate
-   _6j = new double * [2];
-
-   for(int S = 0;S < 2;++S)
-      _6j[S] = new double [2];
-
-   //initialize
-   _6j[0][0] = -0.5;
-   _6j[0][1] = 0.5;
-   _6j[1][0] = 0.5;
-   _6j[1][1] = 1.0/6.0;
-
 }
 
 /**
@@ -99,11 +85,6 @@ void TPM::clear(){
    }
 
    delete [] s2t;
-
-   for(int S = 0;S < 2;++S)
-      delete [] _6j[S];
-
-   delete [] _6j;
 
 }
 
