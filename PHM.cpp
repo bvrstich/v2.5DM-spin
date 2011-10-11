@@ -86,8 +86,6 @@ void PHM::clear(){
 
 /**
  * standard constructor: constructs BlockMatrix object with 2 blocks, for S = 0 and 1 of dimension M*M/4.
- * @param M nr of sp orbitals
- * @param N nr of particles
  */
 PHM::PHM() : BlockMatrix(2) {
 

@@ -40,7 +40,7 @@ dPHHM::dPHHM() {
 
 /**
  * copy constructor: constructs an array and copies the content of W in it.
- * @param W object that will be copied into this.
+ * @param dphhm_c object that will be copied into this.
  */
 dPHHM::dPHHM(const dPHHM &dphhm_c) { 
 

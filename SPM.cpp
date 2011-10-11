@@ -12,6 +12,8 @@ int SPM::N;
 
 /**
  * initalize the static variables
+ * @param M_in input nr of sites
+ * @param N_in input nr of particles
  */
 void SPM::init(int M_in,int N_in){
 
@@ -23,8 +25,6 @@ void SPM::init(int M_in,int N_in){
 /**
  * constructor, makes matrix of dimension M, there will be two degenerate blocks +1/2,-1/2. So
  * only one matrix is needed of dimension M is needed to represent the SPM.
- * @param M dimension of single particle space
- * @param N Nr of particles
  */
 SPM::SPM() : Matrix(M) { }
 

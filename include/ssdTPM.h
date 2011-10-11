@@ -21,9 +21,9 @@ class ssdTPM {
    /**
     * Output stream operator overloaded
     * @param output The stream to which you are writing (e.g. cout)
-    * @param dtpm_p the ssdTPM you want to print
+    * @param ssdtpm_p the ssdTPM you want to print
     */
-   friend ostream &operator<<(ostream &output,const ssdTPM &dtpm_p);
+   friend ostream &operator<<(ostream &output,const ssdTPM &ssdtpm_p);
 
    public:
 
