@@ -73,6 +73,12 @@ class EIG{
       const dPHHV &gv_G1() const;
 #endif
 
+#ifdef __G2_CON
+      dPHHV &gv_G2();
+
+      const dPHHV &gv_G2() const;
+#endif
+
       double min() const;
 
       double max() const;
@@ -104,6 +110,11 @@ class EIG{
 #ifdef __G1_CON
       //!pointer to a dPPHV object that contains the eigenvalues of the G1 condition of a SUP matrix 
       dPHHV *v_G1;
+#endif
+
+#ifdef __G2_CON
+      //!pointer to a dPPHV object that contains the eigenvalues of the G2 condition of a SUP matrix 
+      dPHHV *v_G2;
 #endif
 
       //!number of particles

@@ -39,6 +39,10 @@ void EIG::init(int M_in,int N_in){
    dim += 4*M*M*(2*M - 1);
 #endif
 
+#ifdef __G2_CON
+   dim += 4*M*M*(2*M - 1);
+#endif
+
 }
 
 /**
@@ -64,6 +68,10 @@ EIG::EIG(SUP &X){
 
 #ifdef __G1_CON
    v_G1 = new dPHHV(X.gG1());
+#endif 
+
+#ifdef __G2_CON
+   v_G2 = new dPHHV(X.gG2());
 #endif 
 
 }
@@ -93,6 +101,10 @@ EIG::EIG(const EIG &eig_c){
    v_G1 = new dPHHV(eig_c.gv_G1());
 #endif 
 
+#ifdef __G2_CON
+   v_G2 = new dPHHV(eig_c.gv_G2());
+#endif 
+
 }
 
 /**
@@ -117,6 +129,10 @@ EIG &EIG::operator=(const EIG &eig_c){
 
 #ifdef __G1_CON
    *v_G1 = eig_c.gv_G1();
+#endif 
+
+#ifdef __G2_CON
+   *v_G2 = eig_c.gv_G2();
 #endif 
 
    return *this;
@@ -146,6 +162,10 @@ EIG::~EIG(){
    delete v_G1;
 #endif 
 
+#ifdef __G2_CON
+   delete v_G2;
+#endif 
+
 }
 
 ostream &operator<<(ostream &output,const EIG &eig_p){
@@ -166,6 +186,10 @@ ostream &operator<<(ostream &output,const EIG &eig_p){
 
 #ifdef __G1_CON
    std::cout << eig_p.gv_G1() << std::endl;
+#endif 
+
+#ifdef __G2_CON
+   std::cout << eig_p.gv_G2() << std::endl;
 #endif 
 
    return output;
@@ -311,6 +335,31 @@ const dPHHV &EIG::gv_G1() const{
 
 #endif
 
+#ifdef __G2_CON
+
+/** 
+ * get the dPHHV object containing the eigenvalues of the dDPM block G2
+ * @return a dPHHV object containing the desired eigenvalues
+ */
+dPHHV &EIG::gv_G2(){
+
+   return *v_G2;
+
+}
+
+/** 
+ * the const version
+ * get the dPHHV object containing the eigenvalues of the dDPM block G2
+ * @return a dPHHV object containing the desired eigenvalues
+ */
+const dPHHV &EIG::gv_G2() const{
+
+   return *v_G2;
+
+}
+
+#endif
+
 /**
  * @return total dimension of the EIG object
  */
@@ -349,6 +398,11 @@ double EIG::min() const{
       ward = v_G1->min();
 #endif
 
+#ifdef __G2_CON
+   if(v_G2->min() < ward)
+      ward = v_G2->min();
+#endif
+
    return ward;
 
 }
@@ -382,6 +436,11 @@ double EIG::max() const{
       ward = v_G1->max();
 #endif
 
+#ifdef __G2_CON
+   if(v_G2->max() > ward)
+      ward = v_G2->max();
+#endif
+
    return ward;
 
 }
@@ -408,6 +467,10 @@ double EIG::lsfunc(double alpha) const{
 
 #ifdef __G1_CON
    ward += v_G1->lsfunc(alpha);
+#endif
+
+#ifdef __G2_CON
+   ward += v_G2->lsfunc(alpha);
 #endif
 
    return ward;

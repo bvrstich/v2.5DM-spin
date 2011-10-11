@@ -48,6 +48,17 @@
 
 #endif
 
+//I1 I2 Q1 Q2 G1 G2
+#ifdef __IQG
+
+#define __I2_CON
+#define __Q1_CON
+#define __Q2_CON
+#define __G1_CON
+#define __G2_CON
+
+#endif
+
 #include "lapack.h"
 #include "angalg.h"
 #include "Matrix.h"
