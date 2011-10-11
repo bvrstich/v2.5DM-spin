@@ -119,6 +119,8 @@ class dDPM {
 
       void sep_pm(dDPM &,dDPM &);
 
+      void set_u_0();
+
       static void init(int,int);
 
       static void clear();

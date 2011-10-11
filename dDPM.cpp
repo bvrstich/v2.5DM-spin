@@ -2139,6 +2139,19 @@ void dDPM::unit(){
 }
 
 /**
+ * set the matrix equal to the I1 part of a u^0 matrix.
+ */
+void dDPM::set_u_0(){
+
+   *this = Tools::gunit();
+
+   double ward = this->trace();
+
+   this->dscal(N*(N - 1.0)*(N - 2.0)/(2.0*ward));
+
+}
+
+/**
  * The spincoupled Q2 map: maps a dDPM object onto itself
  * @param option if == 'U' up, if == 'D' down
  * @param ddpm_i input TPM

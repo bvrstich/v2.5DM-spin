@@ -84,7 +84,7 @@ int main(void){
    //little help
    dDPM hulp;
 
-   u_0.gI1().unit();
+   u_0.gI1().set_u_0();
 
    u_0.fill();
 
@@ -94,7 +94,7 @@ int main(void){
    //what does this do?
    double sigma = 1.0;
 
-   double tolerance = 1.0e-7;
+   double tolerance = 1.0e-5;
 
    double D_conv(1.0),P_conv(1.0),convergence(1.0);
 
@@ -166,7 +166,7 @@ int main(void){
 
       convergence = Z.gI1().ddot(ham) + X.ddot(u_0);
 
-      cout << P_conv << "\t" << D_conv << "\t" << sigma << "\t" << convergence << "\t" << Z.gI1().ddot(ham_copy) << endl;
+      cout << Z.gI1().trace() << "\t" << P_conv << "\t" << D_conv << "\t" << sigma << "\t" << convergence << "\t" << Z.gI1().ddot(ham_copy) << endl;
 
       if(D_conv < P_conv)
          sigma *= 1.01;
@@ -176,6 +176,7 @@ int main(void){
    }
 
    cout << endl;
+   cout << "Nr of particles" << "\t" << Z.gI1().trace() << endl;
    cout << "Energy: " << ham_copy.ddot(Z.gI1()) << endl;
    cout << "pd gap: " << Z.ddot(X) << endl;
    cout << "dual conv: " << D_conv << endl;
