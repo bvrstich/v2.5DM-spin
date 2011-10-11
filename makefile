@@ -44,7 +44,7 @@ BRIGHT_ROOT= .
 
 INCLUDE = ./include
 
-LIBS= -llapack -lblas -lgfortran
+LIBS= -llapack -lblas -lgfortran -lgsl -lgslcblas
 
 CC	= gcc
 CXX	= g++
