@@ -798,3 +798,15 @@ double dPPHM::barbreve() const {
    return ward;
 
 }
+
+/**
+ * Seperate matrix into two matrices, a positive and negative semidefinite part.
+ * @param p positive (plus) output part
+ * @param m negative (minus) output part
+ */
+void dPPHM::sep_pm(dPPHM &p,dPPHM &m){
+
+   for(int l = 0;l < M;++l)
+      dpphm[l]->sep_pm(p[l],m[l]);
+
+}

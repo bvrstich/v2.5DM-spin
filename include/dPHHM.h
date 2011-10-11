@@ -81,6 +81,8 @@ class dPHHM {
 
       void test_sym() const;
 
+      void sep_pm(dPHHM &,dPHHM &);
+
       static void init(int,int);
 
    private:

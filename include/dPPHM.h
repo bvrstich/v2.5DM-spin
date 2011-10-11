@@ -81,6 +81,8 @@ class dPPHM {
 
       double barbreve() const;
 
+      void sep_pm(dPPHM &,dPPHM &);
+
       static void init(int,int);
 
    private:

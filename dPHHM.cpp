@@ -703,3 +703,15 @@ void dPHHM::G2(const dDPM &ddpm){
    this->symmetrize();
 
 }
+
+/**
+ * Seperate matrix into two matrices, a positive and negative semidefinite part.
+ * @param p positive (plus) output part
+ * @param m negative (minus) output part
+ */
+void dPHHM::sep_pm(dPHHM &p,dPHHM &m){
+
+   for(int l = 0;l < M;++l)
+      dphhm[l]->sep_pm(p[l],m[l]);
+
+}

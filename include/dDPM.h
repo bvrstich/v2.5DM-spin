@@ -96,16 +96,6 @@ class dDPM {
 
       void unit();
 
-      void constr_grad(double,const dDPM &,const SUP &);
-
-      int solve(double,const SUP &,dDPM &);
-
-      void H(double,const dDPM &,const SUP &);
-
-      double line_search(double,SUP &,const dDPM &);
-
-      double line_search(double,const dDPM &,const dDPM &);
-
       //Q2 up and down
       void Q(char,const dDPM &);
 
@@ -119,7 +109,15 @@ class dDPM {
 
       void G2(const dPHHM &);
 
+      void collaps(const SUP &);
+
       double dotunit() const;
+
+      int solve(dDPM &);
+
+      void S(const dDPM &);
+
+      void sep_pm(dDPM &,dDPM &);
 
       static void init(int,int);
 

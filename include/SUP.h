@@ -48,7 +48,7 @@ class SUP{
       SUP &operator=(const SUP &);
 
       //overload equality operator
-      SUP &operator=(double &);
+      SUP &operator=(double );
 
       dDPM &gI1();
 
@@ -109,7 +109,11 @@ class SUP{
 
       void fill(const dDPM &);
 
+      void fill();
+
       void fill_Random();
+
+      void sep_pm(SUP &p,SUP &m);
 
       static void init(int,int);
 
