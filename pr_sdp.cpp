@@ -10,7 +10,6 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-#include <gsl/gsl_sf_coupling.h>
 
 using std::cout;
 using std::endl;
@@ -36,8 +35,8 @@ int main(void){
 
    cout.precision(10);
 
-   const int M = 4;//nr of spatial orbitals
-   const int N = 4;//nr of particles
+   const int M = 6;//nr of spatial orbitals
+   const int N = 5;//nr of particles
 
    rxTPM::init(M,N);
    TPM::init(M,N);
