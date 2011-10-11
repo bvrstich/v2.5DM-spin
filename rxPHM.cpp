@@ -252,7 +252,7 @@ int rxPHM::gl() const{
 
 /**
  * @param k which type is the rxPHM
- * @pararm S the dp spin
+ * @param S the dp spin
  * @param i the tp index
  * @param option == 0 return a, == 1 return b
  * @return the sp indices corresponding to the tp index i with parameter l
@@ -266,7 +266,7 @@ int rxPHM::gph2s(int k,int S,int i,int option){
 /**
  * @param k which type is the rxPHM
  * @param S the dp spin
- * @pararm S_ab intermediate spin
+ * @param S_ab intermediate spin
  * @param a the first sp index
  * @param b the second sp index
  * @return the tp index corresponding to the sp indices a and b with parameter l

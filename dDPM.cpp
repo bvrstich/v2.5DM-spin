@@ -2488,8 +2488,6 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
 
       double norm_ab,norm_cd;
 
-      double hard;
-
       for(int l = 0;l < M;++l){
 
          //start with the S = 1/2 block, this is the most difficult one:
@@ -2520,8 +2518,6 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
 
                if(c == d)
                   norm_cd /= std::sqrt(2.0);
-
-               hard = std::sqrt( (2*S_ab + 1.0) * (2*S_cd + 1.0) ) * _6j[S_ab][S_cd];
 
                //dp part
                (*this)[l](0,i,j) = -ddpm_i[l](0,i,j);

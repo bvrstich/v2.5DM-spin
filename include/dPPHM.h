@@ -20,9 +20,9 @@ class dPPHM {
    /**
     * Output stream operator overloaded
     * @param output The stream to which you are writing (e.g. cout)
-    * @param ddpm_p the dPPHM you want to print
+    * @param dpphm_p the dPPHM you want to print
     */
-   friend ostream &operator<<(ostream &output,const dPPHM &ddpm_p);
+   friend ostream &operator<<(ostream &output,const dPPHM &dpphm_p);
 
    public:
 

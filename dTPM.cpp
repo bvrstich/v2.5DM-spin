@@ -438,7 +438,7 @@ void dTPM::bar(double scale,const dPPHM &dpphm){
 /**
  * special "bar" function that maps a dPHHM on a dTPM object, see notes for info.
  * @param scale the factor you scale the dTPM with
- * @param dpphm input dPPHM object
+ * @param dphhm input dPHHM object
  */
 void dTPM::bar(double scale,const dPHHM &dphhm){
 
@@ -472,7 +472,7 @@ void dTPM::bar(double scale,const dPHHM &dphhm){
  * special "skew-bar" function that maps a dPHHM on a dTPM object, see notes for info.
  * BEWARE: not symmetrical
  * @param scale the factor you scale the dTPM with
- * @param dpphm input dPPHM object
+ * @param dphhm input dPHHM object
  */
 void dTPM::skew_bar(double scale,const dPHHM &dphhm){
 
@@ -511,7 +511,7 @@ void dTPM::skew_bar(double scale,const dPHHM &dphhm){
  * special spinsummed "bar" function that maps a dPHHM on a dTPM object, see notes for info.
  * spinsummed because the intermediate spin is not required to be diagonal, and to have a different name then the other bar...
  * @param scale the factor you scale the dTPM with
- * @param dpphm input dPPHM object
+ * @param dphhm input dPHHM object
  */
 void dTPM::ssbar(double scale,const dPHHM &dphhm){
 

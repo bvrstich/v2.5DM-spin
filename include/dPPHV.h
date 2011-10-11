@@ -18,9 +18,9 @@ class dPPHV {
    /**
     * Output stream operator overloaded
     * @param output The stream to which you are writing (e.g. cout)
-    * @param ddpv_p the dPPHV you want to print
+    * @param dpphv_p the dPPHV you want to print
     */
-   friend ostream &operator<<(ostream &output,const dPPHV &ddpv_p);
+   friend ostream &operator<<(ostream &output,const dPPHV &dpphv_p);
 
    public:
 
