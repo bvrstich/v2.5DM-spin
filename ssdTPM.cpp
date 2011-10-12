@@ -33,6 +33,7 @@ ssdTPM::ssdTPM() {
 
    ssdtpm = new SPM * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l] = new SPM();
 
@@ -46,6 +47,7 @@ ssdTPM::ssdTPM(const ssdTPM &ssdtpm_c) {
 
    ssdtpm = new SPM * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l] = new SPM(ssdtpm_c[l]);
    
@@ -56,6 +58,7 @@ ssdTPM::ssdTPM(const ssdTPM &ssdtpm_c) {
  */
 ssdTPM::~ssdTPM(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       delete ssdtpm[l];
 
@@ -126,6 +129,7 @@ double ssdTPM::trace() const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += ssdtpm[l]->trace();
 
@@ -139,6 +143,7 @@ double ssdTPM::trace() const{
  */
 void ssdTPM::dscal(double alpha){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l]->dscal(alpha);
 
@@ -150,6 +155,7 @@ void ssdTPM::dscal(double alpha){
  */
 ssdTPM &ssdTPM::operator=(const ssdTPM &ssdtpm_c){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *ssdtpm[l] = ssdtpm_c[l];
 
@@ -163,6 +169,7 @@ ssdTPM &ssdTPM::operator=(const ssdTPM &ssdtpm_c){
  */
 ssdTPM &ssdTPM::operator=(double a){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *ssdtpm[l] = a;
 
@@ -176,6 +183,7 @@ ssdTPM &ssdTPM::operator=(double a){
  */
 ssdTPM &ssdTPM::operator+=(const ssdTPM &ssdtpm_pl){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *ssdtpm[l] += ssdtpm_pl[l];
 
@@ -189,6 +197,7 @@ ssdTPM &ssdTPM::operator+=(const ssdTPM &ssdtpm_pl){
  */
 ssdTPM &ssdTPM::operator-=(const ssdTPM &ssdtpm_m){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *ssdtpm[l] -= ssdtpm_m[l];
 
@@ -203,6 +212,7 @@ ssdTPM &ssdTPM::operator-=(const ssdTPM &ssdtpm_m){
  */
 ssdTPM &ssdTPM::daxpy(double alpha,const ssdTPM &ssdtpm_pl){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l]->daxpy(alpha,ssdtpm_pl[l]);
 
@@ -218,6 +228,7 @@ ssdTPM &ssdTPM::daxpy(double alpha,const ssdTPM &ssdtpm_pl){
  */
 void ssdTPM::L_map(const ssdTPM &map,const ssdTPM &object){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l]->L_map(map[l],object[l]);
    
@@ -230,6 +241,7 @@ void ssdTPM::L_map(const ssdTPM &map,const ssdTPM &object){
  */
 ssdTPM &ssdTPM::mprod(const ssdTPM &A,const ssdTPM &B){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l]->mprod(A[l],B[l]);
 
@@ -243,6 +255,7 @@ ssdTPM &ssdTPM::mprod(const ssdTPM &A,const ssdTPM &B){
  */
 void ssdTPM::sqrt(int option){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l]->sqrt(option);
 
@@ -256,6 +269,7 @@ double ssdTPM::ddot(const ssdTPM &ssdtpm_i) const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += ssdtpm[l]->ddot(ssdtpm_i[l]);
 
@@ -268,6 +282,7 @@ double ssdTPM::ddot(const ssdTPM &ssdtpm_i) const{
  */
 void ssdTPM::invert(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l]->invert();
 
@@ -278,6 +293,7 @@ void ssdTPM::invert(){
  */
 void ssdTPM::symmetrize(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l]->symmetrize();
 
@@ -288,6 +304,7 @@ void ssdTPM::symmetrize(){
  */
 void ssdTPM::fill_Random(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ssdtpm[l]->fill_Random();
 
@@ -301,9 +318,10 @@ void ssdTPM::fill_Random(){
  */
 void ssdTPM::bar(double scale,const dDPM &ddpm){
 
-   double ward,hard;
-
+#pragma omp parallel for 
    for(int l = 0;l < M;++l){
+
+      double ward,hard;
 
       for(int a = 0;a < M;++a)
          for(int c = a;c < M;++c){
@@ -330,7 +348,7 @@ void ssdTPM::bar(double scale,const dDPM &ddpm){
 
                   }
 
-                  (*this)[l](a,c) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,2*S_cd) * ward;
+                  (*this)[l](a,c) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(0,0,S_ab,S_cd) * ward;
 
                }
 
@@ -358,9 +376,10 @@ void ssdTPM::bar(double scale,const dDPM &ddpm){
  */
 void ssdTPM::bar(double scale,const dPPHM &dpphm){
 
-   double ward,hard;
-
+#pragma omp parallel for 
    for(int l = 0;l < M;++l){
+
+      double ward,hard;
 
       for(int a = 0;a < M;++a)
          for(int c = a;c < M;++c){
@@ -410,9 +429,10 @@ void ssdTPM::bar(double scale,const dPPHM &dpphm){
  */
 void ssdTPM::skew_bar(double scale,const dPHHM &dphhm){
 
-   double ward;
-
+#pragma omp parallel for
    for(int l = 0;l < M;++l){
+
+      double ward;
 
       for(int a = 0;a < M;++a)
          for(int c = 0;c < M;++c){

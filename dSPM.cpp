@@ -43,6 +43,7 @@ dSPM::dSPM(const dSPM &dspm_c) {
 
    dspm = new double [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dspm[l] = dspm_c[l];
    
@@ -113,6 +114,7 @@ ostream &operator<<(ostream &output,const dSPM &dspm_p){
  */
 void dSPM::trace(double scale,const dDPM &ddpm){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dspm[l] = scale * ddpm[l].trace();
 
@@ -125,6 +127,7 @@ void dSPM::trace(double scale,const dDPM &ddpm){
  */
 void dSPM::trace(double scale,const dPPHM &dpphm){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dspm[l] = scale * dpphm[l].trace();
 
@@ -137,8 +140,7 @@ void dSPM::trace(double scale,const dPPHM &dpphm){
  */
 void dSPM::skew_trace(double scale,const dPHHM &dphhm){
 
-   double ward;
-
+#pragma omp parallel for
    for(int l = 0;l < M;++l){
 
       dspm[l] = 0.0;
@@ -146,7 +148,7 @@ void dSPM::skew_trace(double scale,const dPHHM &dphhm){
       for(int S_bl = 0;S_bl < 2;++S_bl)
          for(int S_dl = 0;S_dl < 2;++S_dl){
 
-            ward = 0.0;
+            double ward = 0.0;
 
             for(int a = 0;a < M;++a)
                for(int c = 0;c < M;++c)

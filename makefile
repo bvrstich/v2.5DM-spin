@@ -32,9 +32,7 @@ CPPSRC	= bp_sdp.cpp\
             EIG.cpp\
             Tools.cpp
 
-FSRC  = dangalg.for
-
-OBJ	= $(CPPSRC:.cpp=.o) $(FSRC:.for=.o)
+OBJ	= $(CPPSRC:.cpp=.o)
 
 # -----------------------------------------------------------------------------
 #   These are the standard libraries, include paths and compiler settings
@@ -44,18 +42,16 @@ BRIGHT_ROOT= .
 
 INCLUDE = ./include
 
-LIBS= -llapack -lblas -lgfortran -lgsl -lgslcblas
+LIBS= -llapack -lblas -lgsl
 
 CC	= gcc
 CXX	= g++
-FF = gfortran
 
 # -----------------------------------------------------------------------------
 #   Compiler & Linker flags
 # -----------------------------------------------------------------------------
-CFLAGS	= -I$(INCLUDE) -g -Wall -fopenmp
-FFLAGS   = -g -Wall -fopenmp
-LDFLAGS	= -g -Wall -fopenmp
+CFLAGS	= -I$(INCLUDE) -O3 -fopenmp
+LDFLAGS	= -O3 -fopenmp
 
 
 # =============================================================================

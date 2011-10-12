@@ -86,15 +86,9 @@ class dDPM {
 
       void proj();
 
-      void test_proj_1() const;
-
-      void test_proj_2() const;
-
       void up(const TPM &);
 
       void hubbard(double);
-
-      void unit();
 
       //Q2 up and down
       void Q(char,const dDPM &);
@@ -135,9 +129,6 @@ class dDPM {
 
       //!double array of rxTPM objects
       rxTPM **ddpm;
-
-      //!static array holding the 6j symbols needed
-      static double **_6j;
 
 };
 

@@ -33,6 +33,7 @@ dTPM::dTPM() {
 
    dtpm = new xSPM * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l] = new xSPM();
 
@@ -46,6 +47,7 @@ dTPM::dTPM(const dTPM &dtpm_c) {
 
    dtpm = new xSPM * [M];
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l] = new xSPM(dtpm_c[l]);
    
@@ -56,6 +58,7 @@ dTPM::dTPM(const dTPM &dtpm_c) {
  */
 dTPM::~dTPM(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       delete dtpm[l];
 
@@ -126,6 +129,7 @@ double dTPM::trace() const{
 
    double ward = 0.0;
 
+#pragma omp parallel for reduction(+:ward)
    for(int l = 0;l < M;++l)
       ward += dtpm[l]->trace();
 
@@ -139,6 +143,7 @@ double dTPM::trace() const{
  */
 void dTPM::dscal(double alpha){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l]->dscal(alpha);
 
@@ -150,6 +155,7 @@ void dTPM::dscal(double alpha){
  */
 dTPM &dTPM::operator=(const dTPM &dtpm_c){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dtpm[l] = dtpm_c[l];
 
@@ -163,6 +169,7 @@ dTPM &dTPM::operator=(const dTPM &dtpm_c){
  */
 dTPM &dTPM::operator=(double a){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dtpm[l] = a;
 
@@ -176,6 +183,7 @@ dTPM &dTPM::operator=(double a){
  */
 dTPM &dTPM::operator+=(const dTPM &dtpm_pl){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dtpm[l] += dtpm_pl[l];
 
@@ -189,6 +197,7 @@ dTPM &dTPM::operator+=(const dTPM &dtpm_pl){
  */
 dTPM &dTPM::operator-=(const dTPM &dtpm_m){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       *dtpm[l] -= dtpm_m[l];
 
@@ -203,6 +212,7 @@ dTPM &dTPM::operator-=(const dTPM &dtpm_m){
  */
 dTPM &dTPM::daxpy(double alpha,const dTPM &dtpm_pl){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l]->daxpy(alpha,dtpm_pl[l]);
 
@@ -218,6 +228,7 @@ dTPM &dTPM::daxpy(double alpha,const dTPM &dtpm_pl){
  */
 void dTPM::L_map(const dTPM &map,const dTPM &object){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l]->L_map(map[l],object[l]);
    
@@ -230,6 +241,7 @@ void dTPM::L_map(const dTPM &map,const dTPM &object){
  */
 dTPM &dTPM::mprod(const dTPM &A,const dTPM &B){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l]->mprod(A[l],B[l]);
 
@@ -243,6 +255,7 @@ dTPM &dTPM::mprod(const dTPM &A,const dTPM &B){
  */
 void dTPM::sqrt(int option){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l]->sqrt(option);
 
@@ -256,6 +269,7 @@ double dTPM::ddot(const dTPM &dtpm_i) const{
 
    double ward = 0.0;
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       ward += dtpm[l]->ddot(dtpm_i[l]);
 
@@ -268,6 +282,7 @@ double dTPM::ddot(const dTPM &dtpm_i) const{
  */
 void dTPM::invert(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l]->invert();
 
@@ -278,6 +293,7 @@ void dTPM::invert(){
  */
 void dTPM::symmetrize(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l]->symmetrize();
 
@@ -288,6 +304,7 @@ void dTPM::symmetrize(){
  */
 void dTPM::fill_Random(){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l)
       dtpm[l]->fill_Random();
 
@@ -300,9 +317,10 @@ void dTPM::fill_Random(){
  */
 void dTPM::bar(double scale,const dDPM &ddpm){
 
-   double ward,hard;
-
+#pragma omp parallel for
    for(int l = 0;l < M;++l){
+
+      double ward,hard;
 
       for(int b = 0;b < M;++b)
          for(int d = b;d < M;++d){
@@ -330,7 +348,7 @@ void dTPM::bar(double scale,const dDPM &ddpm){
 
                   }
 
-                  (*this)[l](0,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,0) * Tools::g6j(1,1,2*S_cd,1,1,0) * ward;
+                  (*this)[l](0,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(0,0,S_ab,0) * Tools::g6j(0,0,S_cd,0) * ward;
 
                }
 
@@ -359,7 +377,7 @@ void dTPM::bar(double scale,const dDPM &ddpm){
 
                   }
 
-                  (*this)[l](1,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,2) * Tools::g6j(1,1,2*S_cd,1,1,2) * ward;
+                  (*this)[l](1,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(0,0,S_ab,1) * Tools::g6j(0,0,S_cd,1) * ward;
 
                }
 
@@ -384,9 +402,10 @@ void dTPM::bar(double scale,const dDPM &ddpm){
  */
 void dTPM::bar(double scale,const dPPHM &dpphm){
 
-   double ward,hard;
-
+#pragma omp parallel for
    for(int l = 0;l < M;++l){
+
+      double ward,hard;
 
       for(int Z = 0;Z < 2;++Z){
 
@@ -417,8 +436,8 @@ void dTPM::bar(double scale,const dPPHM &dpphm){
                         }
 
                         (*this)[l](Z,b,d) += (2*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * 
-                        
-                           Tools::g9j(2*S + 1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * ward;
+
+                           Tools::g9j(S,Z,S_ab,S_cd) * ward;
 
                      }
 
@@ -442,6 +461,7 @@ void dTPM::bar(double scale,const dPPHM &dpphm){
  */
 void dTPM::bar(double scale,const dPHHM &dphhm){
 
+#pragma omp parallel for
    for(int l = 0;l < M;++l){
 
       for(int Z = 0;Z < 2;++Z){
@@ -476,9 +496,10 @@ void dTPM::bar(double scale,const dPHHM &dphhm){
  */
 void dTPM::skew_bar(double scale,const dPHHM &dphhm){
 
-   double ward;
-
+#pragma omp parallel for
    for(int l = 0;l < M;++l){
+
+      double ward;
 
       for(int S_dl = 0;S_dl < 2;++S_dl){
 
@@ -515,9 +536,10 @@ void dTPM::skew_bar(double scale,const dPHHM &dphhm){
  */
 void dTPM::ssbar(double scale,const dPHHM &dphhm){
 
-   double ward;
-
+#pragma omp parallel for
    for(int l = 0;l < M;++l){
+
+      double ward;
 
       for(int Z = 0;Z < 2;++Z){
 
@@ -537,7 +559,8 @@ void dTPM::ssbar(double scale,const dPHHM &dphhm){
 
                         (*this)[l](Z,a,c) += (2.0*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * (1 - 2*S_bl) * (1 - 2*S_dl)
 
-                           * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * ward;
+                           * Tools::g9j(S,Z,S_dl,S_bl) * ward;
+
 
                      }
 
