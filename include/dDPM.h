@@ -86,10 +86,6 @@ class dDPM {
 
       void proj();
 
-      void test_proj_1() const;
-
-      void test_proj_2() const;
-
       void up(const TPM &);
 
       void hubbard(double);

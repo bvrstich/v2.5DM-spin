@@ -12,8 +12,8 @@ int SPM::N;
 
 /**
  * initalize the static variables
- * @param M_in nr of sites
- * @param N_in nr of particles
+ * @param M_in input nr of sites
+ * @param N_in input nr of particles
  */
 void SPM::init(int M_in,int N_in){
 
@@ -156,7 +156,7 @@ void SPM::breve(double scale,const dDPM &ddpm){
 
                }
 
-               (*this)(b,d) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,2*S_cd) * ward;
+               (*this)(b,d) += std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(0,0,S_ab,S_cd) * ward;
 
             }
 

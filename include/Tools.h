@@ -19,11 +19,9 @@ class Tools{
 
       static void clear();
 
-      static double g3j(int,int,int,int,int,int);
+      static double g6j(int,int,int,int);
 
-      static double g6j(int,int,int,int,int,int);
-
-      static double g9j(int,int,int,int,int,int,int,int,int);
+      static double g9j(int,int,int,int);
 
       static double gC(int,int,int,int);
 
@@ -40,17 +38,14 @@ class Tools{
       //!the projected unit matrix
       static dDPM *unit;
 
-      //!3j symbols
-      static double ******_3j;
+      //!array in which I store 6j symbols needed
+      static double *x6j;
 
-      //!6j symbols
-      static double ******_6j;
-
-      //!9j symbols
-      static double *********_9j;
+      //!array in which I store 9j symbols needed
+      static double *x9j;
 
       //!symbol needed for I2 and Q1 condition, see notes
-      static double ****C;
+      static double *C;
 
 };
 

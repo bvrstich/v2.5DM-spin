@@ -17,8 +17,6 @@ int PHM::N;
 vector< vector<int> > PHM::ph2s;
 int **PHM::s2ph;
 
-double **PHM::_6j;
-
 /**
  * initialize the static variables and lists
  * @param M_in dimension of spatial sp space
@@ -53,18 +51,6 @@ void PHM::init(int M_in,int N_in){
 
       }
 
-   //allocate
-   _6j = new double * [2];
-
-   for(int S = 0;S < 2;++S)
-      _6j[S] = new double [2];
-
-   //initialize
-   _6j[0][0] = -0.5;
-   _6j[0][1] = 0.5;
-   _6j[1][0] = 0.5;
-   _6j[1][1] = 1.0/6.0;
-
 }
 
 /**
@@ -76,11 +62,6 @@ void PHM::clear(){
       delete [] s2ph[a];
 
    delete [] s2ph;
-
-   for(int S = 0;S < 2;++S)
-      delete [] _6j[S];
-
-   delete [] _6j;
 
 }
 
@@ -209,7 +190,7 @@ void PHM::G(const TPM &tpm){
             d = ph2s[j][1];
 
             //tp part
-            (*this)(S,i,j) = -_6j[S][0]*tpm(0,a,d,c,b) - 3.0*_6j[S][1]*tpm(1,a,d,c,b);
+            (*this)(S,i,j) = -Tools::g6j(0,0,S,0)*tpm(0,a,d,c,b) - 3.0*Tools::g6j(0,0,S,1)*tpm(1,a,d,c,b);
 
             //norm
             if(a == d)
@@ -257,7 +238,7 @@ void PHM::spinsum(double scale,const dDPM &ddpm){
 
             //only S = 1/2 contribution
             for(int S_ab = 0;S_ab < 2;++S_ab)
-               (*this)(S,i,j) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) / (2.0*S + 1.0) ) * _6j[S][S_ab] * ddpm(a,0,S_ab,a,b,S,c,d);
+               (*this)(S,i,j) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) / (2.0*S + 1.0) ) * Tools::g6j(0,0,S,S_ab) * ddpm(a,0,S_ab,a,b,S,c,d);
 
             (*this)(S,i,j) *= scale;
 
@@ -376,7 +357,7 @@ void PHM::bar(double scale,const dPHHM &dphhm){
 
                      (*this)(Z,i,j) += (2.0*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) 
 
-                        * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * ward;
+                        * Tools::g9j(S,Z,S_dl,S_bl) * ward;
 
                   }
 
@@ -422,7 +403,7 @@ void PHM::spinsum_si(double scale,const dPHHM &dphhm){
 
                      (*this)(Z,i,j) += (2.0*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * (1 - 2*S_bl)
 
-                        * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * dphhm(b,S,S_bl,a,b,S_dl,c,d);
+                        * Tools::g9j(S,Z,S_dl,S_bl) * dphhm(b,S,S_bl,a,b,S_dl,c,d);
 
                   }
 

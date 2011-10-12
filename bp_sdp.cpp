@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <gsl/gsl_sf_coupling.h>
 
 using std::cout;
 using std::endl;

@@ -32,8 +32,6 @@ CPPSRC	= bp_sdp.cpp\
             EIG.cpp\
             Tools.cpp
 
-FSRC  = dangalg.for
-
 OBJ	= $(CPPSRC:.cpp=.o) $(FSRC:.for=.o)
 
 # -----------------------------------------------------------------------------
@@ -44,18 +42,16 @@ BRIGHT_ROOT= .
 
 INCLUDE = ./include
 
-LIBS= -llapack -lblas -lgfortran
+LIBS= -llapack -lblas -lgsl
 
 CC	= gcc
 CXX	= g++
-FF = gfortran
 
 # -----------------------------------------------------------------------------
 #   Compiler & Linker flags
 # -----------------------------------------------------------------------------
-CFLAGS	= -I$(INCLUDE) -g -Wall
-FFLAGS   = -g -Wall
-LDFLAGS	= -g -Wall
+CFLAGS	= -I$(INCLUDE) -O3
+LDFLAGS	= -O3
 
 
 # =============================================================================

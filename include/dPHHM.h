@@ -79,8 +79,6 @@ class dPHHM {
 
       void G2(const dDPM &);
 
-      void test_sym() const;
-
       void sep_pm(dPHHM &,dPHHM &);
 
       static void init(int,int);

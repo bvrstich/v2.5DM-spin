@@ -366,7 +366,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
                      (*this)[l](0,i,j) += (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
                      
-                        * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,1,2*S_dl,1)
+                        * Tools::g6j(S_,0,S_dl,S_ab) * Tools::g6j(S_,0,S_bl,S_cd) * Tools::g6j(S_,0,S_bl,S_dl)
 
                         * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
 
@@ -498,7 +498,7 @@ void dPHHM::G1(const dDPM &ddpm){
 
                      (*this)[l](1,i,j) += (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
                      
-                        * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,3,2*S_dl,1)
+                        * Tools::g6j(S_,0,S_dl,S_ab) * Tools::g6j(S_,0,S_bl,S_cd) * Tools::g6j(S_,1,S_bl,S_dl)
 
                         * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
 
@@ -520,37 +520,6 @@ void dPHHM::G1(const dDPM &ddpm){
    }
 
    this->symmetrize();
-
-}
-
-/**
- * test the symmetry after the map
- */
-void dPHHM::test_sym() const {
-
-   for(int l = 0;l < M;++l){
-
-      cout << "l = " << l << endl;
-      cout << endl;
-
-      for(int S = 0;S < 2;++S)
-         for(int S_bl = 0;S_bl < 2;++S_bl)
-            for(int S_dl = 0;S_dl < 2;++S_dl)
-               for(int a = 0;a < M;++a)
-                  for(int b = 0;b < M;++b)
-                     for(int c = 0;c < M;++c){
-
-                        if(fabs((*this)(l,S,S_bl,a,b,S_dl,c,b)- (1 - 2*S_bl) * (1 - 2*S_dl) * (*this)(b,S,S_bl,a,l,S_dl,c,l)) > 1.0e-12){
-
-                           cout << 2*S + 1 << "/2\t(" << S_bl << ";" << S_dl << ")\t|\t" << a << "\t" << b << "\t" << c << "\t|\t"
-                        
-                           << (*this)(l,S,S_bl,a,b,S_dl,c,b) << "\t" << (1 - 2*S_bl) * (1 - 2*S_dl) * (*this)(b,S,S_bl,a,l,S_dl,c,l) << endl;
-
-                        }
-
-                     }
-
-   }
 
 }
 
@@ -602,7 +571,7 @@ void dPHHM::G2(const dDPM &ddpm){
 
                         (*this)[l](S,i,j) -= (2*(S_ + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
 
-                           * Tools::g6j(2*S_ + 1,1,2*S_dl,1,1,2*S_ab) * Tools::g6j(2*S_ + 1,1,2*S_bl,1,1,2*S_cd) * Tools::g6j(2*S_ + 1,2*S_bl,1,2*S + 1,2*S_dl,1)
+                           * Tools::g6j(S_,0,S_dl,S_ab) * Tools::g6j(S_,0,S_bl,S_cd) * Tools::g6j(S_,S,S_bl,S_dl)
 
                            * ddpm(l,S_,S_ab,a,d,S_cd,c,b);
 
@@ -618,7 +587,7 @@ void dPHHM::G2(const dDPM &ddpm){
                double hard = 0.0;
 
                for(int Z = 0;Z < 2;++Z)
-                  hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,d,c,b);
+                  hard += (2*Z + 1.0) * Tools::g9j(S,Z,S_dl,S_bl) * tpm(Z,a,d,c,b);
 
                if(a == d)
                   hard *= std::sqrt(2.0);
@@ -646,7 +615,7 @@ void dPHHM::G2(const dDPM &ddpm){
                   double hard = 0.0;
 
                   for(int Z = 0;Z < 2;++Z)
-                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,l,c,l);
+                     hard += (2*Z + 1.0) * Tools::g9j(S,Z,S_dl,S_bl) * tpm(Z,a,l,c,l);
 
                   if(a == l)
                      hard *= std::sqrt(2.0);
@@ -664,7 +633,7 @@ void dPHHM::G2(const dDPM &ddpm){
                   double hard = 0.0;
 
                   for(int Z = 0;Z < 2;++Z)
-                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,d,c,l);
+                     hard += (2*Z + 1.0) * Tools::g9j(S,Z,S_dl,S_bl) * tpm(Z,a,d,c,l);
 
                   if(a == d)
                      hard *= std::sqrt(2.0);
@@ -682,7 +651,7 @@ void dPHHM::G2(const dDPM &ddpm){
                   double hard = 0.0;
 
                   for(int Z = 0;Z < 2;++Z)
-                     hard += (2*Z + 1.0) * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * tpm(Z,a,l,c,b);
+                     hard += (2*Z + 1.0) * Tools::g9j(S,Z,S_dl,S_bl) * tpm(Z,a,l,c,b);
 
                   if(a == l)
                      hard *= std::sqrt(2.0);

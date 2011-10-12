@@ -330,7 +330,7 @@ void dTPM::bar(double scale,const dDPM &ddpm){
 
                   }
 
-                  (*this)[l](0,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,0) * Tools::g6j(1,1,2*S_cd,1,1,0) * ward;
+                  (*this)[l](0,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(0,0,S_ab,0) * Tools::g6j(0,0,S_cd,0) * ward;
 
                }
 
@@ -359,7 +359,7 @@ void dTPM::bar(double scale,const dDPM &ddpm){
 
                   }
 
-                  (*this)[l](1,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(1,1,2*S_ab,1,1,2) * Tools::g6j(1,1,2*S_cd,1,1,2) * ward;
+                  (*this)[l](1,b,d) += 2.0 * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * Tools::g6j(0,0,S_ab,1) * Tools::g6j(0,0,S_cd,1) * ward;
 
                }
 
@@ -418,7 +418,7 @@ void dTPM::bar(double scale,const dPPHM &dpphm){
 
                         (*this)[l](Z,b,d) += (2*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * 
                         
-                           Tools::g9j(2*S + 1,2*S_ab,1,2*S_cd,1,1,1,1,2*Z) * ward;
+                           Tools::g9j(S,Z,S_ab,S_cd) * ward;
 
                      }
 
@@ -511,7 +511,7 @@ void dTPM::skew_bar(double scale,const dPHHM &dphhm){
  * special spinsummed "bar" function that maps a dPHHM on a dTPM object, see notes for info.
  * spinsummed because the intermediate spin is not required to be diagonal, and to have a different name then the other bar...
  * @param scale the factor you scale the dTPM with
- * @param dphhm input dPHHM object
+ * @param dphhm input dPPHM object
  */
 void dTPM::ssbar(double scale,const dPHHM &dphhm){
 
@@ -537,7 +537,7 @@ void dTPM::ssbar(double scale,const dPHHM &dphhm){
 
                         (*this)[l](Z,a,c) += (2.0*(S + 0.5) + 1.0) * std::sqrt( (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) ) * (1 - 2*S_bl) * (1 - 2*S_dl)
 
-                           * Tools::g9j(1,1,2*Z,2*S + 1,2*S_dl,1,2*S_bl,1,1) * ward;
+                           * Tools::g9j(S,Z,S_dl,S_bl) * ward;
 
                      }
 
