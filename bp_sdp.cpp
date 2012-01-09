@@ -59,6 +59,8 @@ int main(void){
    SUP::init(M,N);
    Tools::init(M,N);
 
+   cout << gsl_sf_coupling_6j(1,1,1,1,1,1) << endl;
+
    //hamiltoniaan
    dDPM ham;
    ham.hubbard(1.0);
