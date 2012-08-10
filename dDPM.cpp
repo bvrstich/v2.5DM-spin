@@ -1513,6 +1513,10 @@ void dDPM::test_proj_1() const {
       cout << "S = 1/2" << endl;
       cout << endl;
 
+      int a = 0;
+      int b = 1;
+      int c = 0;
+
       for(int a = 0;a < M;++a)
          for(int b = 0;b < M;++b)
             for(int c = 0;c < M;++c){
@@ -1532,7 +1536,7 @@ void dDPM::test_proj_1() const {
 
                            double hard = std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl)
 
-                              * (1 - 2*S_ab) * (1 - 2*S_cd) * Tools::g6j(0,0,S_ab,S_al) * Tools::g6j(0,0,S_cd,S_cd) * (*this)(b,0,S_al,a,l,S_cl,c,l);
+                              * (1 - 2*S_ab) * (1 - 2*S_cd) * Tools::g6j(0,0,S_ab,S_al) * Tools::g6j(0,0,S_cd,S_cl) * (*this)(b,0,S_al,a,l,S_cl,c,l);
 
                            if(a == b)
                               hard /= std::sqrt(2.0);
@@ -1781,7 +1785,7 @@ void dDPM::test_proj_2() const {
 
                            double hard = std::sqrt( (2.0*S_al + 1.0) * (2.0*S_cl + 1.0) * (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) ) * (1 - 2*S_al) * (1 - 2*S_cl)
 
-                              * (1 - 2*S_ab) * (1 - 2*S_cd) * Tools::g6j(0,0,S_ab,S_al) * Tools::g6j(0,0,S_ab,S_al) * (*this)(b,0,S_al,a,l,S_cl,c,l);
+                              * (1 - 2*S_ab) * (1 - 2*S_cd) * Tools::g6j(0,0,S_ab,S_al) * Tools::g6j(0,0,S_cd,S_cl) * (*this)(b,0,S_al,a,l,S_cl,c,l);
 
                            if(a == b)
                               hard /= std::sqrt(2.0);
