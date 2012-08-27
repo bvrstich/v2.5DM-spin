@@ -520,11 +520,14 @@ void Matrix::sep_pm(Matrix &p,Matrix &m){
    {
       p = m;
       m = 0;
+      delete [] eigenvalues;
       return;
    }
 
-   if( eigenvalues[n-1] < 0)
+   if( eigenvalues[n-1] < 0){
+      delete [] eigenvalues;
       return;
+   }
 
    int i = 0;
 
@@ -546,13 +549,18 @@ void Matrix::sep_pm(Matrix &p,Matrix &m){
 
    m -= p;
 #else
-   if( eigenvalues[0] >= 0 )
+   if( eigenvalues[0] >= 0 ){
+      
+      delete [] eigenvalues;
       return;
+
+   }
 
    if( eigenvalues[n-1] < 0)
    {
       m = p;
       p = 0;
+      delete [] eigenvalues;
       return;
    }
 

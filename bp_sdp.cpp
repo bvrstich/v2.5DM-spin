@@ -105,13 +105,13 @@ int main(void){
    int iter;
    int max_iter = 1;
 
-   while(D_conv > tolerance || P_conv > tolerance || fabs(convergence) > tolerance){
+  // while(D_conv > tolerance || P_conv > tolerance || fabs(convergence) > tolerance){
 
       D_conv = 1.0;
 
       iter = 0;
 
-      while(D_conv > tolerance && iter <= max_iter){
+   //   while(D_conv > tolerance && iter <= max_iter){
 
          ++iter;
 
@@ -151,7 +151,7 @@ int main(void){
 
          D_conv = sqrt(v.ddot(v));
 
-     }
+//     }
 
       //update primal:
       X = V;
@@ -174,7 +174,7 @@ int main(void){
       else
          sigma /= 1.01;
 
-   }
+   //}
 
    cout << endl;
    cout << "Nr of particles" << "\t" << Z.gI1().trace() << endl;
