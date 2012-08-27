@@ -2700,7 +2700,6 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
                c = rxTPM::gt2s(l,1,j,1);
                d = rxTPM::gt2s(l,1,j,2);
 
-
                (*this)[l](1,i,j) = tpm(1,a,b,c,d) - ddpm_i[l](1,i,j);
 
                if(i == j)
@@ -2753,8 +2752,6 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
 
       double norm_ab,norm_cd;
 
-      double hard;
-
       for(int l = 0;l < M;++l){
 
          //start with the S = 1/2 block, this is the most difficult one:
@@ -2785,8 +2782,6 @@ void dDPM::Q(char option,const dDPM &ddpm_i){
 
                if(c == d)
                   norm_cd /= std::sqrt(2.0);
-
-               hard = std::sqrt( (2*S_ab + 1.0) * (2*S_cd + 1.0) ) * Tools::g6j(0,0,S_ab,S_cd);
 
                //dp part
                (*this)[l](0,i,j) = -ddpm_i[l](0,i,j);
@@ -3101,13 +3096,13 @@ void dDPM::G1(const dPHHM &dphhm){
                      for(int S_dl = 0;S_dl < 2;++S_dl){
 
                         (*this)[l](S,i,j) += norm_ab * norm_cd * (2*(S_ + 0.5) + 1.0) 
-                        
+
                            * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
 
                            * Tools::g6j(S,0,S_dl,S_ab) * Tools::g6j(S,0,S_bl,S_cd) * Tools::g6j(S,S_,S_bl,S_dl)
 
                            * ( dphhm(l,S_,S_bl,a,d,S_dl,c,b) + sign_ab * dphhm(l,S_,S_bl,b,d,S_dl,c,a) + sign_cd * dphhm(l,S_,S_bl,a,c,S_dl,d,b)
-                           
+
                                  + sign_ab * sign_cd * dphhm(l,S_,S_bl,b,c,S_dl,d,a) );
 
                      }
@@ -3162,13 +3157,13 @@ void dDPM::G1(const dPHHM &dphhm){
 
    }
 
-      this->symmetrize();
+   this->symmetrize();
 
 }
 
 
 /**
- * map a dPHHM on a dDPM object with the G1 down map.
+ * map a dPHHM on a dDPM object with the G2 down map.
  * @param dphhm input dPHHM matrix
  */
 void dDPM::G2(const dPHHM &dphhm){
@@ -3234,13 +3229,13 @@ void dDPM::G2(const dPHHM &dphhm){
                      for(int S_dl = 0;S_dl < 2;++S_dl){
 
                         (*this)[l](S,i,j) -= norm_ab * norm_cd * (2*(S_ + 0.5) + 1.0) 
-                        
+
                            * std::sqrt( (2.0*S_ab + 1.0) * (2.0*S_cd + 1.0) * (2.0*S_bl + 1.0) * (2.0*S_dl + 1.0) )
 
                            * Tools::g6j(S,0,S_dl,S_ab) * Tools::g6j(S,0,S_bl,S_cd) * Tools::g6j(S,S_,S_bl,S_dl)
 
                            * ( dphhm(l,S_,S_bl,a,d,S_dl,c,b) + sign_ab * dphhm(l,S_,S_bl,b,d,S_dl,c,a) + sign_cd * dphhm(l,S_,S_bl,a,c,S_dl,d,b)
-                           
+
                                  + sign_ab * sign_cd * dphhm(l,S_,S_bl,b,c,S_dl,d,a) );
 
                      }

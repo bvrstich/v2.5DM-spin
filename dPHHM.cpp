@@ -82,7 +82,7 @@ int dPHHM::gM() const {
 }
 
 /**
- * acces to the individual rxPHM objects
+ * access to the individual rxPHM objects
  * @param l the specific rxPHM object you want
  * @return the rxPHM object with parameter l
  */

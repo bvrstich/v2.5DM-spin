@@ -42,8 +42,6 @@ class dPHHM {
 
       double operator()(int,int,int,int,int,int,int,int) const;
 
-      static int get_inco(int,int,int,int);
-
       int gN() const;
 
       int gM() const;
